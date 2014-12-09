@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         id="ide"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.eclipse.ui.ide.workbench"
+            name="HEA Studio">
+         <property
+               name="windowImages"
+               value="icons/16.png,icons/32.png,icons/48.png,icons/64.png,icons/128.png">
+         </property>
+         <property
+               name="aboutText"
+               value="Hirisun Product：HEA Studio&#x0A;&#x0A;Version: 1.5.1&#x0A;&#x0A;Copyright(c)2000-2015 深圳海联讯科技股份有限公司  All Rights reserved.&#x0A;&#x0A;This offering is based on technology from the Eclipse Project&#x0A;Visit http://www.eclipse.org/platform">
+         </property>
+         <property
+               name="aboutImage"
+               value="icons/about.png">
+         </property>
+         <property
+               name="startupForegroundColor"
+               value="FFFFFF">
+         </property>
+         <property
+               name="startupProgressRect"
+               value="6,400,690,15">
+         </property>
+         <property
+               name="startupMessageRect"
+               value="6,380,690,20">
+         </property>
+         <property
+               name="preferenceCustomization"
+               value="plugin_customization.ini">
+         </property>
+         <property
+               name="appName"
+               value="HEA Studio">
+         </property>
+      </product>
+   </extension>
+   <extension
+        point="org.eclipse.ui.intro">
+     <intro
+         class="org.eclipse.ui.intro.config.CustomizableIntroPart"
+         icon="icons/16.png"
+         id="com.hirisun.ide.product.ide.intro">
+     </intro>
+     <introProductBinding
+         introId="com.hirisun.ide.product.ide.intro"
+         productId="com.hirisun.ide.product.ide">
+     </introProductBinding>
+   </extension>
+   <extension
+      id="intro"
+      point="org.eclipse.ui.intro.config">
+      <config
+         content="introContent.xml"
+         id="com.hirisun.ide.product.ide.intro.config"
+         introId="com.hirisun.ide.product.ide.intro">
+         <presentation
+            home-page-id="root" standby-page-id="standby">
+            <implementation kind="html"></implementation>
+         </presentation>
+      </config>
+    </extension>
+</plugin>

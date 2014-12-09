@@ -1,0 +1,426 @@
+package com.hirisun.hea.common.infrastructure.dal.impl;
+
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+
+
+import java.io.Serializable;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
+
+import org.apache.commons.logging.LogFactory;
+import org.hibernate.Criteria;
+import org.hibernate.Query;
+import org.hibernate.SQLQuery;
+import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Order;
+
+import org.hibernate.criterion.Restrictions;
+
+import com.hirisun.hea.common.infrastructure.dal.DataAccess;
+import com.hirisun.hea.common.model.Condition;
+import com.hirisun.hea.common.model.Page;
+import com.hirisun.hea.common.util.BeanHelper;
+
+/**
+ * @param <T>  实体泛型参数
+ * <pre>
+ * 业务名: 所有数据库持久层dao抽象基类
+ * 功能说明: CRUD操作的抽象基类实现
+ * 编写日期:	2011-4-01
+ * 作者:	袁明敏
+ * 
+ * 历史记录
+ * 1、修改日期：2011-4-01
+ *    修改人：袁明敏
+ *    修改内容：
+ * </pre>
+ */
+
+@SuppressWarnings("unchecked")
+public abstract class BaseDao<T> extends HibernateDaoSupport implements DataAccess<T>{
+	
+	/**
+	 * 泛型类参数
+	 */
+	private Class currClass;
+	{
+		
+		Type type = this.getClass().getGenericSuperclass();
+		if(type instanceof ParameterizedType){
+			ParameterizedType pType = (ParameterizedType) type;
+			Type[] types = pType.getActualTypeArguments();
+			currClass = (Class) types[0];
+			LogFactory.getLog(currClass);
+		}
+	}
+
+	/**
+	 * 
+	 * 方法说明：按类型删除所有对象
+	 * @return 删除成功返回真
+	 *
+	 */
+	public Boolean deleteAll(){
+		int cnt = this.getSession().createQuery("delete " + currClass.getName()).executeUpdate();
+		if (cnt > 0) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * 跟据多个id批量删除对象
+	 * @param ids 一系列对象的id标识号
+	 * @return 删除成功返回真
+	 */
+	public Boolean deleteByIds(Serializable ... ids){
+		try{
+		Session session=this.getSession();
+		int cnt=0;
+		for(Serializable i: ids){
+			Object temp=session.get(currClass, i);
+			session.delete(temp);
+			cnt++;
+			if(cnt>500){
+				session.flush();
+				cnt=0;
+			}
+		}
+		}catch(RuntimeException ex){
+			ex.printStackTrace();
+			return false;
+		}
+		return true;
+		
+	}
+
+	
+	/**
+	 * 跟据id标识删除单个对象
+	 * @param id 对象id号
+	 * @return 删除成功返回真
+	 */
+	public Boolean deleteById(Serializable id){
+		try{
+		Session session=this.getSession();
+		Object persistence=session.get(currClass, id);
+		if(persistence!=null){
+			session.delete(persistence);
+		}
+		}catch(RuntimeException ex){
+			ex.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	
+
+	/**
+	 * 查询有的对象
+	 * @return 返回对象列表
+	 */
+	public List<T> findAll(){
+		return  this.getSession().createCriteria(currClass ).list();	
+	}
+	
+	/**
+	 * 查询所有对象
+	 * @param properties 对象的属性名和是否升序的标记(键值为true时，为升序)，
+	 * @return 结果集 
+	 */
+	public List<T> findAll(Map<String, Boolean> properties){
+		Session session=this.getSession();
+		Criteria c=session.createCriteria(currClass);
+		Set<Entry<String,Boolean>> set=properties.entrySet();
+		for(Entry<String,Boolean> e: set){
+			if(e.getValue()){
+				c=c.addOrder(Order.asc(e.getKey()));
+			}else{
+				c=c.addOrder(Order.desc(e.getKey()));
+			}
+			
+		}
+		return c.list(); 
+	}
+
+	/**
+	 * 查询所有对象，按照片 property 属性排序
+	 * @param property 对象属性名称
+	 * @param isAsc 是否为升序
+	 * @return 返回对象列表
+	 */
+	public List<T> findAll(String property,Boolean isAsc){
+		Criteria criteria=this.getSession().createCriteria(currClass);
+		if(isAsc){
+			return criteria.addOrder(Order.asc(property)).list();
+		}else{
+			return criteria.addOrder(Order.desc(property)).list();
+		}
+	}
+	
+	
+	/**
+	 * 跟据id查询对象
+	 * @param id 对象标识
+	 * @return 返回查询的对象值
+	 */
+	public T findById(Serializable id)  {
+		return (T) this.getSession().get(currClass, id);
+	}
+
+	
+	/**
+	 * 方法说明：跟据对象id号，批量查询对象
+	 * 
+	 * @param ids 对象id集合
+	 * @return 返回查询的结果列表
+	 */
+	public List<T> findByIds(Serializable ... ids)  {
+		Session session=this.getSession();
+		List<T> list=new ArrayList<T>();
+		for(Serializable i: ids){
+			T temp=(T)session.get(currClass, i);
+			list.add(temp);
+		}
+		return list;
+	}
+	
+	
+	/**
+	 * 保存一个对象
+	 * @param obj 要保存的实体对象
+	 * @return 保存成功返回真
+	 */
+	public Boolean save(T obj)  {
+		Serializable identifier= this.getSession().save(obj);
+		if(identifier != null){
+			return true;
+		}
+		
+		return true;
+		
+	}
+
+	/**
+	 * 删除一个对象
+	 * @param obj 要删除的实体对象
+	 * @return 删除成功返回真
+	 */
+	public Boolean delete(T obj)  {
+		try{
+		this.getSession().delete(obj);
+		}catch(Exception exx){
+			exx.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * 更新一个实体对象
+	 * @param obj 要更新的实体对象
+	 * @return 返回更新后的实体对象
+	 */
+	public T update(T obj)  {
+		this.getSession().update(obj);
+		return (T)this.getSession().merge(obj);
+	}
+
+	/**
+	 * 按照对象的属性名称查找实体对象列表
+	 * @param property 实体对象的属性字符串
+	 * @param value 属性值
+	 * @return 返回按属性值匹配的结果集
+	 */
+	public List<T> findByProperty(String property,Object value) {
+		
+		return this.getSession()
+		.createCriteria(currClass )
+		.add( Restrictions.eq(property, value) )
+		.list();
+	}
+	
+	/**
+	 * 方法说明:按照对象的属性名称查找实体对象列表
+	 * @param property 实体对象的属性字符串
+	 * @param value 属性值
+	 * @return 返回按属性值匹配的唯一值
+	 */
+	public T findByPropertyUnique(String property,Object value) {	
+			return (T)this.getSession()
+			.createCriteria(currClass )
+			.add( Restrictions.eq(property, value) )
+			.uniqueResult();
+		}
+	
+	/**
+	 * 执行简单的hql查询语句
+	 * @param hql 标准的hql查询语句
+	 * @return 返回hsq查询语句结果集列表
+	 */
+	public List<Object []> executeHqlQuery(String hql){
+		return this.getSession().createQuery(hql).list();
+	}
+	
+	/**
+	 * 执行带参的Hql语句,executeHqlQuery("from Index as i where i.indexname = ? ",new Object []{"aa"});
+	 * @param hql 标准的hql查询语句,带占位符参数
+	 * @param paramValues 多个参数值
+	 * @return 返回hsq查询语句结果集列表
+	 */
+	public List<Object []> executeHqlQuery(String hql,Object ... paramValues){
+		Query query = this.getSession().createQuery(hql);
+		if(paramValues!=null){
+			for(int i=0;i<paramValues.length;i++){
+				query.setParameter(i, paramValues[i]);
+			}
+		}
+		return query.list();
+	}
+	
+	
+	
+	/**
+	 * 执行简单原生态sql语句
+	 * @param sql 原生sql语句
+	 * @return sql语句执行成功返回真
+	 */
+	public Boolean executeSql(String sql){
+		int cnt=this.getSession().createSQLQuery(sql).executeUpdate();
+		return cnt>0;
+	}
+	
+	/**
+	 * 执行带参数的sql语句,如:executeSql("insert into t_test(filedA,filedB) values(:vls)","vls", new Object []{"aa","bb"});
+	 * @param sql sql语句
+	 * @param uniformedName 统一的参数名称
+	 * @param paramValues 参数值
+	 * @return sql语句执行成功返回真
+	 */
+	public Boolean executeSql(String sql, String uniformedName, Object... paramValues) {
+		int cnt = this.getSession().createSQLQuery(sql)
+				.setParameterList(uniformedName, paramValues).executeUpdate();
+		return cnt > 0;
+	}
+	
+	/**
+	 * 执行简单原生态sql查询语句
+	 * @param sql  原生sql查询语句
+	 * @return 返回二维结果集
+	 */
+	public List<Object []> executeSqlQuery(String sql){
+		return this.getSession().createSQLQuery(sql).list();
+	}
+	
+	/**
+	 * 执行带参数的sql语句,如:executeSqlQuery("select * from tableA where tableA.filedA= ? and tableA.filedB.filed= ? ", new Object []{"aa","bb"});
+	 * @param sql 原生sql查询语句
+	 * @param paramValues 统一的命名参数值
+	 * @return 返回二维结果集
+	 */
+	public List executeSqlQuery(String sql,Object ... paramValues){
+		SQLQuery sqlQuery= this.getSession().createSQLQuery(sql);
+		for(int i=0;i<paramValues.length;i++){
+			sqlQuery.setParameter(i, paramValues[i]);
+		}
+		return sqlQuery.list();
+	}
+	
+
+	/**
+	 * 加载分页对象
+	 * @param pageModel 初使化后不带数据的分页对象
+	 * @return 返回带数据的分页对象
+	 */
+	public Page<T> loadPage(Page<T> pageModel){
+		int firstResult=(pageModel.getCurrPageNum()-1)*pageModel.getPerPageRecord();
+		int maxResult=pageModel.getPerPageRecord();
+	
+		Criteria criteria=getSession().createCriteria(currClass);
+		try{
+			//按属性条件查询
+			Condition condition=pageModel.getConditions();
+			if(condition!=null ){
+				List<Criterion> list=(List<Criterion>)BeanHelper.forceGetProperty(condition, "expressions");
+				for(Criterion i: list){
+					criteria=criteria.add(i);
+				}
+			}
+			int totalRecord =criteria.list().size();
+			
+			criteria.setFirstResult(firstResult);
+			criteria.setMaxResults(maxResult);
+			
+			criteria = processPageBeanOrders(pageModel, criteria);
+
+			List list=criteria.list();
+		
+			double temp= Double.valueOf(totalRecord) / Double.valueOf(pageModel.getPerPageRecord());
+	
+			BeanHelper.forceSetProperty(pageModel, "totalRecord", totalRecord);
+			BeanHelper.forceSetProperty(pageModel, "totalPage", Double.valueOf(Math.ceil(temp)).intValue());
+			BeanHelper.forceSetProperty(pageModel,"data",list);
+		
+			processPageBeanProperties(pageModel);
+		}catch(Exception e){
+			throw new RuntimeException(e.getMessage());
+		}
+		return pageModel;
+	}
+
+	/***
+	 * 处理分页对象的排序字段
+	 * @param pageModel 分页模型对象
+	 * @param criteria hibernate查询对象
+	 * @return 返回查询对象
+	 */
+	private Criteria processPageBeanOrders(Page<T> pageModel, Criteria criteria) {
+		//排序
+		boolean isEmpty=pageModel.getOrderProperties().isEmpty();
+		if(isEmpty==false){
+			List list=pageModel.getOrderProperties();
+			for(int i=0;i<list.size();i++){
+				List temp=(List)list.get(i);
+				if(temp.size()==2){
+					String key=(String)temp.get(0);
+					Boolean value=(Boolean)temp.get(1);
+					if(value==true){
+						criteria=criteria.addOrder(Order.asc(key));
+					}else{
+						criteria=criteria.addOrder(Order.desc(key));
+					}
+				}
+			}
+		}
+		return criteria;
+	}
+
+	/**
+	 * 底层处理分页对象内部属性值，如:"当前页值"  大于  "总页数值",将重设    "当前页值"  为"总页数值"
+	 * @param pageModel 分页模型
+	 * @throws NoSuchFieldException 找不到实体的当前属性
+	 */
+	private void processPageBeanProperties(Page<T> pageModel)
+			throws NoSuchFieldException {
+		if( pageModel.getCurrPageNum()>= pageModel.getTotalPage() ){
+			BeanHelper.forceSetProperty(pageModel,"currPageNum",pageModel.getTotalPage());
+			BeanHelper.forceSetProperty(pageModel,"hasNextPage",false);
+		}else{
+			BeanHelper.forceSetProperty(pageModel,"hasNextPage",true);
+		}
+		
+		if( pageModel.getCurrPageNum()<= 1 ){
+			BeanHelper.forceSetProperty(pageModel,"currPageNum",1);
+			BeanHelper.forceSetProperty(pageModel,"hasPreviouPage",false);
+			
+		}else{
+			BeanHelper.forceSetProperty(pageModel,"hasPreviouPage",true);
+		}
+	}
+}

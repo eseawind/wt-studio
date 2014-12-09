@@ -1,0 +1,46 @@
+package com.hirisun.hea.common.infrastructure.security.impl;
+
+
+import com.hirisun.hea.common.infrastructure.security.Encrypt;
+import com.hirisun.hea.common.infrastructure.security.Security;
+import com.hirisun.hea.common.util.MD5;
+
+/**
+ * 
+ * <pre>
+ * 业务名: 常用的加密方式 
+ * 功能说明: 
+ * 编写日期:	2011-5-13
+ * 作者:	袁明敏
+ * 
+ * 历史记录
+ * 1、修改日期：2011-5-13
+ *    修改人：袁明敏
+ *    修改内容：
+ * </pre>
+ */
+public class EncryptWay implements Security{
+	
+	/**
+	 * 
+	 * 方法说明：密码加密,插入客户自定义算法
+	 *
+	 * @param customEncrypt 用户自己定义算法接口
+	 * @param value 加密对象
+	 * @return 返回加密后的对象
+	 */
+	public Object encrypt(Encrypt customEncrypt, Object... value) {
+		return customEncrypt.customEncrypt(value);
+		
+	}
+	/**
+	 * 
+	 * 方法说明：密码加密，默认为MD5算法实现
+	 *
+	 * @param value 需要加密的字符串
+	 * @return 加过密后的字符串
+	 */
+	public String encryptMD5(String value){
+		return MD5.md5(value);
+	}
+}

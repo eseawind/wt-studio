@@ -1,0 +1,94 @@
+<%@ jet package="com.hirisun.ide.plugin.wizard.projects.model.templates" class="UpdateHtmlTemplate"
+		imports="com.hirisun.ide.plugin.wizard.projects.model.util.JavaTemplateArgs
+				 java.util.List
+				 org.apache.commons.lang.StringUtils
+				 com.hirisun.ide.plugin.wizard.projects.dbhelp.ColumeModel
+				 com.hirisun.ide.plugin.wizard.projects.model.ModuleModel"%>
+<%
+	JavaTemplateArgs args = (JavaTemplateArgs) ((Object[])argument)[0];
+%>
+<%  
+    ModuleModel moduleModel = (ModuleModel) ((Object[])argument)[1];
+    List<ColumeModel> elementList = moduleModel.getColumeModels();
+    int num = 0;
+%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title></title>
+</head>
+<body>
+  <FIELDSET>	
+    <LEGEND wicket:id="title">基本信息</LEGEND>
+	<form method="post" wicket:id="form">
+	    <span wicket:id='feedback'></span>
+		<table class="tab_2">
+<% 
+   for (ColumeModel i: elementList ) {
+     String isKey = i.getIsKey();
+   	 String requid = i.getRequid();
+   	 String requiClass =  "1".equals(requid) ? "<span>*</span>": "";       
+   	 if(StringUtils.isEmpty(isKey) || "".equals(isKey) || "0".equals(isKey)) {
+%>
+			<tr>
+				<td class="td_1">
+<%
+     if(  ((ColumeModel)i).getComment() == null || "".equals(((ColumeModel)i).getComment()) ) {
+%>
+				       <%=requiClass%><%=((ColumeModel)i).getName()%>:</td>
+<%
+     } else { 
+%>
+				       <%=requiClass%><%=((ColumeModel)i).getComment()%>:</td>				       
+<%   }%>
+<%
+   		String type = i.getManageControlType(); 		
+   		if("INPUT".equals(type)) {    
+%>   		    
+            <td class="td_1"><input type="text" class="ipt_other" wicket:id="<%=((ColumeModel)i).getName()%>"></td></tr>
+
+<%		}
+        if("PASSWORD".equals(type)) {
+%>
+			<td class="td_1"><input type="password" class="ipt_other" wicket:id="<%=((ColumeModel)i).getName()%>"></td></tr>
+<%        
+        }
+        if("TEXTAREA".equals(type)) {
+%>
+			<td class="td_1"><textarea class="ipt_other" wicket:id="<%=((ColumeModel)i).getName()%>" rows="3"></textarea></td></tr>        
+<%        
+        }
+        if("COM_ORG".equals(type)) {
+%>
+			<td class="td_1"><div wicket:id="<%=((ColumeModel)i).getName()%>" ></div></td></tr>  
+<%        
+        }
+        if("COM_PEOPLE".equals(type)) {
+%>
+			<td class="td_1"><div wicket:id="<%=((ColumeModel)i).getName()%>" ></div></td></tr>  
+<%        
+        }
+        if("SELECT".equals(type)) {    
+%>
+            <td class="td_1"><select class="ipt_other" wicket:id="<%=((ColumeModel)i).getName()%>"></select></td></tr>
+<%   		    
+        }
+        if("DATEPICKER".equals(type)) {  
+%>
+            <td class="td_1"><span wicket:id="<%=((ColumeModel)i).getName()%>"></span></td></tr>
+<% 
+		}
+	 }
+   }
+%>
+		
+		</table>
+		<div class="clear_both">
+		<input class="btn" type="button" wicket:id="btnSubmit" value="提交"> 
+		<input class="btn" type="button" wicket:id="btnBack" value="返回"> 
+		</div>
+	</form>
+   </FIELDSET>
+</body>
+</html>

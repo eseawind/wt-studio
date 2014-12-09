@@ -1,0 +1,23 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: HEA Studio Plugin BTools QueryDesigner
+Bundle-SymbolicName: com.wt.studio.plugin.querydesigner;singleton:=true
+Bundle-Version: 1.1.0.qualifier
+Bundle-Activator: com.wt.studio.plugin.querydesigner.Activator
+Bundle-Vendor: Hirisun
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ org.eclipse.datatools.connectivity,
+ org.eclipse.draw2d,
+ org.eclipse.ui.ide,
+ org.eclipse.gef
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6,
+ JavaSE-1.7
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .,
+ lib/xstream-1.4.6.jar,
+ lib/dom4j-1.6.1.jar,
+ lib/commons-lang-2.6.jar,
+ lib/mysql-connector-java-5.1.25-bin.jar,
+ lib/ojdbc5.jar

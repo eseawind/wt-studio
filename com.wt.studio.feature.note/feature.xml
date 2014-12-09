@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="com.hirisun.ide.feature.note"
+      label="Note"
+      version="1.0.0.qualifier"
+      provider-name="Hirisun">
+
+   <description url="http://www.hirisun.com">
+      海联讯企业应用开发集成环境
+   </description>
+
+   <copyright url="http://www.hirisun.com/">
+      版权所有 2011-2015 深圳海联讯科技股份有限公司
+   </copyright>
+
+   <license url="http://www.hirisun.com/">
+      []
+   </license>
+
+   <plugin
+         id="com.hirisun.ide.plugin.note"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.hirisun.ide.plugin.evernote"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

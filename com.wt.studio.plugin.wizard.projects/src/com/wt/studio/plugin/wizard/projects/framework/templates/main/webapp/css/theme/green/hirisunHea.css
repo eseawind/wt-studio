@@ -1,0 +1,129 @@
+/**
+ **
+ **/
+body{
+	font-size:12px;
+	ont-family: Arial, Helvetica, sans-serif,宋体;
+	margin:0px;
+}
+.div_all
+{
+	padding-top:10px;
+	padding-left:10px;
+	padding-right:10px;
+	background-image: url(../../../images/theme/green/bj.jpg);
+	background-repeat: no-repeat;
+	background-position: left bottom;
+}
+/**以下为表格样式**/
+/**
+ ** 表格整体样式 加给 table标签
+ **/
+.tablestyle {
+	background-color: #C6DFDF;
+}
+/**
+ **表格标题
+ **/
+.titlestyle {
+	color: #333333;
+	font-size: 12px;
+	font-weight: bold;
+	text-decoration: none;
+	background-image: url(../../../images/theme/green/bg-daohang.gif);
+	line-height: 26px;
+	background-repeat: no-repeat;
+	background-position: left;
+	height: 26px;
+	width: 90%;
+	text-indent: 15px;
+	float: left;
+}
+/**
+ **表格 表头 加给td标签
+ **/
+.tabletitle {
+	font-size: 12px;
+	line-height: 25px;
+	color: #333333;
+	text-decoration: none;
+	background-color: #DCEDF5;
+	font-weight: bold;
+}
+.tabletitleCheckBox {
+	background-color: #DCEDF5;
+}
+/**
+ **表格 功能性按钮区域
+ **/
+.tableBtnDiv{
+	float:right; 
+	}
+/**
+ **表格行显示的斑马线1 加给tr标签
+ **/
+.col-on {
+	font-size: 12px;
+	line-height: 25px;
+	color: #333333;
+	text-indent:5px;
+	text-decoration: none;
+	background-color: #FFFFFF;
+}
+/**
+ **表格行显示的斑马线2 加给tr标签
+ **/
+.col-out {
+	font-size: 12px;
+	line-height: 25px;
+	color: #333333;	
+	text-indent:5px;
+	text-decoration: none;
+	background-color: #EDF7FE;
+}
+.col-hover {
+	font-size: 12px;
+	line-height: 25px;
+	color: #333333;
+	text-indent:5px;
+	text-decoration: none;
+	background-image: url(../../../images/theme/green/onmouse.jpg);
+	background-repeat: repeat-x;
+}
+.healink{
+		text-decoration: none;
+		font-size:14px;
+		margin-right:10px;
+		color:black;
+	}
+/**
+ ** 功能性按钮 加给button
+ **/
+.btn1_mouseover {
+		border-right: #7EBF4F 1px solid; 
+		padding-right: 2px; 
+		border-top: #7EBF4F 1px solid; 
+		padding-left: 2px; 
+		font-size: 12px; 
+		filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=0, StartColorStr=#ffffff, EndColorStr=#70D2D6); 
+		border-left: #7EBF4F 1px solid;
+	    cursor: hand; 
+	    color: black; 
+	    padding-top: 2px; 
+	    border-bottom: #7EBF4F 1px solid; 
+}
+a { color:#333; text-decoration:none;}
+
+/**
+ ** 表格的分页信息 加给div
+ **/
+#pagelist {width:600px; margin:0px auto; padding:6px 0px; height:20px; float:none}
+#pagelist ul { list-style:none;}
+#pagelist ul li { float:left; border:1px solid #7EBF4F; height:20px; line-height:20px; margin:0px 2px;}
+#pagelist ul li a, .pageinfo { display:block; padding:0px 6px; background:#e6f2fe;}
+#pagelist ul li.current { background:#a9d2ff; display:block; padding:0px 6px; font-weight:bold;}
+/**
+ ** 输入框  text textArea
+ **/
+.textInput{border: 1px  #9cd8dc;padding:3px;outline: solid #9cd8dc 1px;}
+

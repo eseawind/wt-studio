@@ -1,0 +1,413 @@
+/**
+ * Copyright (c) 2011 by Hirisun Corporation all right reserved.
+ * 2011-03-21 
+ */
+package com.hirisun.hea.common.infrastructure.parser.excel.impl;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.List;
+import java.util.Locale;
+
+import javax.servlet.http.HttpServletRequest;
+
+import jxl.Sheet;
+import jxl.Workbook;
+import jxl.format.BorderLineStyle;
+import jxl.format.Colour;
+import jxl.format.UnderlineStyle;
+import jxl.write.Label;
+import jxl.write.WritableCellFormat;
+import jxl.write.WritableFont;
+import jxl.write.WritableSheet;
+import jxl.write.WritableWorkbook;
+import jxl.write.WriteException;
+
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
+import org.xml.sax.InputSource;
+
+import com.hirisun.hea.common.infrastructure.logger.Logger;
+import com.hirisun.hea.common.infrastructure.logger.impl.LoggerService;
+import com.hirisun.hea.common.infrastructure.parser.excel.ExlFileOperation;
+import com.hirisun.hea.common.util.I18NResourceUtil;
+
+/**
+ * 
+ * <pre>
+ * 业务名:
+ * 功能说明:  Excel文件操作实现接口,用于解析客户端传来的xml文件，解析并生成一个excel文件，产生http全路径
+ * 编写日期:	2011-3-25
+ * 作者:	袁明敏
+ * 
+ * 历史记录
+ * 1、修改日期：2011-3-25
+ *    修改人：袁明敏
+ *    修改内容：将web服务方式生成excel文件下载地址更改为jar包调用形式
+ * </pre>
+ */
+public class ExlFileOperationImpl implements ExlFileOperation {
+	
+	/**
+	 * 获取日志实例
+	 */
+	private Logger log = LoggerService.getInstance();
+	/**
+	 * 私有构造函数，用于获到单列对象
+	 */
+	private  ExlFileOperationImpl(){} 
+	
+	/**
+	 * 单实例文件操作对象
+	 * */
+	private static ExlFileOperation exlFileOperation = null;
+	static {
+		exlFileOperation = new ExlFileOperationImpl();
+	}
+
+	/**
+	 * 服务器Http请求对象,该 对象用于找到webApp上下文，用于生成文件到指定路径
+	 */
+	private static HttpServletRequest httpRequest = null;
+
+	/**
+	 * 
+	 * 方法说明：获取Excel操作的单实例对象
+	 *
+	 * @return 返回Excel操作的单例对象
+	 */
+	public static ExlFileOperation getInstance(){
+		if (exlFileOperation == null) {
+			exlFileOperation = new ExlFileOperationImpl();
+		}
+		return exlFileOperation;
+	}
+	
+	/**
+	 * 获取单实例对象，并初使化request对象
+	 * @param request Http请求对象
+	 * @return exlFileOperation 单例对象
+	 */
+	public static ExlFileOperation getInstance(HttpServletRequest request) {
+		if (exlFileOperation == null) {
+			exlFileOperation = new ExlFileOperationImpl();
+		} else {
+			httpRequest = request;
+		}
+		httpRequest = request;
+		return exlFileOperation;
+	}
+
+	
+	/**
+	 * 跟据xml承载的pojo对象创建Excel文件，返回文件的url(web环境)
+	 * @param path 创建excle的路径（全路径+文件名）
+	 * @param  xml 承载List规范的结果集
+	 * @param hasDataBorder 是否显示数据区域的边框
+	 * @return 返回excle文件对象
+	 */
+	@SuppressWarnings("unchecked")
+	public File createExcelFile(String path,String xml, boolean hasDataBorder) {
+		
+		Document doc = initDom(xml); //初使化dom文档
+		
+		Element root = doc.getRootElement(); 
+		
+		List<Element> pojo = root.getChildren("pojo"); // 获取pojo节点
+		
+		String[] heads = validateXmlHead(root);
+
+		File exlFile=createExcel(path,pojo, heads , hasDataBorder);
+
+	
+		return exlFile;
+	}
+
+	/**
+	 * 设置单元格默认格式,
+	 * @param isTitle 如果为真，则设置excel标题格式，否则则设置excel数据区域格式
+	 * @return 单元格格式对象
+	 */
+	@SuppressWarnings("static-access")
+	private WritableCellFormat initDefaultFormat(boolean isTitle){
+		if(isTitle){
+			
+			//标题格式默认设置
+			WritableCellFormat formatDataTitle=new WritableCellFormat();
+			try {
+				formatDataTitle.setBorder(jxl.format.Border.ALL,BorderLineStyle.THICK);
+				formatDataTitle.setBackground(Colour.YELLOW);
+				WritableFont wfc = new WritableFont(WritableFont.ARIAL, 12,
+						WritableFont.BOLD, false, UnderlineStyle.NO_UNDERLINE,
+						Colour.BLACK);
+				formatDataTitle.setFont(wfc);
+			} catch (WriteException e) {
+				e.printStackTrace();
+				throw new RuntimeException(I18NResourceUtil.getInstance()
+						.getValue("cell_format_write_error",
+								httpRequest.getLocale() == null ? Locale.CHINA:httpRequest.getLocale()));
+			}
+			return formatDataTitle;
+		}else{
+		
+			//数据区或格式默认设置
+			WritableCellFormat formatDataArea=new WritableCellFormat();
+			try {
+				formatDataArea.setBorder(jxl.format.Border.ALL,BorderLineStyle.THIN);
+				formatDataArea.setBackground(Colour.LIGHT_GREEN);
+			} catch (WriteException e) {
+				e.printStackTrace();
+				throw new RuntimeException(I18NResourceUtil.getInstance()
+						.getValue("cell_format_write_error",
+								httpRequest.getLocale() == null ? Locale.CHINA:httpRequest.getLocale()));
+			}
+			return formatDataArea;
+		}
+		
+	}
+	
+	/**
+	 * 跟据解析后的dom元素对象和title , 生成Excel文件
+	 * @param path excel文件生成的路径（含文件名）
+	 * @param pojo 实体对象的DOM表现,线性表现
+	 * @param heads 解析生成的excel头部信息
+	 * @param hasDataBorder 是否显示数据区域的边框
+	 * @return 返回文件对象
+	 */
+	@SuppressWarnings({"unchecked", "static-access" })
+	private File createExcel(String path,List<Element> pojo, String[] heads, boolean hasDataBorder) {
+		WritableWorkbook book = null;
+		File newFile = null;
+		try {
+
+			/*String realPath = "/modules/excel/upload/data_"
+					+ System.currentTimeMillis() + ".xls";*/
+			newFile = new File(path);
+			book = Workbook.createWorkbook(newFile);
+			WritableSheet mysheet = book.createSheet("Sheet1", 0);
+
+			for (int i = 0; i < pojo.size(); i++) {
+				if (i == 0) {
+					for (int c = 0; c < heads.length; c++) { // 处理标头
+						Label label = new Label(c, 0, heads[c]);
+						label.setCellFormat(initDefaultFormat(true));
+						mysheet.addCell(label);
+					}
+				}
+				List<Element> cols = pojo.get(i).getChildren(); // 得到property节点
+
+				for (Element e : cols) {
+					for (int c = 0; c < heads.length; c++) {
+						if (heads[c].equals(e.getAttributeValue("descript"))) {
+							Label label = new Label(c, i + 1, e
+									.getAttributeValue("propValue"));
+							if(hasDataBorder){ //设置边框
+								label.setCellFormat(initDefaultFormat(false));
+							}
+							mysheet.addCell(label);
+							break;
+						}
+					}
+				}
+			}
+			book.write();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException(I18NResourceUtil.getInstance().getValue(
+					"create_excel_file_error",httpRequest.getLocale() == null ? Locale.CHINA:httpRequest.getLocale()));
+		} finally {
+			destroy(book, null);
+		}
+		return newFile;
+	}
+
+
+	/**
+	 * 检查验证XML数据格式规范，是否有头部标题
+	 * @param root xml文档的根元素
+	 * @return 返回头部数
+	 */
+	@SuppressWarnings("static-access")
+	private String[] validateXmlHead(Element root) {
+		String[] heads = null;
+		Element title = root.getChild("title");
+		if (null != title) {
+			if (null != title.getText()) {
+				heads = title.getText().split(",");
+			} else {
+				throw new RuntimeException(I18NResourceUtil.getInstance()
+						.getValue("xml_result_title_null",
+								httpRequest.getLocale()));
+			}
+		} else {
+			throw new RuntimeException(I18NResourceUtil.getInstance().getValue(
+					"xml_result_title_null", httpRequest.getLocale() == null ? Locale.CHINA:httpRequest.getLocale()));
+		}
+		return heads;
+	}
+
+	/**
+	 * 初使化文档结构,创建文档对象
+	 * @param xml 含约规范的xml数据集
+	 * @return 返回文档类型大纲对象
+	 * @throws RuntimeException
+	 */
+	@SuppressWarnings("static-access")
+	private Document initDom(String xml) throws RuntimeException{
+		StringReader read = new StringReader(xml);
+		InputSource source = new InputSource(read);
+		SAXBuilder sb = new SAXBuilder();
+		Document doc;
+		try {
+			doc = sb.build(source);
+		} catch (JDOMException e1) {
+			e1.printStackTrace();
+			throw new RuntimeException(I18NResourceUtil.getInstance().getValue(
+					"jdom_parse_error", httpRequest.getLocale() == null ? Locale.CHINA :httpRequest.getLocale()));
+		} catch (IOException e2) {
+			e2.printStackTrace();
+			throw new RuntimeException(I18NResourceUtil.getInstance().getValue(
+					"jdom_parse_io_error", httpRequest.getLocale() == null ? Locale.CHINA:httpRequest.getLocale()));
+		}
+		return doc;
+	}
+
+	/**
+	 * 生成文件后系统回收资源方法
+	 * @param book Excel文件WritableWorkbook对象
+	 * @param newFile IO文件对象
+	 */
+	@SuppressWarnings("static-access")
+	private void destroy(WritableWorkbook book, File newFile) {
+		if (book != null) {
+			try {
+				book.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}finally{
+				if(newFile != null){	//清除临时文件
+					if(newFile.exists()){
+						if(newFile.delete()){
+							log.info(I18NResourceUtil.getInstance().getValue("excel_file_delete_success", httpRequest.getLocale() == null ? Locale.CHINA:httpRequest.getLocale()));
+						}else{
+							log.info(I18NResourceUtil.getInstance().getValue("excel_file_not_exists", httpRequest.getLocale() == null ? Locale.CHINA:httpRequest.getLocale()));
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	/**
+	 * 
+	 * 方法说明：新建一个空的Excel文件，默认带一个Sheet1表
+	 *
+	 * @param path 新建Excel文件的存储路径
+	 * @return 返回文件对象
+	 */
+	public File createBlankExcel(String path) {
+		WritableWorkbook book = null;
+		File newFile = null;
+		try {
+			newFile = new File(path);
+			book = Workbook.createWorkbook(newFile);
+			book.createSheet("Sheet1", 0);
+			book.write();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (book != null) {
+				try {
+					book.close();
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+			}
+		}
+		return newFile;
+	}
+	
+	
+	/**
+	 * 
+	 * 方法说明：新建一个空的Excel文件，初使化多个Sheet表
+	 *
+	 * @param path 新建Excel文件的存储路径
+	 * @param sheetNames 初使化的sheet表名
+	 * @return 返回文件对象
+	 */
+	public File createExcelFile(String path, String... sheetNames) {
+		WritableWorkbook book = null;
+		File newFile = null;
+		try {
+			newFile = new File(path);
+			book = Workbook.createWorkbook(newFile);
+			for (int i = 0; i < sheetNames.length; i++) {
+				book.createSheet(sheetNames[i], i);
+			}
+			book.write();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (book != null) {
+				try {
+					book.close();
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+			}
+		}
+		return newFile;
+	}
+	
+	
+	/**
+	 * 
+	 * 方法说明：在源文件选择若干sheet表 追加到目标文件里
+	 *
+	 * @param destFile 目标文件
+	 * @param sourceFile 源文件
+	 * @param isOverideSheet 带同名的Sheet表指定是否覆盖
+	 * @param appendSheetNames 要追加的多个sheet表
+	 * @return 追加成功返回真
+	 */
+	public boolean appendSheet(File destFile, File sourceFile, boolean isOverideSheet,String... appendSheetNames) {
+		
+		return false;
+	}
+	
+	
+	/**
+	 * 
+	 * 方法说明：获取Excel单元格的值
+	 * 
+	 * @param file  Excel单元格对象
+	 * @param sheetName 单元格所在的Sheet表
+	 * @param location 单元格坐标
+	 * @return 返回单元格内容对象
+	 */
+	public Object getCellValue (File file, String sheetName ,String location){
+		Workbook book = null;
+		try {
+			book = Workbook.getWorkbook(file);
+			Sheet sheet=book.getSheet(sheetName);
+			return sheet.getCell(location).getContents();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (book != null) {
+				try {
+					book.close();
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+			}
+		}
+		return null;
+	}
+
+
+}

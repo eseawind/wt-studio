@@ -1,0 +1,104 @@
+package com.hirisun.hea.common.infrastructure.messager.impl;
+
+import com.hirisun.hea.common.infrastructure.messager.MessageCallback;
+import com.hirisun.hea.common.infrastructure.messager.MessageIntercept;
+import com.hirisun.hea.common.infrastructure.messager.Messager;
+
+/**
+ * 
+ * <pre>
+ * 业务名:广义的消息操作接口
+ * 功能说明: 定义消息创建、发送常用操作
+ * 编写日期:	2011-3-28
+ * 作者:	袁明敏
+ * 
+ * 历史记录
+ * 1、修改日期：2011-3-28
+ *    修改人：袁明敏
+ *    修改内容：
+ * </pre>
+ */
+public class MessagerImpl implements Messager {
+	
+	/**
+	 * 
+	 * 方法说明：创建空消息
+	 *
+	 * @return 返回消息对象
+	 */
+	public Object createMessage() {
+		
+		return null;
+	}
+
+	/**
+	 * 
+	 * 方法说明：创建某一类型的空消息
+	 *
+	 * @param msgType 消息类型
+	 * @return 跟据类型创建单个消息
+	 */
+	public Object createMessage(Object msgType) {
+		
+		return null;
+	}
+
+	/**
+	 * 
+	 * 方法说明：创建消息体
+	 *
+	 * @return 返回带消息休的消息对象
+	 */
+	public Object createMessageBody() {
+		
+		return null;
+	}
+	
+	/**
+	 * 
+	 * 方法说明：创建消息头
+	 *
+	 * @return 带消息头的消息对象
+	 */
+	public Object createMessageHead() {
+		
+		return null;
+	}
+
+	/**
+	 * 
+	 * 方法说明：发送消息后，客户端回调操作
+	 *
+	 * @param msgCallback 回调接口对象
+	 * @param messages 多个消息数组
+	 * @return 发送成功返回真
+	 */
+	public Boolean sendMessage(MessageCallback msgCallback, Object... messages) {
+		return false;
+	}
+
+	/**
+	 * 
+	 * 方法说明：发送消息前，客户端自定操作
+	 *
+	 * @param msgIntercept 消息发送拦截器接口
+	 * @param messages 多个消息数组
+	 * @return 发送成功返回真
+	 */
+	public  Boolean sendMessage(MessageIntercept msgIntercept, Object ...  messages) {
+		return false;
+	}
+
+	/**
+	 * 
+	 * 方法说明：发送单个消息
+	 *
+	 * @param message 单个消息对象
+	 * @return 返回是否发送成功
+	 */
+	public Boolean sendMessage(Object message) {
+		
+		return false;
+	}
+
+}

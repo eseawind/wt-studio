@@ -1,0 +1,85 @@
+<%@ jet package="com.hirisun.ide.plugin.wizard.projects.model.templates" 
+   imports="java.util.List 
+            com.hirisun.ide.plugin.wizard.projects.dbhelp.ColumeModel
+            com.hirisun.ide.plugin.wizard.projects.model.ModuleModel" class="ModelTemplate" %>
+<%  
+	String tableName = (String)((Object[])argument)[0];
+    ModuleModel moduleModel = (ModuleModel)((Object[])argument)[1];
+    String pkgname = (String)((Object[])argument)[2];
+    String projectName = moduleModel.getProjectName();
+    String modalName = moduleModel.getModalName();
+    List<ColumeModel> elementList = moduleModel.getColumeModels();
+%> 
+/**
+ * Hirisun Corp
+ * 
+ */
+package <%=pkgname%>.model;
+
+import java.io.Serializable;
+import java.util.Date;
+import java.sql.Clob;
+import java.sql.Blob;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
+
+/**
+ * <pre>
+ * 业务名:
+ * 功能说明: 
+ * 编写日期:
+ * 作者:	HEA IDE
+ * 
+ * 历史记录
+ * 1、修改日期：
+ *    修改人：
+ *    修改内容：
+ * </pre>
+ */
+@Entity
+@Table(name = "<%=tableName%>")
+public class <%=modalName%> implements Serializable {  
+<% 
+   for (ColumeModel i: elementList ) {
+%>
+  /**
+    *<%=((ColumeModel)i).getName() == null ? "": ((ColumeModel)i).getName()%>
+    *<%=((ColumeModel)i).getComment() == null ? "": ((ColumeModel)i).getComment()%>
+    *<%=((ColumeModel)i).getValideType() == null ? "": ((ColumeModel)i).getValideType()%>
+    */
+<%
+    if(((ColumeModel)i).getIsKey().equals("1")){
+%>
+  	@Id
+	@GenericGenerator(name = "a", strategy = "uuid")
+	@GeneratedValue(generator = "a")
+	@Column(name = "<%=((ColumeModel)i).getColumeName()%>")
+<%
+   	}else{
+%>
+  	@Column(name = "<%=((ColumeModel)i).getColumeName()%>")
+<%
+   	}
+%>
+    private <%=((ColumeModel)i).getType()%> <%=((ColumeModel)i).getName()%>;
+    
+<% } %>
+<% 
+   for (ColumeModel i: elementList ) {
+%>
+  public <%=((ColumeModel)i).getType()%> <%=((ColumeModel)i).getGetMethodName()%>() {
+    return this.<%=((ColumeModel)i).getName()%>;
+  }
+  
+  public void <%=((ColumeModel)i).getSetMethodName()%>(<%=((ColumeModel)i).getType()%> <%=((ColumeModel)i).getName()%>) {
+    this.<%=((ColumeModel)i).getName()%> = <%=((ColumeModel)i).getName()%>;
+  }
+  
+<% } %>
+}

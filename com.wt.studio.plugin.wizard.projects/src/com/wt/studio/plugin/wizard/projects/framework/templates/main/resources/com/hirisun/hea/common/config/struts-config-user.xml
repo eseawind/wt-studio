@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.2//EN" "http://struts.apache.org/dtds/struts-config_1_2.dtd">
+
+<struts-config>
+  <data-sources />
+  <form-beans >
+
+  </form-beans>
+
+  <global-exceptions />
+  <global-forwards />
+  <action-mappings >
+  
+  </action-mappings>
+	<controller maxFileSize="20M" locale="true">
+		<set-property property="processorClass"
+			value="org.springframework.web.struts.DelegatingRequestProcessor" />
+	</controller>
+  <message-resources parameter="com.hirisun.hea.common.config.ApplicationResources" />
+    <plug-in className="org.springframework.web.struts.ContextLoaderPlugIn">
+		<set-property property="contextConfigLocation"
+			value="classpath:com/hirisun/hea/common/config/applicationContext-action-servlet.xml" />
+	</plug-in>
+</struts-config>
+

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="urlMap">
+            <map>
+                <entry key="/IndexService">
+                    <ref bean="exportUserService"/>
+                </entry>
+            </map>
+        </property>
+    </bean>
+    
+    <bean id="exportUserService" class="org.codehaus.xfire.spring.remoting.XFireExporter">
+        <property name="serviceInterface" value="com.hirisun.hea.rbac.service.IndexService"/>
+        <property name="serviceBean">
+        	<bean class="com.hirisun.hea.rbac.service.impl.IndexServiceImpl"/>
+        </property>
+        <property name="xfire" ref="xfire"/>
+    </bean>
+
+
+</beans>

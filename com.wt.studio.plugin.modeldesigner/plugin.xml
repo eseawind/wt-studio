@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="com.wt.studio.plugin.modeldesigner.editor.BODesignerMultiPageEditor"
+            contributorClass="com.wt.studio.plugin.modeldesigner.editor.BODiagramMultiActionBarContributor"
+            extensions="hdb"
+            icon="icons/Designe.png"
+            id="com.hirisun.ide.plugin.modeldesigner.editor.BODesignerMultiPageEditor"
+            name="ModelDesigner Editor">
+      </editor>
+   </extension>
+    <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="com.wt.studio.plugin.pagedesigner.gef.PageDesignerMutiPageEditor"
+            contributorClass="com.wt.studio.plugin.pagedesigner.gef.PageDiagramActionBarContributor"
+            extensions="hpage"
+            icon="icons/Designe.png"
+            id="com.hirisun.ide.plugin.modeldesigner.gef.PageDesignerEditor"
+            name="PageDesigner Editor">
+      </editor>
+   </extension>
+    <extension
+          point="org.eclipse.ui.newWizards">
+      <category
+            name="Function Designer"
+            id="com.hirisun.ide.plugin.modeldesigner.wizards">
+      </category>
+      <wizard
+            name="Page Designer File"
+            icon="icons/Designe.png"
+            category="com.hirisun.ide.plugin.modeldesigner.wizards"
+            class="com.wt.studio.plugin.pagedesigner.wizards.NewPageDesignerWizard"
+            id="com.hirisun.ide.plugin.pagedesigner.wizards.NewPageDesignerWizard">
+          <description>
+            Create Page Designer File
+          </description>
+      </wizard>
+      <wizard
+            name="DataBase Designer File"
+            icon="icons/model.png"
+            category="com.hirisun.ide.plugin.modeldesigner.wizards"
+            class="com.wt.studio.plugin.modeldesigner.wizards.NewDataDesignerWizard"
+            id="com.hirisun.ide.plugin.modeldesigner.wizards.NewDataDesignerWizard">
+          <description>
+            Create DataBase Designer File
+          </description>
+      </wizard>
+    </extension>
+    <extension
+           point="org.eclipse.ui.popupMenus">
+           <objectContribution adaptable="true" 
+            objectClass="org.eclipse.core.resources.IProject"
+            id="com.hirisun.ide.plugin.modeldesigner.contribution">
+         <action
+               label="Create DB Designer"
+               icon="icons/model.png"
+               class="com.wt.studio.plugin.modeldesigner.actions.CreatedbAction"
+               menubarPath="com.hirisun.ide.plugin.popupmenu/separator"
+               enablesFor="1"
+               id="com.hirisun.ide.plugin.modeldesigner.actions.CreatedbAction">
+         </action>
+      </objectContribution>
+    </extension>
+    
+    
+</plugin>

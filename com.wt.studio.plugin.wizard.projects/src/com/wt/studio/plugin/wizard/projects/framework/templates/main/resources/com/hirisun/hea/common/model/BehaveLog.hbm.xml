@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.hirisun.hea.common.model">
+    <class name="BehaveLog" table="HEA_ACCESSLOG">
+        <id name="logid" type="string" column="LOGID" length="32">
+            <generator class="uuid.hex"/>
+        </id>
+        <property name="useruuid" type="string"  column="USER_UUID"/>
+        <property name="username" type="string" column="USER_NAME"/>
+        <property name="indexuuid" type="string" column="INDEX_UUID" />
+        <property name="indexname" type="string" column="INDEX_NAME" />
+        <property name="accessip" type="string" column="ACCESS_IP"/>
+  		<property name="accesstime" type="string" column="ACCESS_TIME"/>
+  		<property name="remark" type="string" column="REMARK"/>
+  		<property name="accesstype" type="string" column="ACCESS_TYPE"/>
+  		<property name="appId" type="string" column="APP_ID"/>
+  		<property name="appName" type="string" column="APP_NAME"/>
+    </class>
+</hibernate-mapping>

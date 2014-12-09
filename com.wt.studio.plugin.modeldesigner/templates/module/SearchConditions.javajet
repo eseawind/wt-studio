@@ -1,0 +1,33 @@
+<%@ jet package="com.hirisun.ide.plugin.pagedesigner.wizard.templates" class="SearchConditionsTemplate"
+		imports="java.util.List java.io.Serializable 
+		"%>
+<%
+String projectName=(String) argument;
+%>	
+package com.hirisun.<%=projectName%>.model;
+
+import java.util.ArrayList;
+
+/**
+ * 
+ * <pre>
+ * 业务名:
+ * 功能说明: 
+ * 编写日期:	2014-7-30
+ * 作者:	
+ * 
+ * 历史记录
+ * 1、修改日期：
+ *    修改人：
+ *    修改内容：
+ * </pre>
+ */
+@SuppressWarnings("rawtypes")
+public class SearchConditions extends ArrayList<SearchCondition> {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2321355566853325415L;
+
+}

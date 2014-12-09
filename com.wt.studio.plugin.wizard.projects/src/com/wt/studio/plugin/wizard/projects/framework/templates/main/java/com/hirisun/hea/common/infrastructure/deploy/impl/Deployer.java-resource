@@ -1,0 +1,80 @@
+package com.hirisun.hea.common.infrastructure.deploy.impl;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+import com.hirisun.hea.common.infrastructure.deploy.CustomOperation;
+import com.hirisun.hea.common.infrastructure.deploy.Deploy;
+
+/**
+ * 
+ * <pre>
+ * 业务名: 布署接口
+ * 功能说明: 调用ant或maven命令布署应用
+ * 编写日期:	2011-5-13
+ * 作者:	袁明敏
+ * 
+ * 历史记录
+ * 1、修改日期：2011-5-13
+ *    修改人：袁明敏
+ *    修改内容：
+ * </pre>
+ */
+public class Deployer implements Deploy, CustomOperation{
+	
+	/**
+	 * 方法说明：调用系统或其它工具命令进行打包
+	 * @param cmds 系统或其它工具命令参数
+	 * @return 打包成功返回真
+	 */
+	public boolean deploy(String[] cmds) {
+		operat();
+		
+		{
+			InputStream ins = null;
+			BufferedReader reader=null;
+			
+			StringBuffer info=new StringBuffer();
+			try {
+				Process process = Runtime.getRuntime().exec(cmds);
+				ins = process.getInputStream();
+				
+				reader = new BufferedReader(new InputStreamReader(ins,"GBK"));
+				String line = null;
+				while ((line = reader.readLine()) != null) {
+					info.append(line);
+				}
+				int exitValue = process.waitFor();
+				if(exitValue != 0){
+					System.out.println(exitValue);
+				}
+				process.getOutputStream().close();
+				reader.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}finally{
+				if(reader != null){
+					try {
+						reader.close();
+					} catch (IOException e) {
+						
+						e.printStackTrace();
+					}finally{
+						
+					}
+				}
+			}
+			
+			
+			return info.toString().length()>0;
+		}
+	}
+	/**
+	 * 方法说明：打包前自定义操作
+	 */
+	public void operat() {
+		
+	}
+}

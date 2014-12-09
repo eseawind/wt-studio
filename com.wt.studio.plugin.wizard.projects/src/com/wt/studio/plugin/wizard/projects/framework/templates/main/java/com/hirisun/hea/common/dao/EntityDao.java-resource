@@ -1,0 +1,95 @@
+package com.hirisun.hea.common.dao;
+
+import java.io.Serializable;
+import java.util.List;
+
+import com.hirisun.hea.common.model.Page;
+
+/**
+ * 
+ * <pre>
+ * 业务名: 针对单个Entity的操作定义,不依赖于具体ORM实现方案
+ * 所有实体层数据对象持久化访问接口
+ * 功能说明: 
+ * 编写日期:	2011-5-13
+ * 作者:	袁明敏
+ * 
+ * 历史记录
+ * 1、修改日期：2011-5-13
+ *    修改人：袁明敏
+ *    修改内容：
+ * </pre>
+ * @param <E> 模型对象
+ */
+public interface EntityDao<E> {
+	
+	/**
+	 * 删除对象
+	 * @param e 实体模型对象
+	 */
+	void delete(E e);
+	
+	
+	/***
+	 * 根据id删除对象
+	 * @param id 对象标识id
+	 */
+	void deleteById(Serializable id);
+	
+	
+	/**
+	 * 查询所有
+	 * @return 返回所有实体对象列表
+	 */
+	List<E> findAll();
+	
+	
+	/**
+	 * 按照某个属性升或降序，查询所有
+	 * @param property 实体属性名称
+	 * @param isAsc 是否升序
+	 * @return 返回对象列表，以指定的顺序
+	 */
+	List<E> findAll(String property,Boolean isAsc);
+	
+	
+	/**
+	 * 根据id查询对象
+	 * @param id 对象标识id
+	 * @return 对象模型
+	 */
+	E findById(Serializable id);
+
+	
+	/**
+	 * 保存对象
+	 * @param e 保存实体对象
+	 */
+	void save(E e);
+	
+	
+	/**
+	 * 更新实体对象
+	 * @param e 需更新的实体模型
+	 * @return 返回更新后的实体模型
+	 */
+	E update(E e);
+	
+	/**
+	 * 跟据对象属性值，查询对象集合
+	 * @param property 实体对象属性
+	 * @param value 属性值
+	 * @return 返回对象列表
+	 */
+	List<E> findByProperty(String property,Object value);
+	
+	/**
+	 * 通过构造函数初使化页对象必要属性
+	 * 加载页对象所承载的数据
+	 * 
+	 * @param pageModel 初使化的分页对象
+	 * @return 返回带数据的分页对象
+	 */
+	public Page<E> loadPage(Page<E> pageModel);
+
+}

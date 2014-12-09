@@ -1,0 +1,160 @@
+package com.hirisun.hea.common.util;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
+import org.apache.commons.lang.StringUtils;
+
+
+/**
+ * 
+ * <pre>
+ * 业务名:通用日期操作类,提供获取当前时间，格式化时间简易操作
+ * 功能说明: 获取日期或格式化时间简易操作
+ * 编写日期:	2011-5-14
+ * 作者:	袁明敏
+ * 
+ * 历史记录
+ * 1、修改日期：2011-5-14
+ *    修改人：袁明敏
+ *    修改内容：
+ * </pre>
+ */
+public class DateUtil {
+	/**
+	 * 当前日期
+	 */
+	private static Date currentDate;
+	static {
+		currentDate=Calendar.getInstance().getTime();
+	}
+	
+	/**
+	 * 获到当前日期
+	 * @return 返回系统当前日期
+	 */
+	public static Date getCurrDate(){
+		return currentDate;
+	}
+	
+	
+	/**
+	 * 获取当前日期字符串
+	 * @param pattern 日期格式模式
+	 * @return 返回格式化后的当前日期
+	 */
+	public static String getCurrDate(String  pattern){
+		SimpleDateFormat simpleDateFormat=new SimpleDateFormat();
+		if(StringUtils.isEmpty(pattern)){
+			simpleDateFormat.applyPattern("yyyy-MM-dd HH:mm:ss");
+		}else{
+			simpleDateFormat.applyPattern(pattern);
+		}
+		return simpleDateFormat.format(currentDate);
+	}
+	
+	/**
+	 * 格式化日期
+	 * @param date 日期对象
+	 * @param pattern 日期模式
+	 * @return 返回格式化后的日期字符串表示
+	 */
+	public static String format(Date date ,String pattern){
+		SimpleDateFormat simpleDateFormat=new SimpleDateFormat();
+		simpleDateFormat.applyPattern(pattern==null ? "yyyy-MM-dd HH:mm:ss":pattern);
+		return simpleDateFormat.format(date);
+	}
+	
+	/**
+	 *获取当前日期是星期几 ,added by:李丰川
+	 * 
+	 * @return 返回星期几表示
+	 */
+	public static String getWeekDay() {
+
+		Calendar c = Calendar.getInstance();
+		c.setTime(new Date(System.currentTimeMillis()));
+		int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
+		switch (dayOfWeek) {
+		case 1:
+			return "星期日";
+		case 2:
+			return "星期一";
+		case 3:
+			return "星期二";
+		case 4:
+			return "星期三";
+		case 5:
+			return "星期四";
+		case 6:
+			return "星期五";
+		case 7:
+			return "星期六";
+		}
+		return null;
+	}
+	
+	/**
+	 * 
+	 * 方法说明：
+	 * 获取当前月是年的第几季度
+	 * @return
+	 */
+	public static String getQuarter(){
+		Calendar c = Calendar.getInstance();
+		c.setTime(currentDate);
+		int month = c.get(Calendar.MONTH) + 1;
+		switch (month){
+		case 1:
+		case 2:
+		case 3:
+		
+			return "1";
+		case 4:
+		case 5:
+		case 6:
+			return "2";
+		case 7:
+		case 8:
+		case 9:
+			return 3 + "";
+		case 10:
+		case 11:
+		case 12:
+			return 4 + "";
+		}
+		return null;
+	}
+	public   static   int   getWeekOfNow()   
+	  {   
+		Calendar c = Calendar.getInstance();
+		c.setTime(currentDate);
+	    
+	  //今天是这个月的的几天   
+	  int   days   =   c.get(Calendar.DAY_OF_MONTH);   
+	  int   weeks   =   0;   
+	  for(int   i=1;i<=days;i++)   
+	  {   
+	  //返回日期   
+//		  DateTime   dayDate   =   new   DateTime(DateTime.Now.Year,DateTime.Now.Month,i);
+//	  Date   dayDate   = null;  
+	  c.set(c.get(Calendar.YEAR), c.get(Calendar.MONTH), i);   
+	  //如果是星期一就算一周   
+	  if(c.get(Calendar.DAY_OF_WEEK)   ==   1)   
+	  {   
+	  weeks++;   
+	  }   
+	  }   
+	  if(weeks   ==   0)   
+	  {   
+	  weeks++;   
+	  }   
+	  return   weeks;   
+	  }
+	
+	public static void main(String[] args)
+	{
+		System.out.println(getQuarter());
+	}
+}

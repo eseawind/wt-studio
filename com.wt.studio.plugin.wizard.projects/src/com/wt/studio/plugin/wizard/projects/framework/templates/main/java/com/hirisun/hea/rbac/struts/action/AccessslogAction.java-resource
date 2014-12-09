@@ -1,0 +1,62 @@
+package com.hirisun.hea.rbac.struts.action;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+
+import com.hirisun.hea.common.action.DispatchAction;
+import com.hirisun.hea.common.model.BehaveLog;
+import com.hirisun.hea.common.util.DateUtil;
+import com.hirisun.hea.rbac.model.Index;
+import com.hirisun.uum.api.domain.User;
+
+/**
+ * WEB 层，日志对象控制器
+ * @author 袁明敏
+ * @see com.hirisun.hea.common.action.DispatchAction
+ * @see com.hirisun.hea.common.action.BaseDispatchAction
+ * @see com.hirisun.hea.rbac.service.AccesslogService
+ *
+ */
+public class AccessslogAction  extends DispatchAction  {
+	/**
+	 * 用户点击指标的日志,ajax方式
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return ActionForward
+	 * @throws Exception
+	 */
+	public ActionForward addLog(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		String useruuid=request.getParameter("useruuid");  //ajax请求传进的用户主键入参
+		User user=this.rbacService.getUserByUuid(useruuid);
+		
+		String indexuuid=request.getParameter("indexuuid"); //ajax请求传进的指标主键入参
+		Index index=this.indexService.findById(indexuuid);
+		
+		String accessIp=request.getRemoteAddr();
+		String accesstime=DateUtil.getCurrDate("yyyy-MM-dd HH:mm:ss");
+		
+		String accesstype="0";
+		
+		BehaveLog accessLog=new BehaveLog();
+		accessLog.setAccesstype(accesstype);
+		accessLog.setIndexname(index.getIndexname());
+		accessLog.setIndexuuid(index.getIndexuuid());
+		accessLog.setUsername(user.getName());
+		accessLog.setUseruuid(user.getUuid());
+		accessLog.setAccessip(accessIp);
+		accessLog.setAccesstime(accesstime);
+		
+		//this.accesslogService.save(accessLog);
+		
+		
+		return null;
+	}
+}

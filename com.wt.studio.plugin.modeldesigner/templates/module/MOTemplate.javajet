@@ -1,0 +1,73 @@
+<%@ jet package="com.hirisun.ide.plugin.pagedesigner.wizard.templates" class="MOTemplate"
+		imports="java.util.List java.io.Serializable 
+		com.hirisun.ide.plugin.pagedesigner.gef.model.MOFunctionTableModel 
+		com.hirisun.ide.plugin.pagedesigner.utils.TemplateUtils
+		com.hirisun.ide.plugin.pagedesigner.gef.model.FunctionColumnModel
+		com.hirisun.ide.plugin.pagedesigner.gef.model.TableConnection
+		com.hirisun.ide.plugin.pagedesigner.gef.model.TableotoConnection
+		com.hirisun.ide.plugin.pagedesigner.gef.model.TableotnConnection
+		"%>
+<%
+MOFunctionTableModel model=(MOFunctionTableModel) ((List) argument).get(0);
+String projectName=(String) ((List) argument).get(1);
+String tableName=model.getTableName();
+String modelName=model.getTitle();
+String firstUpperModelName=TemplateUtils.toUpperCaseFirstOne(modelName);
+String firstLowerModelName=TemplateUtils.toLowerCaseFirstOne(modelName);
+%>
+package com.hirisun.<%=projectName%>.model;
+import java.io.Serializable;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
+
+/**
+ * <pre>
+ * 业务名:
+ * 功能说明: 
+ * 编写日期:
+ * 作者:	HEA IDE
+ * 
+ * 历史记录
+ * 1、修改日期：
+ *    修改人：
+ *    修改内容：
+ * </pre>
+ */
+@Entity
+@Table(name = "<%=tableName%>")
+public class <%=modelName%> implements Serializable {
+	
+	
+	//生成全局变量
+	@Id
+	@GenericGenerator(name = "a", strategy = "uuid")
+	@GeneratedValue(generator = "a")
+    <%for(FunctionColumnModel column:model.getColumns())
+    {%>
+    /**
+	 * <%=TemplateUtils.toLowerCaseFirstOne(column.getTitle())%> <%=column.getTitle()%>
+	 * 
+	 */
+    @Column(name = "<%=column.getDbColumnName()%>")
+    private <%=column.getDataType()%> <%=TemplateUtils.toLowerCaseFirstOne(column.getTitle())%>;
+    <%}%> 
+    //生成get  set函数
+    <%for(FunctionColumnModel column:model.getColumns())
+    {%>
+    public <%=column.getDataType()%> get<%=TemplateUtils.toUpperCaseFirstOne(column.getTitle())%>()
+    {
+         return this.<%=TemplateUtils.toLowerCaseFirstOne(column.getTitle())%>;
+    }
+    public void set<%=TemplateUtils.toUpperCaseFirstOne(column.getTitle())%>(<%=column.getDataType()%> <%=TemplateUtils.toLowerCaseFirstOne(column.getTitle())%>)
+    {
+         this.<%=TemplateUtils.toLowerCaseFirstOne(column.getTitle())%>=<%=TemplateUtils.toLowerCaseFirstOne(column.getTitle())%>;
+    }
+    <%}%>
+     
+	
+}

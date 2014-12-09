@@ -1,0 +1,43 @@
+package com.hirisun.hea.common.infrastructure.upload;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * 
+ * <pre>
+ * 业务名:文件上下载
+ * 功能说明: 实现文件下传下载功能 
+ * 编写日期:	2011-3-30
+ * 作者:	袁明敏
+ * 
+ * 历史记录
+ * 1、修改日期：2011-3-30
+ *    修改人：袁明敏
+ *    修改内容：
+ * </pre>
+ */
+public interface Upload {
+	
+	/**
+	 * 
+	 * 方法说明：上传文件到指定的路径
+	 *
+	 * @param data 文件的byte数据
+	 * @param path 文件的存储路径
+	 * @return 是否上传成功
+	 */
+	boolean upload(byte[] data, String path);
+	
+	/**
+	 * 
+	 * 方法说明：实现文件下载功能
+	 * 
+	 * @param request 请求对象
+	 * @param response 响应对象
+	 * @param realpath 要下载的文件存储在服务器的上路径(含文件名)
+	 * @param outPutFileName 下载后转出到客户端文件名
+	 * @return 上传成功返回真
+	 */
+	public  boolean downLoad(HttpServletRequest request, HttpServletResponse response,String realpath, String outPutFileName);
+}

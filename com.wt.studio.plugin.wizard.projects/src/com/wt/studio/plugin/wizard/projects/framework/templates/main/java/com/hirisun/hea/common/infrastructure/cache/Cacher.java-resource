@@ -1,0 +1,29 @@
+package com.hirisun.hea.common.infrastructure.cache;
+
+import java.io.File;
+
+/**
+ * 
+ * <pre>
+ * 业务名: 广义的缓存接口定义
+ * 功能说明: 数据缓存接口，有文件级别或内存数据库级别
+ * 编写日期:	2011-3-30
+ * 作者:	袁明敏
+ * 
+ * 历史记录
+ * 1、修改日期：2011-3-30
+ *    修改人：袁明敏
+ *    修改内容：
+ * </pre>
+ */
+public interface Cacher {
+	/**
+	 * 
+	 * 方法说明：跟据请求的url生成一个静态页面文件
+	 *
+	 * @param httpUrlStr 请求的url
+	 * @param path 生成的静态页面存储路径
+	 * @return 返回新生成的文件对象
+	 */
+	File createStaticHtml (String httpUrlStr , String path );
+}

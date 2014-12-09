@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <description name="Hirisun" url="http://localhost:8080/ide">
+      Hirisun Corp
+   </description>
+   <feature url="features/com.hirisun.ide.feature.modeldesigner_1.5.0.201411281628.jar" id="com.hirisun.ide.feature.modeldesigner" version="1.5.0.201411281628">
+      <category name="HEA Studio V1.5.1"/>
+   </feature>
+   <feature url="features/com.hirisun.ide.feature.note_1.0.0.201405210102.jar" id="com.hirisun.ide.feature.note" version="1.0.0.201405210102">
+      <category name="HEA Studio V1.5.1"/>
+   </feature>
+   <feature url="features/com.hirisun.ide.feature.querydesigner_1.5.0.201412051900.jar" id="com.hirisun.ide.feature.querydesigner" version="1.5.0.201412051900">
+      <category name="HEA Studio V1.5.1"/>
+   </feature>
+   <feature url="features/com.hirisun.ide.feature.wizard_1.5.0.201408221758.jar" id="com.hirisun.ide.feature.wizard" version="1.5.0.201408221758">
+      <category name="HEA Studio V1.5.1"/>
+   </feature>
+   <feature url="features/com.hirisun.ide.feature.third_1.2.0.201405210102.jar" id="com.hirisun.ide.feature.third" version="1.2.0.201405210102">
+      <category name="HEA Studio V1.5.1"/>
+   </feature>
+   <feature url="features/com.hirisun.ide.feature.help_1.5.0.201405211815.jar" id="com.hirisun.ide.feature.help" version="1.5.0.201405211815">
+      <category name="HEA Studio V1.5.1"/>
+   </feature>
+   <feature url="features/com.hirisun.ide.feature.ui_1.0.0.201411281644.jar" id="com.hirisun.ide.feature.ui" version="1.0.0.201411281644">
+      <category name="HEA Studio V1.5.1"/>
+   </feature>
+   <category-def name="HEA Studio V1.5.1" label="HEA Studio V1.5.1"/>
+</site>

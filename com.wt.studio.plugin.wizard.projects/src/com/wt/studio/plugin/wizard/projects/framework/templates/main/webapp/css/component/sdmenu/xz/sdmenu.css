@@ -1,0 +1,53 @@
+div.sdmenu {
+	font-family: Arial, sans-serif;
+	font-size: 12px;
+	padding-bottom: 10px;
+}
+div.sdmenu div {
+	background: url(../../../images/component/sdmenu/title.gif) repeat-x;
+	overflow: hidden;
+}
+div.sdmenu div:first-child {
+	background: url(../../../images/component/sdmenu/toptitle.gif) no-repeat;
+}
+div.sdmenu div.collapsed {
+	height: 29px;
+}
+div.sdmenu div span {
+	background:url(../../../../images/theme/blue/xznew/sidebar1.gif) no-repeat top left;
+	width:176px;
+	height:29px;
+	color:#ffffff;
+	font-size:18px;
+	font-weight:600;
+	line-height:29px;
+	text-align:left;
+	padding-left:35px;
+}
+div.sdmenu div.collapsed span {
+	background-image: url(../../../../images/theme/blue/xznew/sidebar2.gif);
+}
+div.sdmenu div label a:link, div.sdmenu div label a:visited{
+background:url(../../../../images/theme/blue/xznew/sidebar3.gif) no-repeat left;
+	display:block;
+	height:auto;
+	line-height:21px;
+	color:#368F7D;
+	font-size:17px;
+	font-weight:600;
+	line-height:28px;
+	text-align:left;
+	padding:0 0 0 25px;
+	margin:2px 0 0 0;
+	text-decoration:none;
+	letter-spacing:0;
+	border-bottom:dotted 1px #FFFFFF;
+}
+div.sdmenu div label a.current {
+	background : #eee;
+}
+
+div.sdmenu div label a:hover {
+	text-decoration:underline;
+	border-bottom:dotted 1px #FFFFFF;
+}

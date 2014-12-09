@@ -1,0 +1,202 @@
+package com.hirisun.hea.rbac.service.impl;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
+
+import com.hirisun.hea.common.infrastructure.configuration.impl.Configurate;
+import com.hirisun.hea.common.infrastructure.logger.Logger;
+import com.hirisun.hea.common.infrastructure.logger.impl.LoggerService;
+import com.hirisun.hea.common.util.MD5;
+import com.hirisun.hea.rbac.service.RBACService;
+import com.hirisun.uum.api.UUM;
+import com.hirisun.uum.api.UUMFactory;
+import com.hirisun.uum.api.domain.Department;
+import com.hirisun.uum.api.domain.Group;
+import com.hirisun.uum.api.domain.User;
+
+/**
+ * @author LiYi createDate 2011-3-21
+ * 
+ */
+public class RBACServiceImpl implements RBACService
+{
+	/**
+	 * 
+	 */
+	protected static String usernameSupper = null;
+	/**
+	 * 
+	 */
+	protected static String passwordSupper = null;
+	static {
+		String propPath = "com/hirisun/hea/common/config/hea_constant.properties";
+		usernameSupper = Configurate.getInstance().getPropValue("username", propPath);
+		passwordSupper = Configurate.getInstance().getPropValue("password", propPath);
+	}
+
+	/**
+	 * log
+	 */
+	private static final Logger LOG = LoggerService.getInstance(RBACServiceImpl.class);
+
+	/**
+	 * 
+	 */
+	private UUM uum = UUMFactory.getUUM();
+
+	public boolean existUserId(String userId)
+	{
+		LOG.info("判断用户是否存在 userId" + userId);
+		User user = uum.user().getByID(userId);
+		if (user != null)
+			return true;
+		else
+			return false;
+	}
+
+	public Department getDepartmentByUUID(String uuid)
+	{
+		LOG.info("获取部门 UUID：" + uuid);
+		return uum.department().get(uuid);
+	}
+
+	public List<Department> getDepartmentChildren(String parentUUID)
+	{
+		LOG.info("获取下级部门 parentUUID:" + parentUUID);
+		return uum.department().getChildren(parentUUID);
+	}
+
+	public List<Group> getDepartmentManagedGroups(Department department)
+	{
+		LOG.info("获取部门的管理组");
+		// return uum.department().
+		return null;
+	}
+
+	public Group getGroupByUuid(String uuid)
+	{
+		LOG.info("获取组 UUID:" + uuid);
+		Group group = null;
+		try {
+			group = uum.group().get(uuid);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			LOG.error("找不到组ID" + uuid);
+		}
+		return group;
+	}
+
+	public List<Group> getGroupsByParentGroup(String uuid)
+	{
+		LOG.info("获取下级组 parentUUID:" + uuid);
+		return uum.group().getChildren(uuid);
+	}
+
+	public User getUserByUserId(String id)
+	{
+		LOG.info("获取用户 ID:" + id);
+		return uum.user().getByID(id);
+	}
+
+	public User getUserByUuid(String uuid)
+	{
+		LOG.info("获取用户UUID：" + uuid);
+		return uum.user().get(uuid);
+	}
+
+	public Department getUserDepartments(User user)
+	{
+		LOG.info("获取用户所在部门");
+		return uum.user().getDepartment(user.getUuid());
+	}
+
+	public List<Group> getUserGroups(User user)
+	{
+		LOG.info("获取用户的关联组");
+		return uum.user().getGroups(user.getUuid());
+	}
+
+	public boolean userValidate(String id, String pwd)
+	{
+		LOG.info("验证用户");
+		return uum.user().verifyPwdById(id, pwd);
+	}
+
+	public List<Group> getAllGroups()
+	{
+		LOG.info("获取所有组");
+		return uum.group().getAll();
+	}
+
+	public boolean isAdmin(User user)
+	{
+		LOG.info("判断用户是不是管理员");
+		if (usernameSupper.equals(user.getId())
+				&& passwordSupper.equals(MD5.md5(user.getPassword())))
+			return true;
+		return false;
+	}
+
+	public List<Group> getManagerGroup(String groupId)
+	{
+		LOG.info("获取可管理的组");
+		return uum.group().getManagedGroup(groupId);
+	}
+
+	public List<Group> getManagerGroups(String[] groupIds)
+	{
+		LOG.info("获取用管理的组");
+		Map<String, Group> groupMap = new HashMap<String, Group>();
+		for (String gid : groupIds) {
+			List<Group> list = uum.group().getManagedGroup(gid);
+			for (Group group : list) {
+				groupMap.put(group.getUuid(), group);
+			}
+		}
+
+		List<Group> groupList = new ArrayList<Group>();
+		/**
+		 * modify by yinhaoqi
+		 * 
+		 */
+		Set<Entry<String, Group>> groupss = groupMap.entrySet();
+		for (Entry<String, Group> entry : groupss) {
+			groupList.add(entry.getValue());
+		}
+		// for(String gid : groupMap.keySet()){
+		// groupList.add(groupMap.get(gid));
+		// }
+		return groupList;
+	}
+
+	public List<Group> getParentGroup(String groupId)
+	{
+		LOG.info("获取父级组");
+		return uum.group().getParents(groupId);
+	}
+
+	public Department getRootDepartment()
+	{
+		LOG.info("获取根级部门");
+		return uum.department().getRoot();
+	}
+
+	public Group getRootGroup()
+	{
+		LOG.info("获取根级组");
+		return uum.group().getRoot();
+	}
+
+	public boolean hasChildGroup(String groupUuid)
+	{
+		List<Group> groupList = uum.group().getChildren(groupUuid);
+		if (groupList != null && groupList.size() > 0)
+			return true;
+		return false;
+	}
+
+}

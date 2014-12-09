@@ -1,0 +1,340 @@
+package com.hirisun.hea.rbac.struts.action;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+import org.hibernate.Hibernate;
+
+import com.hirisun.components.security.lcta.LctaContextHolder;
+import com.hirisun.hea.common.action.DispatchAction;
+import com.hirisun.hea.common.infrastructure.logger.Logger;
+import com.hirisun.hea.common.infrastructure.logger.impl.LoggerService;
+import com.hirisun.hea.common.infrastructure.verify.Verify;
+import com.hirisun.hea.common.infrastructure.verify.impl.Verifier;
+import com.hirisun.hea.common.model.BehaveLog;
+import com.hirisun.hea.common.model.SystemCode;
+import com.hirisun.hea.common.util.DateUtil;
+import com.hirisun.hea.common.util.I18NResourceUtil;
+import com.hirisun.hea.common.util.WebUtil;
+import com.hirisun.hea.rbac.model.Index;
+import com.hirisun.uum.api.UUMFactory;
+import com.hirisun.uum.api.domain.Department;
+import com.hirisun.uum.api.domain.Group;
+import com.hirisun.uum.api.domain.User;
+
+/**
+ * WEB层，用户对象控制器
+ * 
+ * @author 袁明敏
+ * @see com.hirisun.hea.common.action.DispatchAction
+ * @see com.hirisun.hea.common.action.BaseDispatchAction
+ * @see com.hirisun.hea.rbac.service.UserService
+ * 
+ */
+public class UserAction extends DispatchAction
+{
+	/**
+	 * 获取日志实例
+	 */
+	private final Logger logger = LoggerService.getInstance(UserAction.class);
+	/**
+	 * 获取服务器验证实例
+	 */
+	private Verify verify = Verifier.getInstance();
+
+	/**
+	 * 后台管理登陆
+	 * 
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward adminValidateUser(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		String id = request.getParameter("id");
+		String password = request.getParameter("password");
+		Locale locale = request.getLocale();
+		User loginUser = new User();
+		loginUser.setId(id);
+		loginUser.setPassword(password);
+		boolean isAdmin = rbacService.isAdmin(loginUser);
+		request.getSession().setAttribute("consoleIsAdmin", isAdmin);
+		if (isAdmin) {
+			log.info("super user isValidated");
+			loginUser.setName(id);
+			request.getSession().setAttribute("user", loginUser); // 保存用户
+			request.getSession().setAttribute("locale", locale); // 保存用户本地化信息
+			request.getSession().setAttribute("loginGroup", null);// 用户选择使用的登录组
+			return mapping.findForward("adminIndex");
+		} else {
+			boolean isValidated = rbacService.userValidate(id, password);
+			if (isValidated) {
+				User user = rbacService.getUserByUserId(id);
+				if (user != null) {
+					List<Group> groupList = rbacService.getUserGroups(user);
+					if (groupList == null || groupList.size() == 0) {
+						request.setAttribute("message", "用户没有分配权限组!");
+						return mapping.findForward("message");
+					}
+					if (groupList.size() == 1) {// 用户只有一个组
+						request.getSession().setAttribute("loginGroup",
+								new String[] { groupList.get(0).getUuid() });// 用户选择使用的登录组
+					}
+					request.setAttribute("multiGroup", true);
+				}
+				log.info("user isValidated");
+				request.getSession().setAttribute("user", user); // 保存用户
+				request.getSession().setAttribute("locale", locale); // 保存用户本地化信息
+
+				return mapping.findForward("adminIndex");
+			}
+
+		}
+		request.setAttribute("message", "用户名或密码错误!");
+		return mapping.findForward("logoutAdmin");
+	}
+
+	/**
+	 * 获取用户所在组列表
+	 * 
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward userGroup(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		User user = WebUtil.getSessionUser(request);
+		if (user != null) {
+			List<Group> groupList = rbacService.getUserGroups(user);
+			request.setAttribute("groupList", groupList);
+		}
+		return mapping.findForward("chooseGroup");
+	}
+
+	/**
+	 * 多组用户注册选择的登录组
+	 * 
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward regLoginGroup(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		String groupIdsStr = request.getParameter("groupIds");
+		String[] groupIds = groupIdsStr.split(",");
+		request.getSession().setAttribute("loginGroup", groupIds);// 用户选择使用的登录组
+		request.setAttribute("message",
+				"<script type=\"text/javascript\">window.parent.loadConsoleTree()</script>");
+		return mapping.findForward("message");
+	}
+
+	/***
+	 * 前台展现登陆
+	 * 
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward validateUser(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+
+		String id = request.getParameter("id");
+		String password = request.getParameter("password");
+		boolean isValidated = false;
+		if(StringUtils.isEmpty(id)){
+			id = LctaContextHolder.getContext().getUserid();
+			isValidated = rbacService.existUserId(id);
+		}else{
+			isValidated = rbacService.userValidate(id.trim(), password);
+		}
+		if (isValidated) {
+			User user = rbacService.getUserByUserId(id.trim());
+			Department dept = UUMFactory.getUUM().user().getDepartment(user.getUuid());
+			// Department dept = this.rbacService.getUserDepartments(user);
+			request.getSession().setAttribute("user", user);
+			request.getSession().setAttribute("locale", request.getLocale());
+			request.getSession().getServletContext().setAttribute("I18NResource",
+					I18NResourceUtil.getInstance());
+			// 查找关联下级指标
+			List<Group> groupList = rbacService.getUserGroups(user);
+			if (groupList == null || groupList.size() == 0) {
+				request.setAttribute("message", "用户没有分配权限组!");
+				return mapping.findForward("message");
+			}
+			List<String> groupIds = new ArrayList<String>();
+			for (int i = 0; i < groupList.size(); i++) {
+				groupIds.add(groupList.get(i).getUuid());
+			}
+			String[] groupIdsArray = new String[groupIds.size()];
+			request.getSession().setAttribute("louverGroup", groupIds.toArray(groupIdsArray));// 用户选择使用的登录组
+			BehaveLog acclog = new BehaveLog();
+			acclog.setAccessip(WebUtil.getIpAddr(request));
+			acclog.setAccesstime(DateUtil.getCurrDate(null));
+			acclog.setAccesstype("1");
+			acclog.setIndexname(null);
+			acclog.setUsername(user.getName());
+			acclog.setUseruuid(user.getUuid());
+			acclog.setRemark("用户登陆成功" + UserAction.class);
+			logger.saveLog(acclog);
+			String nowDate = DateUtil.getCurrDate("yyyy年MM月dd日") + "&nbsp;" + DateUtil.getWeekDay();
+			request.getSession().setAttribute("nowDate", nowDate);
+			createMenus(request);
+			request.getSession().setAttribute("dept", dept);
+			return mapping.findForward("louverIndex");
+		} else {
+			request.setAttribute("errorInfo", "用户名或密码错误！！");
+			request.setAttribute("message", "用户名或密码错误！！");
+			return mapping.findForward("logoutLouver");
+		}
+	}
+
+	/**
+	 * 方法说明： 获取当前部门
+	 * 
+	 * @return
+	 */
+	protected SystemCode getParentCode(String deptId)
+	{
+		SystemCode sc = new SystemCode();
+		sc.setRegCode("org_no");
+		sc.setParam1(deptId);
+		List<SystemCode> scs = this.systemCodeService.findByExample(sc);
+		if (scs != null && !scs.isEmpty()) {
+			for (SystemCode s : scs) {
+				if (s.getParentId() == null) {
+					return s;
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * 
+	 * 方法说明：创建左侧滑动菜单
+	 * 
+	 * @param request
+	 */
+	private void createMenus(HttpServletRequest request)
+	{
+		List<Group> list = this.rbacService.getUserGroups(WebUtil.getSessionUser(request));
+		List<String> groupIds = new ArrayList<String>();
+		for (Group i : list) {
+			groupIds.add(i.getUuid());
+		}
+		String appId = request.getSession().getServletContext().getInitParameter("appId");
+		List<Index> userResources = this.indexService.findIndexByGroupId(groupIds, 0, appId); // 登陆用户所带的子标权限
+
+		request.setAttribute("userResources", userResources); // 用户所有带权限的子标
+
+		// 获取横向导航结点(第一层)
+		Set<Integer> levels = new HashSet<Integer>();
+		for (Index i : userResources) {
+			levels.add(i.getIndexlevel());
+		}
+		List<Integer> level = new ArrayList<Integer>(levels);
+		Collections.sort(level);
+		Integer rootLevel = -1;
+		if (levels.isEmpty() == false) {
+			rootLevel = level.iterator().next();
+		}
+
+		// 获取横向菜单
+		List<Index> menu = new ArrayList<Index>();
+		for (Index i : userResources) {
+			if (i.getIndexlevel().compareTo(rootLevel) == 0) {
+				Hibernate.initialize(i.getSubIndexes());
+				menu.add(i);
+				// System.out.println("一级菜单 ：" + i.getIndexuuid() + "   " + i.getIndexname());
+			}
+		}
+		request.setAttribute("topMenus", menu);
+	}
+
+	/**
+	 * 系统用户登出,会话消毁 可以传入target参数控制注销后跳转到指定页面（注意是转发）
+	 * 
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward logout(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+			HttpServletResponse response) throws Exception
+	{
+		String targetUrl = request.getParameter("target");
+		HttpSession session = request.getSession();
+		session.removeAttribute("user");
+		session.invalidate();
+		if (verify.isNotEmpty(targetUrl)) {
+			response.sendRedirect(targetUrl);
+			return null;
+		}
+		return mapping.findForward("logoutAdmin");
+	}
+
+	/**
+	 * 系统用户登出,前端会话消毁。
+	 * 
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward logoutLouver(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		request.getSession().removeAttribute("louverGroup");
+		LctaContextHolder.flush(request, response);
+		return mapping.findForward("logoutLouver");
+	}
+
+	/**
+	 * 获取系统设置前端根级指标ID
+	 * 
+	 * @return
+	 */
+	private String getLouverRootIndexId()
+	{
+		SystemCode obj = new SystemCode();
+		obj.setRegCode("louver_root_index");
+		obj.setRegName("louver_root_index");
+		List<SystemCode> list = this.systemCodeService.findByExample(obj);
+		if (list != null && list.size() == 1) {
+			return list.get(0).getRegValue();
+		}
+		return null;
+	}
+}

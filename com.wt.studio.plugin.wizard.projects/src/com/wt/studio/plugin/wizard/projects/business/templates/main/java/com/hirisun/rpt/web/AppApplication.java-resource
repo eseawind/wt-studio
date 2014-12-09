@@ -1,0 +1,29 @@
+package com.hirisun.${projectName}.web;
+
+import org.apache.wicket.Page;
+import org.apache.wicket.protocol.http.WebApplication;
+import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
+public class AppApplication extends WebApplication
+{
+
+	@Override
+	public Class<? extends Page> getHomePage()
+	{
+		return null;
+	}
+
+	@Override
+	protected void init()
+	{
+		getMarkupSettings().setStripWicketTags(true);
+		getMarkupSettings().setDefaultMarkupEncoding("UTF-8");
+		getRequestCycleSettings().setResponseRequestEncoding("UTF-8");
+		getMarkupSettings().setDefaultBeforeDisabledLink("");
+		getMarkupSettings().setDefaultAfterDisabledLink("");
+		getComponentInstantiationListeners().add(new SpringComponentInjector(this));
+	    /* INSERTSOURCE */
+		
+		getApplicationSettings().setUploadProgressUpdatesEnabled(true);
+	}
+
+}

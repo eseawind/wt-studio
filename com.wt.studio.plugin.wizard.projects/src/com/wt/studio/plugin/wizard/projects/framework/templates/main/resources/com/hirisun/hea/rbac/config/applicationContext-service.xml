@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+ 	
+ 	<bean id="heaRbacBaseService" class="com.hirisun.hea.rbac.service.impl.BaseService">
+		<property name="indexDao" ref="heaIndexDao"/>
+	</bean>
+	<bean id="heaIndexService" class="com.hirisun.hea.rbac.service.impl.IndexServiceImpl" parent="heaRbacBaseService">
+		<property name="rbacService" ref="heaRbacService"/>
+	</bean>
+	
+	<bean id="heaRbacService" class="com.hirisun.hea.rbac.service.impl.RBACServiceImpl">
+	</bean>
+	
+</beans>

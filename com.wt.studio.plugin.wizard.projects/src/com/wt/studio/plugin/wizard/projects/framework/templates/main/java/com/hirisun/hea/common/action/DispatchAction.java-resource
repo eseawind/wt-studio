@@ -1,0 +1,134 @@
+package com.hirisun.hea.common.action;
+
+import com.hirisun.hea.common.service.SystemCodeService;
+import com.hirisun.hea.rbac.service.IndexService;
+import com.hirisun.hea.rbac.service.RBACService;
+
+/**
+ * 
+ * Action 层基类
+ * spring容器装配业务对象都注入到此类，所有的Action子类将拥有业务对象，并就可以做相应的业务方法逻辑实现
+ * @author 袁明敏 
+ * @since 1.0
+ * @see #setDepartmentService(DepartmentService)
+ * @see #setGroupService(GroupService)
+ * @see #setIndexService(IndexService)
+ * @see com.hirisun.hea.common.action.BaseDispatchAction
+ * @see org.springframework.web.struts.DispatchActionSupport
+ * 
+ *
+ */
+public class DispatchAction extends BaseDispatchAction{
+
+	
+	
+	/**
+	 * 
+	 */
+	protected SystemCodeService systemCodeService;
+	
+	/**
+	 * 
+	 */
+	protected IndexService indexService;
+
+	/**
+	 * 
+	 */
+	protected RBACService rbacService;
+	/**
+	 * 
+	 */
+	protected String root;
+	/**
+	 * 
+	 */
+	protected String rootGroup;
+	/**
+	 * 
+	 */
+	protected String rootIndex;
+	/**
+	 * 
+	 */
+	protected String rootDepartment;
+	/**
+	 * 
+	 */
+	protected String rootUser;
+	/**
+	 * 
+	 */
+	protected String rootSite;
+	/**
+	 * 
+	 */
+	protected String overall;
+	/**
+	 * 
+	 */
+	protected String personal;
+	/**
+	 * 
+	 */
+	protected String rootmenu ;
+	/**
+	 * 
+	 */
+	protected String rootPath ;
+	/**
+	 * 
+	 */
+	protected String contextPath ;
+	
+	/**
+	 * spring容器注入"指标"业务对象
+	 * @param indexServiceImpl 资源对象
+	 */
+	public void setIndexService(IndexService indexServiceImpl) {
+		this.indexService = indexServiceImpl;
+	}
+	
+	
+	public void setRootSite(String rootSite) {
+		this.rootSite = rootSite;
+	}
+	public void setOverall(String overall) {
+		this.overall = overall;
+	}
+	public void setPersonal(String personal) {
+		this.personal = personal;
+	}
+	public void setRootmenu(String rootmenu) {
+		this.rootmenu = rootmenu;
+	}
+	public void setRootPath(String rootPath) {
+		this.rootPath = rootPath;
+	}
+	public void setContextPath(String contextPath) {
+		this.contextPath = contextPath;
+	}
+	public void setRoot(String root) {
+		this.root = root;
+	}
+	public void setRootGroup(String rootGroup) {
+		this.rootGroup = rootGroup;
+	}
+	public void setRootIndex(String rootIndex) {
+		this.rootIndex = rootIndex;
+	}
+	public void setRootDepartment(String rootDepartment) {
+		this.rootDepartment = rootDepartment;
+	}
+	public void setRootUser(String rootUser) {
+		this.rootUser = rootUser;
+	}
+	public void setRbacService(RBACService rbacService) {
+		this.rbacService = rbacService;
+	}
+	public void setSystemCodeService(SystemCodeService systemCodeService) {
+		this.systemCodeService = systemCodeService;
+	}
+
+	
+}

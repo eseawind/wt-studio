@@ -1,0 +1,92 @@
+<%@ jet package="com.hirisun.ide.plugin.pagedesigner.wizard.templates" class="ServiceInterfaceTemplate"
+		imports="java.util.List java.io.Serializable 
+		com.hirisun.ide.plugin.pagedesigner.gef.model.MOFunctionTableModel 
+		com.hirisun.ide.plugin.pagedesigner.utils.TemplateUtils
+		"%>
+		
+<%
+MOFunctionTableModel model=(MOFunctionTableModel) ((List) argument).get(0);
+String projectName=(String) ((List) argument).get(1);
+String modelName=model.getTitle();
+String firstUpperModelName=TemplateUtils.toUpperCaseFirstOne(modelName);
+String firstLowerModelName=TemplateUtils.toLowerCaseFirstOne(modelName);
+%>
+package com.hirisun.<%=projectName%>.service;
+
+import com.hirisun.<%=projectName%>.model.<%=modelName%>;
+import java.util.List; 
+import java.util.Map;
+
+/**
+ * <pre>
+ * 业务名:
+ * 功能说明: 
+ * 编写日期:
+ * 作者:	HEA IDE
+ * 
+ * 历史记录
+ * 1、修改日期：
+ *    修改人：
+ *    修改内容：
+ * </pre>
+ */
+public interface <%=modelName%>Service
+{
+	/**
+	 * 方法说明：更新
+	 *
+	 * @param o 
+	 * @return <%=modelName%> 对象
+	 */
+	<%=modelName%> update<%=modelName%>(<%=modelName%> o);
+
+	/**
+	 * 方法说明：获取所有
+	 *
+	 * @return List
+	 */
+	List<<%=modelName%>> getAll<%=modelName%>();
+
+	/**
+	 * 方法说明：获取总记录数
+	 *
+	 * @return int
+	 */
+	int getAll<%=modelName%>Count();
+
+	/**
+	 * 方法说明：删除对象
+	 *
+	 * @param o 
+	 */
+	void delete<%=modelName%>(<%=modelName%> o);
+	
+	/**
+	 * 方法说明：查询
+	 *
+	 * @param o 
+	 * @return List<<%=modelName%>>
+	 */
+	public List<<%=modelName%>> findByExample(<%=modelName%> o);
+	
+	/**
+	 * 方法说明：获取满足条件的记录数
+	 *
+	 * @param propertyMap 比较方式
+	 * @param searchMap 查询条件
+	 * @return 记录数
+	 */
+	public int get<%=modelName%>ByMapCount(Map<String, String> propertyMap,
+				Map<String, ?> searchMap);
+	
+	/**
+	 * 方法说明：
+	 *
+	 * @param propertyMap 比较方式
+	 * @param searchMap 查询条件
+	 * @param firstResult 开始记录
+	 * @param maxResults 每页条数
+	 * @return List
+	 */			
+	List<<%=modelName%>> get<%=modelName%>ByMap(Map<String, String> propertyMap, Map<String, ?> searchMap, int firstResult, int maxResults);
+}

@@ -1,0 +1,180 @@
+package com.hirisun.hea.common.infrastructure.dal;
+
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * 
+ * <pre>
+ * 业务名:数据访问对象服务
+ * 功能说明: 提供对数据库的CRUD操作,支持SQL查询，支持HQL查询
+ * 编写日期:	2011-3-29
+ * 作者:	袁明敏
+ * 
+ * 历史记录
+ * 1、修改日期：2011-3-29
+ *    修改人：袁明敏
+ *    修改内容：
+ * </pre>
+ * @param <T> 实体对象泛型参数
+ */
+public interface DataAccess<T> {
+	/**
+	 *
+	 * 方法说明： 添加一个实体对象,持久化入库
+	 *
+	 * @param model 实体模型
+	 * @return 添加成功，返回真
+	 */
+	public Boolean save(T model);
+
+	/**
+	 * 
+	 * 方法说明：更新一个持久化的对象
+	 *
+	 * @param model 实体模型
+	 * @return 返回更新后的模型
+	 */
+	public T update(T model);
+	
+	/**
+	 * 
+	 * 方法说明：查找所有实体
+	 *
+	 * @return 返回所有实体集合
+	 */
+	public List<T> findAll();
+
+	/**
+	 * 
+	 * 方法说明：查找所有实体，按属性名排序
+	 *
+	 * @param properties 排序的属性
+	 * @return 返回所有实体集合
+	 */
+	public List<T> findAll(Map<String, Boolean> properties);
+
+	/**
+	 * 
+	 * 方法说明：跟据对象id，查找某一个对象
+	 *
+	 * @param id 对象标识
+	 * @return 返回对象
+	 */
+	public T findById(Serializable id);
+
+	/**
+	 * 
+	 * 方法说明：跟据id集合批量查找对象
+	 *
+	 * @param ids 实体对象数组
+	 * @return 对象集合
+	 */
+	public List<T> findByIds(Serializable... ids);
+
+	/**
+	 * 按照对象的属性名称查找实体对象列表
+	 * 
+	 * @param property 实体对象的属性名
+	 * @param value 属性值
+	 * @return 返回按属性值匹配的结果集
+	 */
+	public List<T> findByProperty(String property, Object value);
+
+	/**
+	 * 
+	 * 方法说明：跟据属性值，查找唯一记录的对象
+	 *
+	 * @param property 对象属性名称
+	 * @param value 对象属性值
+	 * @return 返回实体对象
+	 */
+	public T findByPropertyUnique(String property, Object value);
+
+	/**
+	 * 
+	 * 方法说明：删除持久化的模型
+	 *
+	 * @param model 实体模型
+	 * @return 删除成功返回真
+	 */
+	public Boolean delete(T model);
+
+	/**
+	 * 
+	 * 方法说明：删除所有对象
+	 *
+	 * @return 删除成功返回真
+	 */
+	public Boolean deleteAll();
+
+	/**
+	 * 
+	 * 方法说明：跟据id删除对象
+	 *
+	 * @param id 对象id
+	 * @return 删除成功，返回真
+	 */
+	public Boolean deleteById(Serializable id);
+
+	/**
+	 * 
+	 * 方法说明：根据id批量删除对象
+	 *
+	 * @param oids 多个对象id数组
+	 * @return 删除成功返回真
+	 */
+	public Boolean deleteByIds(Serializable... oids);
+	
+	/**
+	 * 
+	 * 方法说明：执行标准的HQl语句查询
+	 *
+	 * @param hql hibernate查询语言
+	 * @return 返回数组对象
+	 */
+	public List<Object []> executeHqlQuery(String hql);
+	
+	/**
+	 * 执行带参的Hql语句,executeHqlQuery("from Index as i where i.indexname = ? ",new Object []{"aa"});
+	 * @param hql 标准的hql查询语句,带占位符参数
+	 * @param paramValues 多个参数值
+	 * @return 返回hsq查询语句结果集列表
+	 */
+	public List<Object []> executeHqlQuery(String hql,Object ... paramValues);
+	
+	/**
+	 * 
+	 * 方法说明：执行原生态的更新SQL语句
+	 *
+	 * @param sql 标准SQL语句
+	 * @return 执行成功，返回真
+	 */
+	public Boolean executeSql(String sql);
+	
+	/**
+	 * 执行带参数的更新sql语句,如:executeSql("insert into t_test(filedA,filedB) values(:vls)","vls", new Object []{"aa","bb"});
+	 * @param sql sql语句
+	 * @param uniformedName 统一的命名占位参数
+	 * @param paramValues 参数值
+	 * @return 执行成功，返回真
+	 */
+	public Boolean executeSql(String sql,String uniformedName,Object ... paramValues);
+	
+	/**
+	 * 执行简单原生态sql查询语句
+	 * @param sql  原生sql查询语句
+	 * @return 返回二维结果集
+	 */
+	public List<Object []> executeSqlQuery(String sql);
+	
+
+	/**
+	 * 执行带参数的sql语句,如:executeSqlQuery("select * from tableA where tableA.filedA=:vls and tableA.filedB.filed=:vls ","vls", new Object []{"aa","bb"});
+	 * @param sql 原生sql查询语句
+	 * @param paramValues 统一的命名参数值
+	 * @return 返回二维结果集
+	 */
+	public List<Object []> executeSqlQuery(String sql,Object ... paramValues);
+}

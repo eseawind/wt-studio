@@ -1,0 +1,32 @@
+package com.hirisun.hea.common.infrastructure.parser.excel.impl;
+
+import java.io.File;
+
+/**
+ * 
+ * <pre>
+ * 业务名: Excel数据导入辅助类，该类跟据excel单元格的批注解析excel导入规则，从而导入数据到数据库中
+ * 功能说明: 跟据excel单元格的批注解析excel导入规则，从而导入数据到数据库
+ * 编写日期:	2011-4-1
+ * 作者:	袁明敏
+ * 
+ * 历史记录
+ * 1、修改日期：2011-4-1
+ *    修改人：袁明敏
+ *    修改内容：
+ * </pre>
+ */
+public final class ExlDataImportHelper {
+	
+	/**
+	 * 
+	 * 方法说明：跟据excel单元格的批注解析excel导入规则，导入数据到数据库
+	 *
+	 * @param file excel文件引用对象
+	 * @return 导入成功返回真
+	 */
+	public static boolean importTemplateData(File file){
+		
+		return false;
+	}
+}

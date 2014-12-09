@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="GBK"?>
+<Container>
+<ChartGroup name="columnGroup" displayName="条形图" >
+    <ChartType name="column2DSingle" displayName="垂直条形图" oldDisplayName="单垂直柱状图-2D" chartType="column2DSingle" imgUrl="icons/example/bar14.png">
+	    <property group="General" name="baseType"             isbase="true"  defaultValue="column"/>
+	    <property group="General" name="xaxis"                defaultValue="1"/>
+	    <property group="General" name="xdes"                 defaultValue="1"/>
+	    <property group="General" name="xunit"                defaultValue="1" />
+	    <property group="General" name="yaxis"                defaultValue="1" />
+	    <property group="General" name="ydes"                 defaultValue="1" />
+	    <property group="General" name="yunit"                defaultValue="1" />
+	    <property group="General" name="yaxisnum"             defaultValue="0" />
+	    <property group="General" name="series"               defaultValue="0"/>
+	    <property group="General" name="seriesdes"            defaultValue="0"/>
+	    <property group="General" name="stack"                defaultValue="0"/>
+	    <property group="General" name="stackdes"             defaultValue="0"/>
+    </ChartType>
+    <ChartType name="column2DGroup" displayName="对比垂直柱状图-2D"   chartType="column2DGroup" imgUrl="icons/example/bar4.png">
+	    <property group="General" name="baseType"             isbase="true"   defaultValue="column"/>
+	    <property group="General" name="xaxis"                defaultValue="1"/>
+	    <property group="General" name="xdes"                 defaultValue="1"/>
+	    <property group="General" name="xunit"                defaultValue="1" />
+	    <property group="General" name="yaxis"                defaultValue="1" />
+	    <property group="General" name="ydes"                 defaultValue="1" />
+	    <property group="General" name="yunit"                defaultValue="1" />
+	    <property group="General" name="yaxisnum"             defaultValue="0" />
+	    <property group="General" name="series"               defaultValue="1"/>
+	    <property group="General" name="seriesdes"            defaultValue="1"/>
+	    <property group="General" name="stack"                defaultValue="0"/>
+	    <property group="General" name="stackdes"             defaultValue="0"/>
+   </ChartType>
+</ChartGroup>
+<ChartGroup name="pieGroup" displayName="饼状图">
+    <ChartType name="pie2DBasic" displayName="饼图"  oldDisplayName="饼图-2D" chartType="pie2DBasic" imgUrl="icons/example/bar1.png">
+	    <property group="General" name="baseType"             isbase="true"   defaultValue="pie"/>
+	    <property group="General" name="xaxis"                defaultValue="1"/>
+	    <property group="General" name="xdes"                 defaultValue="1"/>
+	    <property group="General" name="xunit"                defaultValue="1" />
+	    <property group="General" name="yaxis"                defaultValue="1" />
+	    <property group="General" name="ydes"                 defaultValue="1" />
+	    <property group="General" name="yunit"                defaultValue="1" />
+	    <property group="General" name="yaxisnum"             defaultValue="0" />
+	    <property group="General" name="series"               defaultValue="0"/>
+	    <property group="General" name="seriesdes"            defaultValue="0"/>
+	    <property group="General" name="stack"                defaultValue="0"/>
+	    <property group="General" name="stackdes"             defaultValue="0"/>
+    </ChartType>
+    <ChartType name="pie2DDonut" displayName="环形图-2D" chartType="pie2DDonut" imgUrl="icons/example/chord1.png">
+	    <property group="General" name="baseType"             isbase="true"   defaultValue="pie"/>
+	    <property group="General" name="xaxis"                defaultValue="1"/>
+	    <property group="General" name="xdes"                 defaultValue="1"/>
+	    <property group="General" name="xunit"                defaultValue="1" />
+	    <property group="General" name="yaxis"                defaultValue="1" />
+	    <property group="General" name="ydes"                 defaultValue="1" />
+	    <property group="General" name="yunit"                defaultValue="1" />
+	    <property group="General" name="yaxisnum"             defaultValue="0" />
+	    <property group="General" name="series"               defaultValue="0"/>
+	    <property group="General" name="seriesdes"            defaultValue="0"/>
+	    <property group="General" name="stack"                defaultValue="0"/>
+	    <property group="General" name="stackdes"             defaultValue="0"/>
+    </ChartType>
+    <ChartType name="MasterDetail2D" displayName="汇总明细图-2D" chartType="MasterDetail2D" imgUrl="icons/example/k1.png">
+	    <property group="General" name="baseType"             isbase="false"   defaultValue="line"/>
+	    <property group="General" name="xaxis"                defaultValue="1"/>
+	    <property group="General" name="xdes"                 defaultValue="1"/>
+	    <property group="General" name="xunit"                defaultValue="1" />
+	    <property group="General" name="yaxis"                defaultValue="1" />
+	    <property group="General" name="ydes"                 defaultValue="1" />
+	    <property group="General" name="yunit"                defaultValue="1" />
+	    <property group="General" name="yaxisnum"             defaultValue="1" />
+	    <property group="General" name="series"               defaultValue="0"/>
+	    <property group="General" name="seriesdes"            defaultValue="0"/>
+	    <property group="General" name="stack"                defaultValue="0"/>
+	    <property group="General" name="stackdes"             defaultValue="0"/>
+    </ChartType>
+
+    <ChartType name="randomCombination2D" displayName="任意组合-2D" chartType="randomCombination2D" imgUrl="icons/example/line1.png">
+	    <property group="General" name="baseType"             isbase="false"   defaultValue="column"/>
+	    <property group="General" name="xaxis"                defaultValue="1"/>
+	    <property group="General" name="xdes"                 defaultValue="1"/>
+	    <property group="General" name="xunit"                defaultValue="1" />
+	    <property group="General" name="yaxis"                defaultValue="1" />
+	    <property group="General" name="ydes"                 defaultValue="1" />
+	    <property group="General" name="yunit"                defaultValue="1" />
+	    <property group="General" name="yaxisnum"             defaultValue="1" />
+	    <property group="General" name="series"               defaultValue="1"/>
+	    <property group="General" name="seriesdes"            defaultValue="1"/>
+	    <property group="General" name="stack"                defaultValue="1"/>
+	    <property group="General" name="stackdes"             defaultValue="1"/>
+    </ChartType>
+</ChartGroup>
+</Container>

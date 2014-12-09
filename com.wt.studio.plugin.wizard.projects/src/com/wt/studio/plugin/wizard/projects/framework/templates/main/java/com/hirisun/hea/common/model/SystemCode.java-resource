@@ -1,0 +1,293 @@
+package com.hirisun.hea.common.model;
+
+import java.util.HashSet;
+import java.util.Set;
+
+/**
+ * 
+ * <pre>
+ * 业务名:
+ * 功能说明: 系统常量bean
+ * 编写日期:	2011-5-26
+ * 作者:	yuanmingmin
+ * 
+ * 历史记录
+ * 1、修改日期：
+ *    修改人：
+ *    修改内容：
+ * </pre>
+ */
+@SuppressWarnings("serial")
+public class SystemCode implements java.io.Serializable
+{
+
+	/**
+	 * 
+	 */
+	private String id;
+	/**
+	 * 
+	 */
+	private String regCode;
+	/**
+	 * 
+	 */
+	private String regType;
+	/**
+	 * 
+	 */
+	private String regName;
+	/**
+	 * 
+	 */
+	private String regDesc;
+	/**
+	 * 
+	 */
+	private String regProp;
+	/**
+	 * 
+	 */
+	private Integer regOrder;
+	/**
+	 * 
+	 */
+	private String regValue;
+	/**
+	 * 
+	 */
+	private String parentId;
+	/**
+	 * 
+	 */
+	private Integer indexLevel;
+	/**
+	 * 
+	 */
+	private Integer haschild;
+	/**
+	 * 
+	 */
+	private String levelCode;
+
+	/**
+	 * 
+	 */
+	private String param1;
+	/**
+	 * 
+	 */
+	private String param2;
+	/**
+	 * 
+	 */
+	private String param3;
+	/**
+	 * 
+	 */
+	private String param4;
+	/**
+	 * 
+	 */
+	private String param5;
+
+	/**
+	 * 
+	 */
+	private SystemCode parentSystemCode;
+	/**
+	 * 
+	 */
+	private Set<SystemCode> subSystemCodes = new HashSet<SystemCode>();
+
+	public String getRegCode()
+	{
+		return regCode;
+	}
+
+	public void setRegCode(String regCode)
+	{
+		this.regCode = regCode;
+	}
+
+	public String getRegType()
+	{
+		return regType;
+	}
+
+	public void setRegType(String regType)
+	{
+		this.regType = regType;
+	}
+
+	public String getRegName()
+	{
+		return regName;
+	}
+
+	public void setRegName(String regName)
+	{
+		this.regName = regName;
+	}
+
+	public String getRegDesc()
+	{
+		return regDesc;
+	}
+
+	public void setRegDesc(String regDesc)
+	{
+		this.regDesc = regDesc;
+	}
+
+	public String getRegProp()
+	{
+		return regProp;
+	}
+
+	public void setRegProp(String regProp)
+	{
+		this.regProp = regProp;
+	}
+
+	public Integer getRegOrder()
+	{
+		return regOrder;
+	}
+
+	public void setRegOrder(Integer regOrder)
+	{
+		this.regOrder = regOrder;
+	}
+
+	public String getRegValue()
+	{
+		return regValue;
+	}
+
+	public void setRegValue(String regValue)
+	{
+		this.regValue = regValue;
+	}
+
+	public String getId()
+	{
+		return id;
+	}
+
+	public void setId(String id)
+	{
+		this.id = id;
+	}
+
+	public String getParentId()
+	{
+		return parentId;
+	}
+
+	public void setParentId(String parentId)
+	{
+		this.parentId = parentId;
+	}
+
+	public Integer getIndexLevel()
+	{
+		return indexLevel;
+	}
+
+	public void setIndexLevel(Integer indexLevel)
+	{
+		this.indexLevel = indexLevel;
+	}
+
+	public Integer getHaschild()
+	{
+		return haschild;
+	}
+
+	public void setHaschild(Integer haschild)
+	{
+		this.haschild = haschild;
+	}
+
+	public SystemCode getParentSystemCode()
+	{
+		return parentSystemCode;
+	}
+
+	public void setParentSystemCode(SystemCode parentSystemCode)
+	{
+		this.parentSystemCode = parentSystemCode;
+	}
+
+	public Set<SystemCode> getSubSystemCodes()
+	{
+		return subSystemCodes;
+	}
+
+	public void setSubSystemCodes(Set<SystemCode> subSystemCodes)
+	{
+		this.subSystemCodes = subSystemCodes;
+	}
+
+	public String getLevelCode()
+	{
+		return levelCode;
+	}
+
+	public void setLevelCode(String levelCode)
+	{
+		this.levelCode = levelCode;
+	}
+
+	public String getParam1()
+	{
+		return param1;
+	}
+
+	public void setParam1(String param1)
+	{
+		this.param1 = param1;
+	}
+
+	public String getParam2()
+	{
+		return param2;
+	}
+
+	public void setParam2(String param2)
+	{
+		this.param2 = param2;
+	}
+
+	public String getParam3()
+	{
+		return param3;
+	}
+
+	public void setParam3(String param3)
+	{
+		this.param3 = param3;
+	}
+
+	public String getParam4()
+	{
+		return param4;
+	}
+
+	public void setParam4(String param4)
+	{
+		this.param4 = param4;
+	}
+
+	public String getParam5()
+	{
+		return param5;
+	}
+
+	public void setParam5(String param5)
+	{
+		this.param5 = param5;
+	}
+
+}

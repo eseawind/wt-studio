@@ -1,0 +1,27 @@
+package com.hirisun.hea.common.infrastructure.deploy;
+
+/**
+ * 
+ * <pre>
+ * 业务名: 应用系统布署接口
+ * 功能说明: 调用服务器布署命令，可以是cmd或shell命令
+ * 编写日期:	2011-4-13
+ * 作者:	袁明敏
+ * 
+ * 历史记录
+ * 1、修改日期：2011-4-13
+ *    修改人：袁明敏
+ *    修改内容：
+ * </pre>
+ */
+public interface Deploy {
+	
+	/**
+	 * 
+	 * 方法说明：调用系统布署命令
+	 *
+	 * @param cmds 布署命令参数
+	 * @return 布署成功，添加返回值
+	 */
+	boolean deploy (String cmds[]);
+}

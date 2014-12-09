@@ -1,0 +1,14 @@
+package com.hirisun.hea.rbac.struts.action;
+
+
+import com.hirisun.hea.common.action.DispatchAction;
+
+/**
+ * 所有RBAC接口类注入此基类
+ * @author 袁明敏
+ *
+ */
+public abstract class BaseAction extends DispatchAction{
+	
+
+}

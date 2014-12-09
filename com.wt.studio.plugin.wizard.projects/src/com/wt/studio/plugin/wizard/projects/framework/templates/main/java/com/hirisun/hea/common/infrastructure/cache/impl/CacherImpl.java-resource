@@ -1,0 +1,166 @@
+package com.hirisun.hea.common.infrastructure.cache.impl;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+import com.hirisun.hea.common.infrastructure.cache.Cacher;
+/**
+ * @param <K> 缓存键对象
+ * @param <V> 缓存值对象
+ * 
+ * <pre>
+ * 业务名: 广义的缓存接口定义
+ * 功能说明: 数据缓存接口，有文件级别或内存数据库级别
+ * 编写日期:	2011-3-30
+ * 作者:	袁明敏
+ * 
+ * 历史记录
+ * 1、修改日期：2011-3-30
+ *    修改人：袁明敏
+ *    修改内容：
+ * </pre>
+ */
+public final class CacherImpl<K,V> implements Cacher{
+	/**
+	 * 
+	 */
+	private final Lock lock = new ReentrantLock();
+	
+	/**
+	 * 
+	 */
+	private final int maxCapacity;
+	
+	/**
+	 * 
+	 */
+	private final Map<K, V> eden;
+	
+	/**
+	 * 
+	 */
+	private final Map<K, V> longterm;
+	
+	/**
+	 * 
+	 * @param maxCapacity 初使化容量
+	 */
+	public CacherImpl(int maxCapacity){
+		this.maxCapacity = maxCapacity;
+		this.eden = new ConcurrentHashMap<K,V>(maxCapacity); 
+		this.longterm = new WeakHashMap<K,V>(maxCapacity);
+
+	}
+	
+	/**
+	 * 
+	 * 方法说明：获取缓存对象 
+	 *
+	 * @param k 缓存对象键值
+	 * @return 返回缓存对象实例 
+	 */
+	public V get(K k) {
+		V v = this.eden.get(k);
+		if (v == null) {
+			lock.lock();
+			try {
+				v = this.longterm.get(k);
+			} finally {
+				lock.unlock();
+			}
+			if (v != null) {
+				this.eden.put(k, v);
+			}
+		}
+		return v;
+	}
+	
+	/**
+	 * 
+	 * 方法说明：存储缓存对象
+	 *
+	 * @param k 缓存对象唯一键值
+	 * @param v 缓存体实对象
+	 */
+	public void put(K k, V v) {
+		if (this.eden.size() >= maxCapacity) {
+			lock.lock();
+			try {
+				this.longterm.putAll(this.eden);
+			} finally {
+				lock.unlock();
+			}
+			this.eden.clear();
+		}
+		this.eden.put(k, v);
+	}
+
+
+	
+	/**
+	 * 
+	 * 方法说明：跟据请求的url生成一个静态页面文件
+	 *
+	 * @param httpUrlStr 请求的url
+	 * @param path 生成的静态页面存储路径(含文件名)
+	 * @return 返回新生成的文件对象
+	 */
+	public File createStaticHtml (String httpUrlStr , String path ){
+		InputStream in = null;
+		OutputStream out = null;
+		try {
+			URL url = new URL(httpUrlStr);
+			in = url.openStream();
+			out = new FileOutputStream(path);
+
+			byte[] buffer = new byte[in.available()];
+			int read;
+			while ((read = in.read(buffer)) != -1) {
+				out.write(buffer, 0, read);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			destroy(in, out);
+		}
+		return new File(path);
+	}
+	
+	/**
+	 * 
+	 * 方法说明：回收系统输入、输出资源
+	 *
+	 * @param in 输入流对象
+	 * @param out 输出流对象
+	 */
+	private void destroy(InputStream in, OutputStream out){
+		try {
+			if (in != null) {
+				in.close();
+			}
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		} finally {
+			if (out != null) {
+				try {
+					out.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	
+	
+
+}

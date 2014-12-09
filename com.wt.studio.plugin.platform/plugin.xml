@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+     <page
+            class="com.wt.studio.plugin.platform.preferences.HeaWorkShopStudioToolsPage"
+            id="com.hirisun.ide.plugin.platform.preferences.HeaWorkShopStudioToolsPage"
+            name="HEA Studio">
+      </page>
+        <page
+            category="com.hirisun.ide.plugin.platform.preferences.HeaWorkShopStudioToolsPage"
+            class="com.wt.studio.plugin.platform.preferences.UserPreferencePage"
+            id="com.hirisun.ide.plugin.platform.preferences.UserPreferencePage"
+            name="账户设置">
+      </page>
+      <page
+            category="com.hirisun.ide.plugin.platform.preferences.HeaWorkShopStudioToolsPage"
+            class="com.wt.studio.plugin.platform.preferences.UumPreferencePage"
+            id="com.hirisun.ide.plugin.platform.preferences.UumPreferencePage"
+            name="UUM设置">
+      </page>
+      <page
+            category="com.hirisun.ide.plugin.platform.preferences.HeaWorkShopStudioToolsPage"
+            class="com.wt.studio.plugin.platform.preferences.DbPreferencePage"
+            id="com.hirisun.ide.plugin.platform.preferences.DbPreferencePage"
+            name="数据源设置">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="com.wt.studio.plugin.platform.preferences.PreferenceInitializer">
+      </initializer>
+      <initializer
+            class="com.wt.studio.plugin.platform.p2.PreferenceInitializer">
+      </initializer>      
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="com.wt.studio.plugin.platform.perspective.DevPerspective"
+            icon="icons/devPer.gif"
+            id="com.hirisun.ide.plugin.platform.perspective.DevPerspective"
+            name="HEA Studio"
+            visible="true">
+      </perspective>
+      <perspective
+            class="com.wt.studio.plugin.platform.perspective.DebugPerspective"
+            icon="icons/dbgPer.ico"
+            id="com.hirisun.ide.plugin.platform.perspective.DebugPerspective"
+            name="HEA Debug">
+      </perspective>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.encodings">
+      <encoding name="uft-8"></encoding>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.startup">
+      <startup class="com.wt.studio.plugin.platform.startup.StudioStartup"></startup>
+   </extension>
+
+   
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution adaptable="true" 
+            objectClass="org.eclipse.core.resources.IProject"
+            id="com.hirisun.ide.plugin.platform.contribution">
+         <menu label="HEA Studio" path="group.new" id="com.hirisun.ide.plugin.popupmenu">
+            <separator name="separator">
+            </separator>
+         </menu>
+         <action
+               label="HEA Export Tools"
+               icon="icons/exportWar.gif"
+               class="com.wt.studio.plugin.platform.actions.ExportWarAction"
+               menubarPath="com.hirisun.ide.plugin.popupmenu/separator"
+               enablesFor="1"
+               id="com.hirisun.ide.plugin.platform.actions.ExportWarAction">
+         </action>
+		 <action
+               label="Update Libs Tools"
+               icon="icons/exportWar.gif"
+               class="com.wt.studio.plugin.platform.actions.UpdateLibsAction"
+               menubarPath="com.hirisun.ide.plugin.popupmenu/separator"
+               enablesFor="1"
+               id="com.hirisun.ide.plugin.platform.actions.UpdateLibsAction">
+         </action>         
+      </objectContribution>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="com.hirisun.ide.plugin.platform.actionSet"
+            label="HEA Studio Platform"
+            visible="true">
+         <menu
+               id="heaStudioToolBar"
+               label="HEA Studio">
+            <separator
+                  name="PlatTools">
+            </separator>
+            <separator
+                  name="BTools">                 
+            </separator>
+         </menu>
+         <action
+               class="com.wt.studio.plugin.platform.actions.ReportBugAction"
+               id="com.hirisun.ide.plugin.platform.actions.ReportBugAction"
+               icon="icons/reportBug.png"
+               menubarPath="heaStudioToolBar/PlatTools"
+               label="Report Bug HEA Studio">
+         </action>
+
+         <action
+               class="com.wt.studio.plugin.platform.actions.HEAStudioInstallAction"
+               id="com.hirisun.ide.plugin.platform.actions.HEAStudioInstallAction"
+               icon="icons/update.ico"
+               menubarPath="heaStudioToolBar/PlatTools"
+               label="Install(Update) HEA Studio">
+         </action>         
+      </actionSet>
+   </extension>
+</plugin>

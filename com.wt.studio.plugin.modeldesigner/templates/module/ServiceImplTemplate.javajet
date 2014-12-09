@@ -1,0 +1,82 @@
+<%@ jet package="com.hirisun.ide.plugin.pagedesigner.wizard.templates" class="ServiceImplTemplate"
+		imports="java.util.List java.io.Serializable 
+		com.hirisun.ide.plugin.pagedesigner.gef.model.MOFunctionTableModel 
+		com.hirisun.ide.plugin.pagedesigner.utils.TemplateUtils
+		"%>
+		
+<%
+MOFunctionTableModel model=(MOFunctionTableModel) ((List) argument).get(0);
+String projectName=(String) ((List) argument).get(1);
+String modelName=model.getTitle();
+String firstUpperModelName=TemplateUtils.toUpperCaseFirstOne(modelName);
+String firstLowerModelName=TemplateUtils.toLowerCaseFirstOne(modelName);
+%>
+package com.hirisun.<%=projectName%>.service.impl;
+
+import com.hirisun.<%=projectName%>.dao.<%=modelName%>Dao;
+import com.hirisun.<%=projectName%>.model.<%=modelName%>;
+import com.hirisun.<%=projectName%>.service.<%=modelName%>Service;
+import java.util.List; 
+import java.util.Map;
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+
+/**
+ * <pre>
+ * 业务名:
+ * 功能说明: 
+ * 编写日期:
+ * 作者:	HEA IDE
+ * 
+ * 历史记录
+ * 1、修改日期：
+ *    修改人：
+ *    修改内容：
+ * </pre>
+ */
+@Service(value = "<%=modelName%>Service")
+@Transactional
+public class <%=modelName%>ServiceImpl implements <%=modelName%>Service
+{
+
+    @Resource
+	private <%=modelName%>Dao dao;
+	public List<<%=modelName%>> getAll<%=modelName%>()
+	{
+		List<<%=modelName%>> allList = dao.findAll();
+
+		return allList;
+	}
+
+	public int getAll<%=modelName%>Count()
+	{
+
+		return dao.findAll().size();
+	}
+
+	public <%=modelName%> update<%=modelName%>(<%=modelName%> o)
+	{
+		return dao.update(o);
+	}
+
+	public void delete<%=modelName%>(<%=modelName%> o)
+	{
+		dao.delete(o);
+	}
+
+	public List<<%=modelName%>> findByExample(<%=modelName%> o){
+		return dao.findByExample(o);
+	}
+	
+	public List<<%=modelName%>> get<%=modelName%>ByMap(Map<String, String> propertyMap, Map<String, ?> searchMap, int firstResult, int maxResults){
+		return dao.getEntitiesByMap(propertyMap, null, searchMap, firstResult, maxResults);
+	}
+
+	public int get<%=modelName%>ByMapCount(Map<String, String> propertyMap,
+			Map<String, ?> searchMap){
+			return dao.getEntitiesCountByMap(propertyMap, searchMap);
+	}
+}

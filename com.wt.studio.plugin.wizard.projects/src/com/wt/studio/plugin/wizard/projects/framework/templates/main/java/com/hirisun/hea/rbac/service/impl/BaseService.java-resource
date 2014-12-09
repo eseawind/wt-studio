@@ -1,0 +1,29 @@
+package com.hirisun.hea.rbac.service.impl;
+
+import com.hirisun.hea.rbac.dao.IndexDao;
+
+/**
+ * 所有业务类须继承的基类 所有数据访问对象将注入到的业务基类
+ * 
+ * @author 袁明敏
+ * 
+ */
+public class BaseService
+{
+	/**
+	 * 
+	 */
+	protected IndexDao indexDao;
+
+	/**
+	 * 注入indexDaoImpl数据访问对象
+	 * 
+	 * @param indexDaoImpl
+	 *            indexDao
+	 */
+	public void setIndexDao(IndexDao indexDaoImpl)
+	{
+		this.indexDao = indexDaoImpl;
+	}
+
+}

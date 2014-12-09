@@ -1,0 +1,88 @@
+package com.hirisun.hea.common.dao.impl;
+
+
+
+import java.io.Serializable;
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.hirisun.hea.common.model.SystemCode;
+import com.hirisun.hea.common.dao.SystemCodeDao;
+
+/**
+ * 应用系统全局常量DAO
+ * @author 袁明敏
+ *
+ */
+public class SystemCodeDaoImpl extends  BaseDao<SystemCode> implements SystemCodeDao  {
+    /**
+     * 获取日志对象
+     */
+	private static final Log LOG = LogFactory.getLog(SystemCodeDaoImpl.class);
+
+	@Override
+    public void save(SystemCode systemCode) {
+        LOG.debug("saving SystemCode instance");
+        try {
+        	super.save(systemCode);
+            LOG.debug("save successful");
+        } catch (RuntimeException re) {
+            LOG.error("save failed", re);
+            throw re;
+        }
+    }
+    
+	@Override
+	public void delete(SystemCode systemCode) {
+        LOG.debug("deleting SystemCode instance");
+        try {
+            super.delete(systemCode);
+            LOG.debug("delete successful");
+        } catch (RuntimeException re) {
+            LOG.error("delete failed", re);
+            throw re;
+        }
+    }
+    
+	@Override
+    public SystemCode findById(Serializable id) {
+        LOG.debug("getting SystemCode instance with id: " + id);
+        try {
+           return (SystemCode) super.findById(id);
+        } catch (RuntimeException re) {
+            LOG.error("get failed", re);
+            throw re;
+        }
+    }
+    
+	@Override
+	public List<SystemCode> findAll() {
+		LOG.debug("finding all SystemCode instances");
+		try {
+			 
+	         return super.findAll();
+		} catch (RuntimeException re) {
+			LOG.error("find all failed", re);
+			throw re;
+		}
+	}
+	
+	@Override
+    public SystemCode update(SystemCode systemCode) {
+        LOG.debug("merging SystemCode instance");
+        try {
+            SystemCode result = super.update(systemCode);
+            LOG.debug("merge successful");
+            return result;
+        } catch (RuntimeException re) {
+            LOG.error("merge failed", re);
+            throw re;
+        }
+    }
+	@Override
+    public List<SystemCode> findByExample(SystemCode obj) {
+    	return super.findByExample(obj);
+    }
+}

@@ -1,0 +1,1010 @@
+package com.hirisun.hea.rbac.struts.action;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import net.sf.json.JSONArray;
+
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+
+import com.hirisun.hea.common.dao.support.ContextHolder;
+import com.hirisun.hea.common.dao.support.DataSourceMap;
+import com.hirisun.hea.common.util.WebUtil;
+import com.hirisun.hea.rbac.model.GroupExtends;
+import com.hirisun.hea.rbac.model.Index;
+import com.hirisun.hea.rbac.struts.form.IndexForm;
+import com.hirisun.hea.rbac.util.RbacUtil;
+import com.hirisun.uum.api.domain.Group;
+import com.hirisun.uum.api.domain.User;
+
+/**
+ * 
+ * <pre>
+ * 业务名:WEB层，指标对象控制器
+ * 功能说明: 
+ * 编写日期:	2011-3-29
+ * 作者:	LiYi
+ * 
+ * 历史记录
+ * 1、修改日期：
+ *    修改人：
+ *    修改内容：
+ * </pre>
+ */
+public class IndexAction extends BaseAction
+{
+	/**
+	 * 
+	 * 方法说明：初使化树结构第一层结点,管理页面左侧系统树初始化
+	 */
+	public ActionForward initTree(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		User user = WebUtil.getSessionUser(request);
+		List<Index> indexList = null;
+		String[] loginGroupIds = WebUtil.getSessionLoginGroupId(request);
+		int indexType = Integer.parseInt(request.getParameter("indexType").toString());
+		boolean isAdmin = rbacService.isAdmin(user);
+
+		if (isAdmin) {
+			indexList = indexService.findAll(indexType);
+		} else {
+			List<String> groupIdList = new ArrayList<String>();
+			String[] groupIds = WebUtil.getSessionLoginGroupId(request);
+			for (String gid : groupIds) {
+				groupIdList.add(gid);
+			}
+			indexList = indexService.findIndexByGroupID(groupIdList, indexType);
+		}
+		// 用户没有可管理的指标
+		if (indexList.size() == 0) {
+			request.setAttribute("xml", "<tree id=\"0\"></tree>");
+			return mapping.findForward("tree_xmlData");
+		}
+		Index rootIndex = null;
+		List<Index> childIndexList = new ArrayList<Index>();
+		if (isAdmin) {
+			rootIndex = indexService.findRootIndex(indexType);
+			childIndexList = indexService.findChildByParentId(rootIndex.getIndexuuid(), indexType);
+		} else {
+			List<String> rootIndexIdList = RbacUtil.getRootIndexId(indexList);
+			if (rootIndexIdList.size() > 1) {// 用户可管理的指标不是一棵完整树结构
+				rootIndex = new Index();
+				rootIndex.setIndexname("根节点");
+				rootIndex.setHasChild(1);
+				for (String rootId : rootIndexIdList) {
+					for (Index index : indexList) {
+						if (rootId.equals(index.getIndexuuid())) {
+							childIndexList.add(index);
+							break;
+						}
+					}
+
+				}
+			} else {// 用户可管理的指标是完整树结构
+				String rootIndexId = rootIndexIdList.get(0);
+				rootIndex = indexService.findById(rootIndexId);
+				childIndexList = indexService.findChildIndexByUser(user, indexType, rootIndexId);
+			}
+		}
+
+		StringBuffer xml = new StringBuffer("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+		xml.append("<tree id=\"0\">");
+		String hasChild = null;
+		if (isAdmin) {
+			hasChild = indexService.hasChild(rootIndex.getIndexuuid(), indexType) == true ? "1"
+					: "0";
+		} else {
+			if (null == rootIndex.getIndexuuid())
+				hasChild = indexService.hasManagerChild(rootIndex.getIndexuuid(), loginGroupIds,
+						indexType) == true ? "1" : "0";
+		}
+		xml.append("<item  text=\"" + rootIndex.getIndexname() + "\" id=\""
+				+ rootIndex.getIndexuuid() + "\" child=\"" + hasChild + "\">");
+		xml
+				.append("<userdata name=\"url\">"
+						+ "<![CDATA["
+						+ (rootIndex.getIndexurl() != null ? ((rootIndex.getIndexurl()
+								.contains("?") == true ? rootIndex.getIndexurl() : rootIndex
+								.getIndexurl()
+								+ "?")
+								+ "&treeNodeId=" + rootIndex.getIndexuuid()) : "") + "]]>"
+						+ "</userdata>");
+		for (Index idx : childIndexList) {
+			if (isAdmin) {
+				hasChild = indexService.hasChild(idx.getIndexuuid(), indexType) == true ? "1" : "0";
+			} else {
+				hasChild = indexService.hasManagerChild(idx.getIndexuuid(), loginGroupIds,
+						indexType) == true ? "1" : "0";
+			}
+			xml.append("<item  text=\"" + idx.getIndexname() + "\" id=\"" + idx.getIndexuuid()
+					+ "\" child=\"" + hasChild + "\">");
+			xml.append("<userdata name=\"url\">" + "<![CDATA["
+					+ (idx.getIndexurl() != null ? (processUrl(idx)) : "") + "]]>" + "</userdata>");
+			xml.append("</item>");
+		}
+		xml.append("</item>");
+		xml.append("</tree>");
+		request.setAttribute("xml", xml.toString().trim());
+
+		response.setContentType("text/xml; charset=UTF-8");
+		response.addHeader("Content-Type", "text/xml;charset=UTF-8");
+		return mapping.findForward("tree_xmlData");
+	}
+
+	/**
+	 * 
+	 * 方法说明：管理页面左侧系统树节点加载
+	 */
+	public ActionForward loadNextNodes(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		String indexuuid = request.getParameter("id");
+		User user = WebUtil.getSessionUser(request);
+		Index node = this.indexService.findById(indexuuid);
+		boolean isAdmin = rbacService.isAdmin(user);
+		List<Index> childIndexList = null;
+		int indexType = Integer.parseInt(request.getParameter("indexType").toString());
+		String[] loginGroupIds = WebUtil.getSessionLoginGroupId(request);
+		// 是管理员
+		if (isAdmin) {
+			childIndexList = indexService.findChildByParentId(indexuuid, indexType);
+		} else {
+			List<String> groupIdList = new ArrayList<String>();
+			String[] groupIds = WebUtil.getSessionLoginGroupId(request);
+			for (String gid : groupIds) {
+				groupIdList.add(gid);
+			}
+			childIndexList = indexService.findChildIndexByGroupID(groupIdList, indexType,
+					indexuuid, -1);
+		}
+		StringBuffer xml = new StringBuffer("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+		xml.append("<tree id=\"" + node.getIndexuuid() + "\">");
+		String hasChild = null;
+		for (Index n : childIndexList) {
+			if (isAdmin) {
+				hasChild = indexService.hasChild(n.getIndexuuid(), indexType) == true ? "1" : "0";
+			} else {
+				hasChild = indexService.hasManagerChild(n.getIndexuuid(), loginGroupIds, indexType) == true ? "1"
+						: "0";
+			}
+			xml.append("<item  text=\"" + n.getIndexname() + "\" id=\"" + n.getIndexuuid()
+					+ "\" child=\"" + hasChild + "\">");
+			xml.append("<userdata name=\"url\">");
+			xml.append("<![CDATA[");
+			xml.append(processUrl(n));
+			xml.append("]]>");
+			xml.append("</userdata>");
+
+			xml.append("</item>");
+		}
+		xml.append("</tree>");
+		request.setAttribute("xml", xml.toString().trim());
+		response.setContentType("text/xml; charset=UTF-8");
+		response.addHeader("Content-Type", "text/xml;charset=UTF-8");
+		return mapping.findForward("tree_xmlData");
+	}
+
+	/**
+	 * 
+	 * 方法说明：系统资源/应用资源页面 树初始化
+	 */
+	public ActionForward initTreeIndex(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		User user = WebUtil.getSessionUser(request);
+		List<Index> indexList = null;
+		int indexType = Integer.parseInt(request.getParameter("indexType").toString());
+		String[] loginGroupIds = WebUtil.getSessionLoginGroupId(request);
+		// 判断用户是不是管理员
+		boolean isAdmin = rbacService.isAdmin(user);
+		if (isAdmin) {
+			indexList = indexService.findAll(indexType);
+		} else {
+			List<String> groupIdList = new ArrayList<String>();
+			String[] groupIds = WebUtil.getSessionLoginGroupId(request);
+			for (String gid : groupIds) {
+				groupIdList.add(gid);
+			}
+			indexList = indexService.findIndexByGroupID(groupIdList, indexType);
+		}
+		// 用户没有可管理的指标
+		if (indexList.size() == 0) {
+			request.setAttribute("xml", "<tree id=\"0\"></tree>");
+			return mapping.findForward("tree_xmlData");
+		}
+		Index rootIndex = null;
+		List<Index> childIndexList = new ArrayList<Index>();
+		if (isAdmin) {
+			rootIndex = indexService.findRootIndex(indexType);
+			childIndexList = indexService.findChildByParentId(rootIndex.getIndexuuid(), indexType);
+		} else {
+			List<String> rootIndexIdList = RbacUtil.getRootIndexId(indexList);
+			if (rootIndexIdList.size() > 1) {// 用户可管理的指标不是一棵完整树结构
+				rootIndex = new Index();
+				rootIndex.setIndexname("根节点");
+				rootIndex.setIndexuuid("__Y__");
+				rootIndex.setHasChild(1);
+				for (String rootId : rootIndexIdList) {
+					for (Index index : indexList) {
+						if (rootId.equals(index.getIndexuuid())) {
+							childIndexList.add(index);
+							break;
+						}
+					}
+				}
+			} else {// 用户可管理的指标是完整树结构
+				String rootIndexId = rootIndexIdList.get(0);
+				rootIndex = indexService.findById(rootIndexId);
+				childIndexList = indexService.findChildIndexByUser(user, indexType, rootIndexId);
+			}
+		}
+		String hasChild = null;
+		if (isAdmin) {
+			hasChild = indexService.hasChild(rootIndex.getIndexuuid(), indexType) == true ? "1"
+					: "0";
+		} else {
+			hasChild = indexService.hasManagerChild(rootIndex.getIndexuuid(), loginGroupIds,
+					indexType) == true ? "1" : "0";
+		}
+		StringBuffer xml = new StringBuffer("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+		xml.append("<tree id=\"0\">");
+		xml.append("<item  text=\"" + rootIndex.getIndexname() + "\" id=\""
+				+ rootIndex.getIndexuuid() + "\" child=\"" + hasChild + "\">");
+		for (Index idx : childIndexList) {
+			if (isAdmin) {
+				hasChild = indexService.hasChild(idx.getIndexuuid(), indexType) == true ? "1" : "0";
+			} else {
+				hasChild = indexService.hasManagerChild(idx.getIndexuuid(), loginGroupIds,
+						indexType) == true ? "1" : "0";
+			}
+			xml.append("<item  text=\"" + idx.getIndexname() + "\" id=\"" + idx.getIndexuuid()
+					+ "\" child=\"" + hasChild + "\">");
+			xml.append("</item>");
+		}
+		xml.append("</item>");
+		xml.append("</tree>");
+		request.setAttribute("xml", xml.toString().trim());
+
+		response.setContentType("text/xml; charset=UTF-8");
+		response.addHeader("Content-Type", "text/xml;charset=UTF-8");
+		return mapping.findForward("tree_xmlData");
+	}
+
+	/**
+	 * 
+	 * 方法说明：系统资源/应用资源页面 树节点加载
+	 */
+	public ActionForward loadNextNodesIndex(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		// Index rootIndex=this.indexService.findById(this.rootIndex);
+		String indexuuid = request.getParameter("id");
+		User user = WebUtil.getSessionUser(request);
+		Index node = this.indexService.findById(indexuuid);
+		String[] loginGroupIds = WebUtil.getSessionLoginGroupId(request);
+
+		boolean isAdmin = rbacService.isAdmin(user);
+
+		List<Index> childIndexList = null;
+		int indexType = Integer.parseInt(request.getParameter("indexType").toString());
+		// 是管理员
+		if (isAdmin) {
+			childIndexList = indexService.findChildByParentId(indexuuid, indexType);
+		} else {
+			List<String> groupIdList = new ArrayList<String>();
+			String[] groupIds = WebUtil.getSessionLoginGroupId(request);
+			for (String gid : groupIds) {
+				groupIdList.add(gid);
+			}
+			childIndexList = indexService.findChildIndexByGroupID(groupIdList, indexType,
+					indexuuid, -1);
+		}
+		StringBuffer xml = new StringBuffer("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+		xml.append("<tree id=\"" + node.getIndexuuid() + "\">");
+		for (Index n : childIndexList) {
+			String hasChild = null;
+			if (isAdmin) {
+				hasChild = indexService.hasChild(n.getIndexuuid(), indexType) == true ? "1" : "0";
+			} else {
+				hasChild = indexService.hasManagerChild(n.getIndexuuid(), loginGroupIds, indexType) == true ? "1"
+						: "0";
+			}
+			xml.append("<item  text=\"" + n.getIndexname() + "\" id=\"" + n.getIndexuuid()
+					+ "\" child=\"" + hasChild + "\">");
+			xml.append("</item>");
+		}
+		xml.append("</tree>");
+		request.setAttribute("xml", xml.toString().trim());
+		response.setContentType("text/xml; charset=UTF-8");
+		response.addHeader("Content-Type", "text/xml;charset=UTF-8");
+		return mapping.findForward("tree_xmlData");
+	}
+
+	/**
+	 * 
+	 * 方法说明：URL拼接
+	 * 
+	 * @param n
+	 * @return
+	 */
+	private static String processUrl(Index n)
+	{
+		String url = "";
+		if (n.getIndexurl() != null) {
+			if (n.getIndexurl().contains("?") == true) {
+				url = n.getIndexurl() + "&";
+			} else {
+				url = n.getIndexurl() + "?";
+			}
+			url = url + "treeNodeId=" + n.getIndexuuid();
+		}
+		return url;
+	}
+
+	/**
+	 * 
+	 * 方法说明：to初始化资源关联的权限组树
+	 * 
+	 */
+	public ActionForward toIndexGroupTree(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		String indexId = request.getParameter("indexId");
+		User user = WebUtil.getSessionUser(request);
+		StringBuffer groupIdsStr = new StringBuffer("");// 已关联的groupID
+		List<Group> managerGroupList = null;// 用户可管理的组
+		List<Group> indexMapingGroupList = indexService.findGroupByIndexID(indexId);
+		;// 资源映射的组
+		boolean isAdmin = rbacService.isAdmin(user);
+		String[] loginGroups = WebUtil.getSessionLoginGroupId(request);// 用户登录使用的组
+		if (isAdmin) {
+			managerGroupList = rbacService.getAllGroups();
+		} else {
+			managerGroupList = rbacService.getManagerGroups(loginGroups);
+		}
+		for (Group mg : managerGroupList) {
+			for (Group ig : indexMapingGroupList) {
+				if (mg.getUuid().equals(ig.getUuid())) {
+					groupIdsStr.append(mg.getUuid()).append(",");
+					break;
+				}
+			}
+		}
+		if ((groupIdsStr.length() > 0)
+				&& (groupIdsStr.lastIndexOf(",") == groupIdsStr.length() - 1)) {
+			groupIdsStr.deleteCharAt(groupIdsStr.length() - 1);
+		}
+		request.setAttribute("indexId", indexId);
+		request.setAttribute("groupIdsStr", groupIdsStr.toString());
+		request.setAttribute("isAdmin", isAdmin);
+		return mapping.findForward("indexGroupTree");
+	}
+
+	/**
+	 * 
+	 * 方法说明：资源－组 权限分配，组树初始化
+	 * 
+	 */
+	public ActionForward initIndexGroupTree(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+
+		String indexId = request.getParameter("indexId");
+		List<Group> indexGroupList = indexService.findGroupByIndexID(indexId);
+		User user = WebUtil.getSessionUser(request);
+		List<Group> managerGroupList = null;// 用户可管理的组
+
+		boolean isAdmin = rbacService.isAdmin(user);
+
+		if (isAdmin) {
+			managerGroupList = rbacService.getAllGroups();
+		} else {
+			// managerGroupList = rbacService.getAllGroups();
+			managerGroupList = rbacService
+					.getManagerGroups(WebUtil.getSessionLoginGroupId(request));
+		}
+		List<Group> childGroupList = null;// 子级组
+		Group rootGroup = null;// 根级组
+		if (isAdmin) {
+			rootGroup = rbacService.getRootGroup();
+			childGroupList = rbacService.getGroupsByParentGroup(rootGroup.getUuid());
+
+			StringBuffer xml = new StringBuffer("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+			xml.append("<tree id=\"0\">");
+			String selected = this.dhtmlTreeNodeSelect(indexGroupList, rootGroup.getUuid());
+			boolean hasChild = rbacService.hasChildGroup(rootGroup.getUuid());
+
+			xml.append("<item  text=\"" + rootGroup.getName() + "\" id=\"" + rootGroup.getUuid()
+					+ "\" child=\"" + (hasChild ? 1 : 0) + "\" " + selected + ">");
+			xml.append("<userdata name=\"groupUuid\">" + "<![CDATA[" + rootGroup.getUuid()
+					+ "]]></userdata>");
+			for (Group g : childGroupList) {
+				selected = this.dhtmlTreeNodeSelect(indexGroupList, g.getUuid());
+				hasChild = rbacService.hasChildGroup(g.getUuid());
+				xml.append("<item  text=\"" + g.getName() + "\" id=\"" + g.getUuid()
+						+ "\" child=\"" + (hasChild ? 1 : 0) + "\" " + selected + ">");
+				xml.append("<userdata name=\"groupUuid\">" + "<![CDATA[" + g.getUuid() + "]]>"
+						+ "</userdata>");
+				xml.append("</item>");
+			}
+			xml.append("</item></tree>");
+			request.setAttribute("xml", xml.toString().trim());
+			response.setContentType("text/xml; charset=UTF-8");
+			response.addHeader("Content-Type", "text/xml;charset=UTF-8");
+			return mapping.findForward("tree_xmlData");
+		} else {
+			rootGroup = new Group();
+			rootGroup.setUuid("__Y__");
+			rootGroup.setName("根节点");
+			List<GroupExtends> geList = new ArrayList<GroupExtends>();
+			for (int i = 0; i < managerGroupList.size(); i++) {
+				Group group_i = managerGroupList.get(i);
+				List<Group> parentGroup = rbacService.getParentGroup(group_i.getUuid());
+				GroupExtends ge = new GroupExtends();
+				ge.group = group_i;
+				ge.parentId = rootGroup.getUuid();
+				for (int p = 0; p < parentGroup.size(); p++) {
+					Group group_p = parentGroup.get(p);
+					for (int k = 0; k < managerGroupList.size(); k++) {
+						Group group_k = managerGroupList.get(k);
+						if (group_p.getUuid().equals(group_k.getUuid())) {
+							ge.parentId = group_p.getUuid();
+							break;
+						}
+					}
+				}
+				geList.add(ge);
+			}
+
+			StringBuffer xml = new StringBuffer("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+			xml.append("<tree id=\"0\">");
+			xml.append("<item  text=\"" + rootGroup.getName() + "\" id=\"" + rootGroup.getUuid()
+					+ "\" child=\"0\" >");
+			for (int i = 0; i < geList.size(); i++) {
+				GroupExtends ge = geList.get(i);
+				if (ge.parentId.equals(rootGroup.getUuid())) {
+					String selected = this.dhtmlTreeNodeSelect(indexGroupList, ge.group.getUuid());
+					StringBuilder childXML = new StringBuilder();
+					childXML.append("<item  text=\"" + ge.group.getName() + "\" id=\""
+							+ ge.group.getUuid() + "\" child=\"hasChild\" " + selected + ">");
+					childXML.append("<userdata name=\"groupUuid\">" + "<![CDATA["
+							+ ge.group.getUuid() + "]]>" + "</userdata>");
+					String cXML = appendGroupXML(ge.group.getUuid(), geList, indexGroupList);
+					if (cXML.length() > 10) {
+						xml.append(childXML.toString().replace("hasChild", "1"));
+					} else {
+						xml.append(childXML.toString().replace("hasChild", "0"));
+					}
+					xml.append(cXML);
+					xml.append("</item>");
+				}
+			}
+
+			xml.append("</item></tree>");
+			request.setAttribute("xml", xml.toString().trim());
+			response.setContentType("text/xml; charset=UTF-8");
+			response.addHeader("Content-Type", "text/xml;charset=UTF-8");
+			return mapping.findForward("tree_xmlData");
+		}
+
+	}
+
+	/**
+	 * 
+	 * 方法说明：资源－组 权限分配，组树节点加载
+	 * 
+	 */
+	public ActionForward indexGroupTreeNode(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		String groupId = request.getParameter("id");
+		String indexId = request.getParameter("indexId");
+		List<Group> indexGroupList = indexService.findGroupByIndexID(indexId);
+		User user = WebUtil.getSessionUser(request);
+		List<Group> childGroupList = null;// 子级组
+
+		boolean isAdmin = rbacService.isAdmin(user);
+
+		if (isAdmin)
+			childGroupList = rbacService.getGroupsByParentGroup(groupId);
+		else {
+			request.setAttribute("xml", "<tree id=\"0\"></tree>");
+			return mapping.findForward("tree_xmlData");
+		}
+		String selected = "no";
+		boolean hasChild = rbacService.hasChildGroup(groupId);
+		StringBuffer xml = new StringBuffer("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+		xml.append("<tree id=\"" + groupId + "\">");
+		for (Group n : childGroupList) {
+			hasChild = rbacService.hasChildGroup(n.getUuid());
+			selected = this.dhtmlTreeNodeSelect(indexGroupList, n.getUuid());
+			xml.append("<item  text=\"" + n.getName() + "\" id=\"" + n.getUuid() + "\" child=\""
+					+ (hasChild ? 1 : 0) + "\" " + selected + ">");
+			xml.append("<userdata name=\"groupUuid\">");
+			xml.append("<![CDATA[" + n.getUuid() + "]]>");
+			xml.append("</userdata>");
+
+			xml.append("</item>");
+		}
+		xml.append("</tree>");
+		request.setAttribute("xml", xml.toString().trim());
+
+		response.setContentType("text/xml; charset=UTF-8");
+		response.addHeader("Content-Type", "text/xml;charset=UTF-8");
+		return mapping.findForward("tree_xmlData");
+	}
+
+	/**
+	 * 
+	 * 方法说明：判断树结点是否为选中状态
+	 * 
+	 * @param baseGroup
+	 * @param groupId
+	 * @return
+	 */
+	private String dhtmlTreeNodeSelect(List<Group> baseGroup, String groupId)
+	{
+		for (Group group : baseGroup) {
+			if (group.getUuid().equals(groupId))
+				return "checked=\"1\"";
+		}
+		return "";
+	}
+
+	/**
+	 * 更新指标与组的关联关系
+	 * 
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ActionForward updateIG(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		IndexForm indexForm = (IndexForm) form;
+		String[] groupIdsStr = indexForm.getGroupIdsStr().split(",");
+		String[] selectedIds = indexForm.getSelectedGroupIdsStr().split(",");
+		String[] bubs = indexForm.getBubs().split(",");
+		String indexId = indexForm.getIndexId();
+
+		List<String> addIds = new ArrayList<String>();
+		List<String> deleteIds = new ArrayList<String>();
+		for (String j : selectedIds) {
+			boolean jisAdd = true;
+			for (String i : groupIdsStr) {
+				if (j.equals(i)) {
+					jisAdd = false;
+					break;
+				}
+			}
+			if (jisAdd) {
+				if (j != null && !"".equals(j)) {
+					addIds.add(j);
+				}
+			}
+		}
+		for (String i : groupIdsStr) {
+			boolean jisDelete = true;
+			for (String j : selectedIds) {
+				if (j.equals(i)) {
+					jisDelete = false;
+					break;
+				}
+			}
+			if (jisDelete) {
+				for (String b : bubs) {
+					if (null != b && !"".equals(b) && i.equals(b)) {
+						deleteIds.add(i);
+						break;
+					}
+				}
+			}
+		}
+		String[] deleteIdst = new String[deleteIds.size()];
+		String[] addIdst = new String[addIds.size()];
+		indexService.deleteIndexGroup(indexId, deleteIds.toArray(deleteIdst));
+		indexService.addIndexGroup(indexId, addIds.toArray(addIdst));
+		request.setAttribute("message", "修改成功!");
+		return mapping.findForward("message");
+	}
+
+	/**
+	 * 
+	 * 方法说明： 删除子标
+	 * 
+	 */
+	public ActionForward deleteIndex(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response)
+	{
+		try {
+			String indexuuid = request.getParameter("indexuuid");
+			this.indexService.deleteIndexAndAllChild(indexuuid);
+		} catch (Exception e) {
+			e.printStackTrace();
+			request.setAttribute("message", "删除子标失败，请偿试重新登陆或与管理员联系");
+			return mapping.findForward("message");
+		}
+
+		request
+				.setAttribute(
+						"message",
+						"删除指标成功!<script type=\"text/javascript\">function reloadWindow(){window.parent.parent.location.reload();} setTimeout('reloadWindow()',2000);</script>");
+		return mapping.findForward("message");
+	}
+
+	/**
+	 * to 更新指标
+	 * 
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	public ActionForward toUpdateIndex(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response)
+	{
+		String indexuuid = request.getParameter("indexuuid");
+		Index index = this.indexService.findById(indexuuid);
+
+		IndexForm indexForm = (IndexForm) form;
+		indexForm.setIndex(index);
+		request.setAttribute("index", index);
+		return mapping.findForward("updateIndex");
+	}
+
+	/**
+	 * to 增加指标
+	 * 
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	public ActionForward toAddIndex(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response)
+	{
+		String parentUuid = request.getParameter("parentUuid");
+		request.setAttribute("parentUuid", parentUuid);
+		request.setAttribute("add", true);
+		String[] groupUuids = WebUtil.getSessionLoginGroupId(request);
+		List<Group> groupList = new ArrayList<Group>();
+		if (groupUuids != null) {
+			for (String gid : groupUuids) {
+				Group group = rbacService.getGroupByUuid(gid);
+				groupList.add(group);
+			}
+		}
+		request.setAttribute("groupList", groupList);
+		return mapping.findForward("updateIndex");
+	}
+
+	/**
+	 * 更新指标
+	 * 
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	public ActionForward updateIndex(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response)
+	{
+
+		IndexForm indexForm = (IndexForm) form;
+		Index index = indexForm.getIndex();
+		Index parentIndex = this.indexService.findById(index.getParentindexuuid());
+		index.setParentIndex(parentIndex);
+		// 更新
+		if (index.getIndexuuid() != null && !"".equals(index.getIndexuuid()))
+			indexService.update(index);
+		else {
+			// 添加
+			index.setCreateTime(new Date());
+			if (parentIndex != null) {
+				index.setIndextype(parentIndex.getIndextype());
+				index.setParentIndex(parentIndex);
+				index.setIndexlevel(parentIndex.getIndexlevel() + 1);
+				parentIndex.setHasChild(1);
+				indexService.update(parentIndex);
+				indexService.save(index);
+				User user = WebUtil.getSessionUser(request);
+				if (!rbacService.isAdmin(user)) {
+					String selectGroup = request.getParameter("igGroupUuid");
+					indexService.addIndexGroup(index.getIndexuuid(), new String[] { selectGroup });
+				}
+			} else {
+				request
+						.setAttribute(
+								"message",
+								"保存失败！父节点已删除！<script type=\"text/javascript\">function reloadWindow(){window.parent.parent.location.reload();} setTimeout('reloadWindow()',2000);</script>");
+				return mapping.findForward("message");
+			}
+		}
+		request.setAttribute("index", index);
+		request
+				.setAttribute(
+						"message",
+						"保存成功!<script type=\"text/javascript\">function reloadWindow(){window.parent.parent.location.reload();} setTimeout('reloadWindow()',2000);</script>");
+		return mapping.findForward("message");
+	}
+
+	/**
+	 * 追加组XML
+	 * 
+	 * @param pid
+	 *            父级组ID
+	 * @param geList
+	 *            组扩展对象List
+	 * @param indexGroupList
+	 *            指标关联的组ID
+	 * @return
+	 */
+	private String appendGroupXML(String pid, List<GroupExtends> geList, List<Group> indexGroupList)
+	{
+		StringBuilder sb = new StringBuilder();
+		for (GroupExtends ge : geList) {
+			if (ge.parentId.equals(pid)) {
+				String selected = this.dhtmlTreeNodeSelect(indexGroupList, ge.group.getUuid());
+				sb.append("<item  text=\"" + ge.group.getName() + "\" id=\"" + ge.group.getUuid()
+						+ "\" child=\"hasChild\" ");
+				sb.append(selected);
+				sb.append(">");
+				sb.append("<userdata name=\"groupUuid\">" + "<![CDATA[" + ge.group.getUuid()
+						+ "]]>" + "</userdata>");
+				String childXML = appendGroupXML(ge.group.getUuid(), geList, indexGroupList);
+				String xml = null;
+				if (childXML.length() > 10) {
+					xml = sb.toString().replace("hasChild", "1");
+				} else {
+					xml = sb.toString().replace("hasChild", "0");
+				}
+				sb = new StringBuilder(xml);
+				sb.append("</item>");
+			}
+		}
+		return sb.toString();
+	}
+
+	/**
+	 * 
+	 * 方法说明：初使化前端树
+	 */
+	public ActionForward initLouver(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		// 根级ID
+		String rootIndexId = request.getParameter("rootId");
+		String[] loginGroupIds = WebUtil.getSessionLouverGroupId(request);
+		int indexType = 0;
+		if (loginGroupIds != null) {
+			List<String> groupIds = new ArrayList<String>();
+			for (String id : loginGroupIds) {
+				groupIds.add(id);
+			}
+			Index rootIndex = indexService.findById(rootIndexId);
+			String appId = request.getSession().getServletContext().getInitParameter("appId");
+			List<Index> childIndexList = indexService.findChildIndexByGroupID(groupIds, indexType,
+					rootIndexId, appId);
+			StringBuffer xml = new StringBuffer("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+			xml.append("<tree id=\"0\">");
+			String hasChild = indexService.hasManagerChild(rootIndex.getIndexuuid(), loginGroupIds,
+					indexType) == true ? "1" : "0";
+			xml.append("<item  text=\"" + rootIndex.getIndexname() + "\" id=\""
+					+ rootIndex.getIndexuuid() + "\" child=\"" + hasChild
+					+ "\" open=\"1\" imgurl=\"" + rootIndex.getIndexicon() + "\">");
+			for (Index idx : childIndexList) {
+				hasChild = indexService.hasManagerChild(idx.getIndexuuid(), loginGroupIds,
+						indexType) == true ? "1" : "0";
+				xml.append("<item  text=\"" + idx.getIndexname() + "\" id=\"" + idx.getIndexuuid()
+						+ "\" child=\"" + hasChild + "\" open=\"1\" imgurl=\"" + idx.getIndexicon()
+						+ "\">");
+				xml.append("<userdata name=\"url\">" + "<![CDATA["
+						+ (idx.getIndexurl() != null ? idx.getIndexurl() : "") + "]]>"
+						+ "</userdata>");
+				xml.append("</item>");
+			}
+			xml.append("</item>");
+			xml.append("</tree>");
+			request.setAttribute("xml", xml.toString().trim());
+			response.setContentType("text/xml; charset=UTF-8");
+			response.addHeader("Content-Type", "text/xml;charset=UTF-8");
+		}
+		return mapping.findForward("tree_xmlData");
+	}
+
+	/**
+	 * 
+	 * 方法说明：加载前端树节点
+	 */
+	public ActionForward loadLouverTreeNode(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		// 根级ID
+		String rootIndexId = request.getParameter("id");
+		String[] loginGroupIds = WebUtil.getSessionLouverGroupId(request);
+		int indexType = 0;
+		List<String> groupIds = new ArrayList<String>();
+		for (String id : loginGroupIds) {
+			groupIds.add(id);
+		}
+		List<Index> childIndexList = indexService.findChildIndexByGroupID(groupIds, indexType,
+				rootIndexId, 1);
+		StringBuffer xml = new StringBuffer("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+		xml.append("<tree id=\"" + rootIndexId + "\">");
+		for (Index idx : childIndexList) {
+			String hasChild = indexService.hasManagerChild(idx.getIndexuuid(), loginGroupIds,
+					indexType) == true ? "1" : "0";
+			xml.append("<item  text=\"" + idx.getIndexname() + "\" id=\"" + idx.getIndexuuid()
+					+ "\" child=\"" + hasChild + "\" open=\"1\">");
+			xml.append("<userdata name=\"url\">" + "<![CDATA["
+					+ (idx.getIndexurl() != null ? idx.getIndexurl() : "") + "]]>" + "</userdata>");
+			xml.append("</item>");
+		}
+		xml.append("</tree>");
+		request.setAttribute("xml", xml.toString().trim());
+		response.setContentType("text/xml; charset=UTF-8");
+		response.addHeader("Content-Type", "text/xml;charset=UTF-8");
+		return mapping.findForward("tree_xmlData");
+	}
+
+	/**
+	 * 
+	 * 方法说明：初使化前端树
+	 */
+	public ActionForward initTreeChooseParentIndex(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		// 被选择的指标
+		String indexId = request.getParameter("indexId");
+		Index index = indexService.findById(indexId);
+		String parentIndexId = index.getParentindexuuid();
+		int indexType = index.getIndextype();
+		Index rootIndex = indexService.findRootIndex(indexType);
+		if (indexId.equals(rootIndex.getIndexuuid())) {
+			request.setAttribute("xml", "<tree id=\"0\"></tree>");
+			return mapping.findForward("tree_xmlData");
+		}
+
+		List<Index> childIndexList = indexService.findChildByParentId(rootIndex.getIndexuuid(),
+				indexType);
+		StringBuffer xml = new StringBuffer("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+		xml.append("<tree id=\"0\">");
+		String hasChild = indexService.hasChild(rootIndex.getIndexuuid(), indexType) == true ? "1"
+				: "0";
+		xml.append("<item  text=\"" + rootIndex.getIndexname() + "\" id=\""
+				+ rootIndex.getIndexuuid() + "\" child=\"" + hasChild + "\">");
+		for (Index idx : childIndexList) {
+			if (idx.getIndexuuid().equals(indexId))
+				continue;
+			String checked = idx.getIndexuuid().equals(parentIndexId) ? " checked=\"1\"" : "";
+			hasChild = indexService.hasChild(idx.getIndexuuid(), indexType) == true ? "1" : "0";
+			xml.append("<item  text=\"" + idx.getIndexname() + "\" id=\"" + idx.getIndexuuid()
+					+ "\" child=\"" + hasChild + "\"" + checked + ">");
+			xml.append("</item>");
+		}
+		xml.append("</item>");
+		xml.append("</tree>");
+		request.setAttribute("xml", xml.toString().trim());
+		response.setContentType("text/xml; charset=UTF-8");
+		response.addHeader("Content-Type", "text/xml;charset=UTF-8");
+		request.getSession().setAttribute("updateParentIndexFromId", indexId);
+		System.out.println(xml);
+		return mapping.findForward("tree_xmlData");
+	}
+
+	/**
+	 * 
+	 * 方法说明：加载前端树节点
+	 */
+	public ActionForward loadTreeNodeChooseParentIndex(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		int indexType = 0;
+		// 被选择的指标
+		String indexId = request.getParameter("id");
+		String fromId = request.getSession().getAttribute("updateParentIndexFromId").toString();
+		Index index = indexService.findById(fromId);
+		List<Index> childIndexList = indexService.findChildByParentId(indexId, indexType);
+		StringBuffer xml = new StringBuffer("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+		xml.append("<tree id=\"" + indexId + "\">");
+		for (Index idx : childIndexList) {
+			if (idx.getIndexuuid().equals(fromId))
+				continue;
+			String checked = idx.getIndexuuid().equals(index.getParentindexuuid()) ? " checked=\"1\" "
+					: "";
+			String hasChild = indexService.hasChild(idx.getIndexuuid(), indexType) == true ? "1"
+					: "0";
+			xml.append("<item  text=\"" + idx.getIndexname() + "\" id=\"" + idx.getIndexuuid()
+					+ "\" child=\"" + hasChild + "\"" + checked + ">");
+			xml.append("</item>");
+		}
+		xml.append("</tree>");
+		request.setAttribute("xml", xml.toString().trim());
+		response.setContentType("text/xml; charset=UTF-8");
+		response.addHeader("Content-Type", "text/xml;charset=UTF-8");
+		return mapping.findForward("tree_xmlData");
+	}
+
+	/**
+	 * 更新指标父节点
+	 * 
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	public ActionForward updateIndexPid(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response)
+	{
+
+		String indexId = request.getParameter("indexId");
+		String indexPid = request.getParameter("indexPId");
+		if (indexPid != null && !"".equals(indexPid)) {
+			Index index = indexService.findById(indexId);
+			Index indexP = indexService.findById(indexPid);
+			index.setParentIndex(indexP);
+			index.setParentindexuuid(indexPid);
+			indexService.update(index);
+			indexService.updateIndexLevelCascade(index, indexP.getIndexlevel() + 1);
+		}
+		request
+				.setAttribute(
+						"message",
+						"保存成功!<script type=\"text/javascript\">function reloadWindow(){window.parent.parent.location.reload();} setTimeout('reloadWindow()',2000);</script>");
+		return mapping.findForward("message");
+	}
+
+	/**
+	 * 
+	 * 方法说明：
+	 * 
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	public ActionForward ajaxLoadIndex(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response)
+	{
+		User user = WebUtil.getSessionUser(request);
+		// 数据源切换到框架库
+		ContextHolder.setType(DataSourceMap.getInstance().get("dataSource2"));
+		String indexuuid = request.getParameter("id");
+		List<Index> indexList = this.indexService.findChildIndexByUser(user, 0, indexuuid);
+		for (Index i : indexList) {
+			i.setSubIndexes(null);
+			i.setParentIndex(null);
+		}
+		JSONArray jo = JSONArray.fromObject(indexList);
+		try {
+			response.setCharacterEncoding("utf-8");
+			response.setContentType("application/json;charset=utf-8");
+			PrintWriter out = response.getWriter();
+			out.print(jo.toString().trim());
+			out.flush();
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		// 数据源切回业务主数据源
+		ContextHolder.setType(DataSourceMap.getInstance().get("dataSource1"));
+		return null;
+	}
+}

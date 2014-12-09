@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution adaptable="true" 
+            objectClass="org.eclipse.jdt.core.IJavaProject"
+            id="com.hirisun.ide.plugin.easyexplore.contribution">
+         <action
+               class="com.wt.studio.plugin.wizard.projects.actions.MultiModelAction"
+               enablesFor="1"
+               icon="icons/M.png"
+               id="com.hirisun.ide.plugin.wizard.projects.actions.MultiModelAction"
+               label="Table2Model Tools"
+               menubarPath="com.hirisun.ide.plugin.popupmenu/separator">
+         </action>
+      </objectContribution>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            name="Hirisun Project"
+            id="com.hirisun.ide.plugin.wizard.projects">
+      </category>
+      <wizard
+            category="com.hirisun.ide.plugin.wizard.projects"
+            name="HEA Web Project"
+            icon="icons/W.png"
+            class="com.wt.studio.plugin.wizard.projects.framework.HeaPorjectWizard"
+            id="com.hirisun.ide.plugin.wizard.projects.framework.HeaPorjectWizard"
+            finalPerspective="com.hirisun.ide.plugin.platform.perspective.DevPerspective"
+            project="true">
+      </wizard>
+      <wizard
+            category="com.hirisun.ide.plugin.wizard.projects"
+            name="HEA Business Project"
+            icon="icons/B.png"
+            class="com.wt.studio.plugin.wizard.projects.business.BusinessPorjectWizard"
+            id="com.hirisun.ide.plugin.wizard.projects.business.BusinessPorjectWizard"
+            finalPerspective="com.hirisun.ide.plugin.platform.perspective.DevPerspective"
+            project="true">
+      </wizard>
+      <wizard
+            category="com.hirisun.ide.plugin.wizard.projects"
+            class="com.wt.studio.plugin.wizard.projects.model.BusiModulelWizard"
+            finalPerspective="com.hirisun.ide.plugin.platform.perspective.DevPerspective"
+            icon="icons/M1.png"
+            id="com.hirisun.ide.plugin.wizard.projects.model.BusiModulelWizard"
+            name="HEA Model Module"
+            project="false">
+      </wizard>      
+      <wizard
+            category="com.hirisun.ide.plugin.wizard.projects"
+            class="com.wt.studio.plugin.wizard.projects.services.ServiceWizard"
+            finalPerspective="com.hirisun.ide.plugin.platform.perspective.DevPerspective"
+            icon="icons/S1.png"
+            id="com.hirisun.ide.plugin.wizard.projects.services.ServiceWizard"
+            name="HEA BOModel Module"
+            project="false">
+      </wizard>
+      
+   </extension>
+
+</plugin>

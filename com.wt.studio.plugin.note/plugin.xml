@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            name="NoteEditor"
+            extensions="hnote"
+            icon="icons/note.png"
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            class="com.wt.studio.plugin.note.editors.NoteEditor"
+            id="com.hirisun.ide.plugin.note.editors.NoteEditor">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category id="com.hirisun.ide.views" name="HEA Studio"></category>
+      <view
+            category="com.hirisun.ide.views"
+            class="com.wt.studio.plugin.note.views.NoteView"
+            icon="icons/notes.png"
+            id="com.hirisun.ide.plugin.note.views.NoteView"
+            name="Note Explorer"> 
+      </view>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="com.wt.studio.plugin.note.perspective.NotePerspective"
+            icon="icons/notes.png"
+            id="com.hirisun.ide.plugin.note.perspective.NotePerspective"
+            name="HEA 笔记分享"
+            visible="true">
+      </perspective>
+   </extension>   
+
+</plugin>

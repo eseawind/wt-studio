@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: HEA Studio Plugin Third Flexsdk
+Bundle-SymbolicName: com.wt.studio.plugin.third.flexsdk
+Bundle-Version: 1.1.0.qualifier
+Bundle-Activator: com.hirisun.ide.plugin.third.flexsdk.Activator
+Bundle-Vendor: Hirisun
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy

@@ -1,0 +1,78 @@
+<%@ jet package="com.hirisun.ide.plugin.wizard.projects.model.templates" class="ServiceImplTemplate" 
+        imports="com.hirisun.ide.plugin.wizard.projects.model.util.JavaTemplateArgs
+        		 com.hirisun.ide.plugin.wizard.projects.model.ModuleModel"%>
+<%
+	JavaTemplateArgs args = (JavaTemplateArgs) ((Object[])argument)[0];
+    ModuleModel moduleModel = (ModuleModel) ((Object[])argument)[1];
+    String pkgname = (String)((Object[])argument)[2];
+    String projectName = moduleModel.getProjectName();
+%>
+package <%=args.getPackageName()%>;
+
+import java.util.List;
+import java.util.Map;
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import <%=pkgname%>.dao.<%=args.getClassNameInfo().getEntityClassName()%>Dao;
+import <%=pkgname%>.service.<%=args.getClassNameInfo().getServicClassName()%>;
+import <%=args.getPackageNameInfo().getEntityPackageName()%>.<%=args.getClassNameInfo().getEntityClassName()%>;
+
+/**
+ * <pre>
+ * 业务名:
+ * 功能说明: 
+ * 编写日期:
+ * 作者:	HEA IDE
+ * 
+ * 历史记录
+ * 1、修改日期：
+ *    修改人：
+ *    修改内容：
+ * </pre>
+ */
+@Service(value = "<%=args.getClassNameInfo().getServicClassName()%>")
+@Transactional
+public class <%=args.getClassName()%> implements <%=args.getClassNameInfo().getServicClassName()%>
+{
+	@Resource
+	private <%=args.getClassNameInfo().getEntityClassName()%>Dao dao;
+
+	public List<<%=args.getClassNameInfo().getEntityClassName()%>> getAll<%=args.getClassNameInfo().getEntityClassName()%>()
+	{
+		List<<%=args.getClassNameInfo().getEntityClassName()%>> allList = dao.findAll();
+
+		return allList;
+	}
+
+	public int getAll<%=args.getClassNameInfo().getEntityClassName()%>Count()
+	{
+
+		return dao.findAll().size();
+	}
+
+	public <%=args.getClassNameInfo().getEntityClassName()%> update<%=args.getClassNameInfo().getEntityClassName()%>(<%=args.getClassNameInfo().getEntityClassName()%> o)
+	{
+		return dao.update(o);
+	}
+
+	public void delete<%=args.getClassNameInfo().getEntityClassName()%>(<%=args.getClassNameInfo().getEntityClassName()%> o)
+	{
+		dao.delete(o);
+	}
+
+	public List<<%=args.getClassNameInfo().getEntityClassName()%>> findByExample(<%=args.getClassNameInfo().getEntityClassName()%> o){
+		return dao.findByExample(o);
+	}
+	
+	public List<<%=args.getClassNameInfo().getEntityClassName()%>> get<%=args.getClassNameInfo().getEntityClassName()%>ByMap(Map<String, String> propertyMap, Map<String, ?> searchMap, int firstResult, int maxResults){
+		return dao.getEntitiesByMap(propertyMap, null, searchMap, firstResult, maxResults);
+	}
+
+	public int get<%=args.getClassNameInfo().getEntityClassName()%>ByMapCount(Map<String, String> propertyMap,
+			Map<String, ?> searchMap){
+			return dao.getEntitiesCountByMap(propertyMap, searchMap);
+	}
+}

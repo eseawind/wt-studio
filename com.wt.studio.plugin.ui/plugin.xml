@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+<extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="com.hirisun.ide.plugin.ui.actionSet"
+            label="HEA Studio Modeldesigner"
+            visible="true">
+         <menu
+               id="designerToolBar"
+               label="Designer ToolBar">
+            <separator
+                  name="DataBaseDesigner">
+            </separator>
+            <separator
+                  name="PageDesigner">                 
+            </separator>
+            <separator
+                  name="QueryDesigner">                 
+            </separator>
+         </menu>
+         <action
+               class="com.wt.studio.plugin.ui.actions.CreateDbAction"
+               icon="icons/model.png"
+               id="com.hirisun.ide.plugin.ui.actions.CreateDbAction"
+               label="New DBDesigner"
+               toolbarPath="DataBaseDesigner"
+               tooltip="Create DB Designer">
+         </action>
+         <action
+               class="com.wt.studio.plugin.ui.actions.CreatePageAction"
+               icon="icons/Designe.png"
+               id="com.hirisun.ide.plugin.ui.actions.CreatePageAction"
+               label="New PageDesigner"
+               toolbarPath="PageDesigner"
+               tooltip="Create Page Designer">
+         </action>
+         <action
+               class="com.wt.studio.plugin.ui.actions.CreateQueryAction"
+               icon="icons/Qdesigne.png"
+               id="com.hirisun.ide.plugin.ui.actions.CreateQueryAction"
+               label="New QueryDesigner"
+               toolbarPath="QueryDesigner"
+               tooltip="Create Query Designer">
+         </action>
+      </actionSet>
+   </extension>
+</plugin>

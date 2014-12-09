@@ -1,0 +1,178 @@
+/******************************************************************************************************
+Title:			print.css
+Browser(s): 	Print version.
+download:       http://www.codefans.net
+Author: 		Peter Antonius for Fröjd (www.frojd.se)
+Created: 		18.09.2007
+Last modified: 	18.09.2007
+******************************************************************************************************/
+
+.tabs-nav {
+	display:none;
+	}
+
+
+/*	Reset
+---------------------------------------------*/
+* {
+	margin:0;
+	padding:0;
+	}
+
+body {
+	background:white;
+	color:black;
+	font:small "Times New Roman", Times, Georgia, serif;
+	font-size:10pt;
+	text-align:left;
+	}
+
+ul {
+	list-style:none;
+	}
+
+a img,img {
+	border:0;
+	}
+
+/*	Clearfix
+---------------------------------------------*/
+#header:after,#information:after,#news:after,#projects:after,#people:after,#contact:after {
+	clear:both;
+	content:".";
+	display:block;
+	height:0;
+	visibility:hidden;
+	}
+
+#header,#information,#news,#projects,#people,#contact {
+	display:inline-block;
+	margin:0 0 30px;
+	}
+
+/*	Objects to be hidden
+---------------------------------------------*/
+#header div a,#news ul,#people ul,#people img,#footer {
+	display:none;
+	}
+
+/*	Links
+---------------------------------------------*/
+a {
+	color:#000;
+	text-decoration:none;
+	}
+
+/*	Headlines
+---------------------------------------------*/
+h2 {
+	border-bottom:3px solid #000;
+	font:18pt Arial, Helvetica, Tahoma, sans-serif;
+	font-weight:700;
+	margin:24px 0;
+	width:100%;
+	}
+
+h3 {
+	font:15pt Arial, Arial, Helvetica, Tahoma, sans-serif;
+	font-weight:700;
+	margin:0 0 12px;
+	}
+
+/*	Header
+---------------------------------------------*/
+#header h1 {
+	float:left;
+	font:78pt Georgia, "Times New Roman", Times, serif;
+	font-weight:700;
+	width:48%;
+	}
+
+#header div {
+	float:right;
+	width:50%;
+	}
+
+#header h2 {
+	border:0;
+	font:16pt Arial, Helvetica, Tahoma, sans-serif;
+	font-weight:700;
+	margin:18px 0 0;
+	width:100%;
+	}
+
+#header p {
+	font:12pt Arial, Helvetica, Tahoma, sans-serif;
+	font-weight:400;
+	}
+
+/*	Information
+---------------------------------------------*/
+#information {
+	display:block;
+	}
+
+
+#information .col {
+	float:left;
+	margin-right:2%;
+	}
+
+#information .wide {
+	width:48%;
+	}
+
+#information .narrow {
+	width:23%;
+	}
+
+/*	News
+---------------------------------------------*/
+#news h3 {
+	font-size:12pt;
+	margin:12px 0 0;
+	}
+
+/*	Projects
+---------------------------------------------*/
+#projects {
+	width:100%;
+	display:block;
+	}
+
+#projects .nav a {
+	display:none;
+	}
+
+.projectList{
+	margin-left:0;
+	}
+
+.projectList ul {
+	margin-left:0;
+	list-style:none;
+	}
+
+.projectList ul li {
+	margin:0 20px 0 0;
+	overflow:hidden;
+	width:33%;
+	float:left;
+	height:400px;
+	}
+
+/*	People
+---------------------------------------------*/
+#people div {float:left;width:33%; margin-bottom:30px;}
+
+/*	Contact
+---------------------------------------------*/
+#contact p {
+	float:left;
+	width:25%;
+	}
+
+#projects ul h3,#people h3 {
+	font-size:12pt;
+	margin:0;
+	}

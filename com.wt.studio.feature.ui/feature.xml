@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="com.hirisun.ide.feature.ui"
+      label="Ui"
+      version="1.0.0.qualifier"
+      provider-name="Hirisun Corp"
+      plugin="com.hirisun.ide.product">
+
+   <description url="http://www.hirisun.com">
+      海联讯企业应用开发集成环境
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="http://www.example.com/license">
+      [Enter License Description here.]
+   </license>
+
+   <url>
+      <update label="Hirisun HEA Studio" url="http://webosgi.hirisun.com/HEAStudioUpdateSite/"/>
+   </url>
+
+   <plugin
+         id="com.hirisun.ide.plugin.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

@@ -1,0 +1,110 @@
+package com.hirisun.hea.common.infrastructure.verify.impl;
+
+import java.text.SimpleDateFormat;
+import org.apache.commons.lang.StringUtils;
+
+import com.hirisun.hea.common.infrastructure.verify.Verify;
+
+/**
+ * 
+ * <pre>
+ * 业务名:服务器端验证接口
+ * 功能说明: 常用服务器端验证
+ * 编写日期:	2011-3-29
+ * 作者:	yuanmingmin
+ * 
+ * 历史记录
+ * 1、修改日期：
+ *    修改人：
+ *    修改内容：
+ * </pre>
+ */
+public class Verifier implements Verify{
+
+	/**
+	 * 私有构造函数
+	 */
+	private Verifier(){}
+	/**
+	 * 验证实例对象
+	 */
+	private static Verify VERIFIER_IMPL = null;
+	
+	/**
+	 * 
+	 * 方法说明：
+	 * 获取验证实例对象
+	 * @return 验证实例对象
+	 */
+	public static Verify getInstance(){
+		if(VERIFIER_IMPL == null){
+			VERIFIER_IMPL = new Verifier();
+		}
+		return VERIFIER_IMPL;
+	}
+	
+	/**
+	 * 方法说明:检查字符串是否为null或"" ，如果是，返回真
+	 * @param str 字符串引用对象
+	 * @return 检查字符串是否为null或"" ，如果是，返回真
+	 */
+	public boolean isEmpty(String str) {
+		return StringUtils.isEmpty(str);
+	}
+
+	/**
+	 * 方法说明:检查字符串是否为数值，如果是，返回真
+	 * @param str 字符串引用对象
+	 * @return 检查检查字符串是否为数值，如果是，返回真
+	 */
+	public boolean isNumeric(String str) {
+		if(isEmpty(str))return false;
+		
+		return StringUtils.isNumeric(str);
+	}
+	
+	/**
+	 * 方法说明:检查字符串是否为日期，如果是，返回真
+	 * @param dateStr 字符串引用对象
+	 * @return 检查检查字符串是否为日期，如果是，返回真
+	 */
+	public boolean isDate(String dateStr) {
+		if(isEmpty(dateStr))return false;
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		try {
+			sdf.setLenient(false);
+			sdf.parse(dateStr);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
+	/**
+	 * 方法说明:检查字符串是否邮件格式，如果是，返回真
+	 * @param email 邮件格式字符串引用对象
+	 * @return 检查检查字符串是否为日期，如果是，返回真
+	 */
+	public boolean isEmail(String email) {
+		if(isEmpty(email))return false;
+		
+		if(email.indexOf("@")==-1)return false;
+		
+		if(email.indexOf(".")== -1)return false;
+		
+		if(email.indexOf("@") < email.indexOf("."))return true;
+		
+		return  false;
+	}
+
+	/**
+	 * 方法说明:检查字符串是否非空
+	 * @param str 要检验的字符串
+	 * @return 检查检查字符串不是null或""，就返回真
+	 */
+	public boolean isNotEmpty(String str)
+	{
+		return StringUtils.isNotEmpty(str);
+	}
+}

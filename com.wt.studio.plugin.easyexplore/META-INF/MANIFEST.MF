@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: HEA Studio Plugin EasyExplore
+Bundle-SymbolicName: com.wt.studio.plugin.easyexplore;singleton:=true
+Bundle-Version: 1.1.0.qualifier
+Bundle-Activator: com.wt.studio.plugin.easyexplore.EasyExploreActivator
+Bundle-Vendor: Hirisun
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ org.eclipse.jdt.ui,
+ org.eclipse.jdt.core
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6,
+ JavaSE-1.7
+Bundle-ActivationPolicy: lazy

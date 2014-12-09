@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.hirisun.hea.common.model">
+    <class name="SystemCode" table="EDC_SYSTEM_CODE">
+       	<id name="id" type="java.lang.String">
+            <column name="ID" />
+            <generator class="uuid.hex"/>
+        </id>
+        <many-to-one name="parentSystemCode" class="com.hirisun.hea.common.model.SystemCode" column="PARENT_ID" fetch="select"/>
+        <property name="regCode" type="java.lang.String">
+            <column name="REG_CODE" />
+        </property>
+         <property name="regType" type="java.lang.String">
+            <column name="REG_TYPE"/>
+        </property>
+        
+        <property name="regName" type="java.lang.String">
+            <column name="REG_NAME" length="200" not-null="true" />
+        </property>
+        <property name="regDesc" type="java.lang.String">
+            <column name="REG_DESC" length="500" />
+        </property>
+        <property name="regProp" type="java.lang.String">
+            <column name="REG_PROP" length="50" />
+        </property>
+        <property name="regOrder" type="java.lang.Integer">
+            <column name="REG_ORDER"/>
+        </property>
+        <property name="regValue" type="java.lang.String">
+            <column name="REG_VALUE" length="1000" />
+        </property>
+        <property name="parentId" type="java.lang.String" insert="false" update="false">
+            <column name="PARENT_ID" length="32" />
+        </property>
+        <property name="indexLevel" type="java.lang.Integer">
+            <column name="INDEXLEVEL" />
+        </property>
+        <property name="haschild" type="java.lang.Integer">
+            <column name="HASCHILD" />
+        </property>
+        <property name="levelCode" type="java.lang.String">
+            <column name="LEVEL_CODE" />
+        </property>
+        <property name="param1" type="string">
+        	<column name="PARAM1"/>
+        </property>
+        <property name="param2" type="string">
+        	<column name="PARAM2"/>
+        </property>
+        <property name="param3" type="string">
+        	<column name="PARAM3"/>
+        </property>
+        <property name="param4" type="string">
+        	<column name="PARAM4"/>
+        </property>
+        <property name="param5" type="string">
+        	<column name="PARAM5"/>
+        </property>
+        
+        
+        <set name="subSystemCodes" inverse="true" cascade="all" order-by="reg_Order">
+        	<key column="PARENT_ID"/>
+        	<one-to-many class="com.hirisun.hea.common.model.SystemCode"/>
+        </set>
+    </class>
+</hibernate-mapping>

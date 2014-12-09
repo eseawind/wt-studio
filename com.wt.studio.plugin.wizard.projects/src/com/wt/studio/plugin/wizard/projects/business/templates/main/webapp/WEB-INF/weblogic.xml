@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wls:weblogic-web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:wls="http://www.bea.com/ns/weblogic/90"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd http://www.bea.com/ns/weblogic/90 http://www.bea.com/ns/weblogic/90/weblogic-web-app.xsd">
+
+	<wls:context-root>${projectName}</wls:context-root>
+	<wls:session-descriptor>
+		<wls:timeout-secs>600</wls:timeout-secs>
+		<wls:cookie-name>${cookName}JID</wls:cookie-name>
+		<wls:persistent-store-type>memory</wls:persistent-store-type>
+		<wls:http-proxy-caching-of-cookies>false</wls:http-proxy-caching-of-cookies>
+	</wls:session-descriptor>
+	<wls:container-descriptor>
+		<wls:servlet-reload-check-secs>-1</wls:servlet-reload-check-secs>
+		<wls:resource-reload-check-secs>-1</wls:resource-reload-check-secs>
+		<wls:prefer-web-inf-classes>true</wls:prefer-web-inf-classes>
+	</wls:container-descriptor>
+	<wls:jsp-descriptor>
+		<wls:page-check-seconds>-1</wls:page-check-seconds>
+		<wls:precompile>true</wls:precompile>
+		<wls:precompile-continue>true</wls:precompile-continue>
+	</wls:jsp-descriptor>
+</wls:weblogic-web-app>

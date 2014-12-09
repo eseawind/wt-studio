@@ -1,0 +1,359 @@
+body {
+	font-family: "微软雅黑";
+	font-size:12px;
+	margin:0;
+	padding: 0px;	
+	text-align:center;
+	background-image: url(images/bodybg.jpg);
+}
+.top_menu,.top_menu:link,.top_menu:visited{
+	font-size: 12px;
+	font-family: "微软雅黑";
+	color: #000000;
+	border:0px;
+	float:left;
+	cursor: hand;
+	text-decoration: none;
+}
+.top_menusel,.top_menusel:link,.top_menusel:visited{
+	background-image: url(images/dh.gif);
+	font-size:12px;
+	color: #000000;
+	text-align: center;
+	margin: 2px;
+	height: 26px;
+	width: 83px;
+	cursor: hand;
+	text-decoration: none;
+}
+.top_menublur,.top_menublur:link,.top_menublur:visited{
+	color:#ffffff;
+	background-image: url(images/dh2.gif);
+	height: 26px;
+	font-size:12px;
+	text-align: center;
+	width: 83px;
+	margin: 2px;
+	text-decoration: none;
+}
+#container {
+	width:1000;
+	text-align:left;	
+	margin-right:0px;
+	margin-left:0px;
+	padding: 0px;
+	margin-top: 0;
+	margin-bottom: 0;
+	margin-right:auto;
+	margin-left:auto;
+	height:80%;
+}
+#leftside{
+	float:left;
+	display:inline;
+	width:180px;
+	height:100%;
+	background-color: #eff8f8;
+	margin-left: 0px;
+}
+#content {
+	text-align:left;
+	display:inline;
+	float:center;
+	margin-left:5px;
+	height: 100%;
+	/*width:  100%;*/
+}
+#main-table{}
+#footer {
+	height:30px;
+	background-image: url(images/footer.gif);
+	background-repeat: repeat-x;
+	width: 1000;
+	margin-right:auto;
+	margin-left:auto;
+	padding: 0px;
+	margin-top: 0px;
+}
+
+#nav{
+	float:left;
+	margin-left:40px;
+	line-height: 26px;
+	margin-top: 60px;
+	color: #277B74;
+}
+#nav2{
+	display:inline;
+	float:right;
+	margin-right:15px;
+	height: 32px;
+	line-height: 32px;
+	text-indent: 20px;
+	margin-top: 5px;
+}
+#nav3{
+	display:inline;
+	float:right;
+	color:#FFFFFF;
+	margin-right:-135px;
+	height: 32px;
+	line-height: 32px;
+	text-indent: 20px;
+	margin-top: 59px;
+}
+#content-table {
+	text-align:left;
+	margin-bottom:0px;
+	margin-top:-20px;
+	padding: 0px;
+	float: left;
+	width: 100%;
+	background-color: #FF0000;
+	border: 2px dotted #006600;
+}
+#time {
+	float:right;
+	margin-right:39px;
+	line-height: 32px;
+	font-size: 12px;
+	color: #000000;
+	background-image: url(images/icon1.gif);
+	background-repeat: no-repeat;
+	background-position: left center;
+	text-indent: 10px;
+}
+
+#navbar {
+	width:1000;
+	height: 32px;
+	background-image: url(images/nav2.gif);
+	background-repeat: repeat-x;
+	margin-right:auto;
+	margin-left:auto;
+}
+#banner {
+	width: 1000;
+	height:94px;
+	float:none;
+	background-image: url(images/top.png);
+	background-repeat: no-repeat;
+	margin-right:auto;
+	margin-left:auto;
+}
+.dqwz {
+	background-image: url(images/icon1.gif);
+	background-repeat: no-repeat;
+	background-position: left center;
+	text-indent: 20px;
+	font-size: 12px;
+	line-height: 25px;
+	color: #00A69B;
+	text-decoration: none;
+	text-align: left;
+}
+.xz {
+	background-color: #f4f4f4;
+	float: left;
+	height: 50px;
+	width: 100%;
+	line-height: 50px;
+	font-size: 13px;
+	color: #00A094;
+	vertical-align: middle;
+	padding-top:15px;
+}
+#title {
+	margin-top:15px;
+	float:left;
+	font-size: 14px;
+	line-height: 26px;
+	font-weight: bold;
+	color: #00A095;
+	text-decoration: none;
+	background-image: url(images/bg-daohang.gif);
+	background-repeat: no-repeat;
+	text-indent: 20px;
+	height: 26px;
+	width: 100%;
+	text-align: left;
+}
+.icon {	
+    float: right;
+	height: 26px;
+	width: 100px;
+}
+
+.font-title1 {
+	font-size: 13px;
+	line-height: 50px;
+	color: #009E93;
+}
+.font-title2 {
+	font-size: 13px;
+	line-height: 26px;
+	color: #009E93;
+	width: 200px;
+	float: left;
+}
+.inputwidth {
+	height: 18px;
+	width: 120px;
+}
+.focus {
+	font-size: 13px;
+	font-weight: bold;
+	color: #FF6600;
+}
+
+.nav-font,.nav-font:link,.nav-font:visited {
+	font-size: 12px;
+	color: #FFFFFF;
+	text-decoration: none;
+	
+}
+.nav-font:hover {
+	font-size: 12px;
+	color: #ff6600;
+	text-decoration: none;
+}
+.nulldiv{
+	display:inline;
+	float: left;
+	width: 600px;
+}
+.bd{
+	width: 100%;
+}
+.bd2{
+	width: 49%;
+	float: left;
+}
+.bd3{
+	width: 49%;
+	float: right;
+}
+.menu1{
+	font-size: 14px;
+	line-height: 26px;
+	color: #298079;
+	background-image: url(images/yy.gif);
+	background-repeat: no-repeat;
+	background-position: left;
+	float: left;
+	height: 26px;
+	width: 100px;
+	margin-left: 15px;
+	text-align: left;
+	text-indent: 30px;
+}
+.menu2{
+	font-size: 14px;
+	line-height: 26px;
+	color: #298079;
+	background-image: url(images/yk.gif);
+	background-repeat: no-repeat;
+	background-position: left;
+	float: left;
+	height: 26px;
+	width: 100px;
+	margin-left: 15px;
+	text-align: left;
+	text-indent: 30px;
+}
+.menu3{
+	font-size: 14px;
+	line-height: 26px;
+	color: #298079;
+	background-image: url(images/dnl.gif);
+	background-repeat: no-repeat;
+	background-position: left;
+	float: left;
+	height: 26px;
+	width: 100px;
+	margin-left: 15px;
+	text-align: left;
+	text-indent: 30px;
+}
+.menu4{
+	font-size: 14px;
+	line-height: 26px;
+	color: #298079;
+	background-image: url(images/jl.gif);
+	background-repeat: no-repeat;
+	background-position: left;
+	float: left;
+	height: 26px;
+	width: 100px;
+	margin-left: 15px;
+	text-align: left;
+	text-indent: 30px;
+}
+
+.text {
+	font-size: 12px;
+}
+.sidemenu {
+	background-image: url(images/sidemenu.gif);
+	background-repeat: no-repeat;
+	height: 28px;
+	width: 175px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+input.checkbox {
+	margin-bottom: 12px;
+	padding: .4em;
+}
+
+fieldset {
+	padding: 0;
+	border: 0;
+}
+
+h1 {
+	font-size: 1.2em;
+	margin: .6em 0;
+}
+
+div#users-contain {
+	width: 350px;
+	margin: 20px 0;
+}
+
+div#users-contain table {
+	margin: 1em 0;
+	border-collapse: collapse;
+	width: 100%;
+}
+
+div#users-contain table td,div#users-contain table th {
+	border: 1px solid #eee;
+	padding: .6em 10px;
+	text-align: left;
+}
+
+.ui-dialog .ui-state-error {
+	padding: .3em;
+}
+
+.validateTips {
+	border: 1px solid transparent;
+	padding: 0.3em;
+}
+
+#effect {
+	width: 240px;
+	height: 135px;
+	padding: 0.4em;
+	position: absolute;
+	left: 0;
+	top: 0
+}
+
+#effect h3 {
+	margin: 0;
+	padding: 0.4em;
+	text-align: center;
+}

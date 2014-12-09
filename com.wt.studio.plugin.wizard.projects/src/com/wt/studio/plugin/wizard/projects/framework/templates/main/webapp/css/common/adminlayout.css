@@ -1,0 +1,10 @@
+
+body { font-family:Verdana; font-size:14px; margin:0;}
+#container {margin:0 auto; width:900px; text-align: left;}
+#header { height:50px; background:#6cf; margin-bottom:5px;}
+#mainContent { margin-bottom:5px;}
+#sidebar { float:left; width:200px; height:500px; text-align: left; background:#E6E6FA;}
+#rightContent { float:right; width:695px; height:500px; background:#cff; text-align: left;}/*因为是固定宽度，采用左右浮动方法可有效避免ie 3像素bug*/
+#footer { height:60px; background:#6cf;}
+.heahighlight{border: 1px solid #9cd8dc;padding:3px;outline:#9cd8dc 1px;size: 80px;width: 200px;}
+.btn1_mouseover {BORDER-RIGHT: #7EBF4F 1px solid; PADDING-RIGHT: 2px; BORDER-TOP: #7EBF4F 1px solid; PADDING-LEFT: 2px; FONT-SIZE: 12px; FILTER: progid:DXImageTransform.Microsoft.Gradient(GradientType=0, StartColorStr=#ffffff, EndColorStr=#70D2D6); BORDER-LEFT: #7EBF4F 1px solid; CURSOR: hand; COLOR: black; PADDING-TOP: 2px; BORDER-BOTTOM: #7EBF4F 1px solid}

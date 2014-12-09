@@ -1,0 +1,22 @@
+package com.hirisun.hea.rbac.struts.action;
+
+import com.hirisun.hea.common.action.DispatchAction;
+
+/**
+ * 
+ * <pre>
+ * 业务名:WEB 层，部门对象控制器
+ * 功能说明: 
+ * 编写日期:	2011-3-31
+ * 作者:	LiYi
+ * 
+ * 历史记录
+ * 1、修改日期：
+ *    修改人：
+ *    修改内容：
+ * </pre>
+ */
+public class DepartmentAction extends DispatchAction
+{
+
+}

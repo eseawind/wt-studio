@@ -1,0 +1,26 @@
+<%@ jet package="com.hirisun.ide.plugin.wizard.projects.model.templates" class="DaoTemplate" imports="com.hirisun.ide.plugin.wizard.projects.model.util.JavaTemplateArgs"%>
+<%
+	JavaTemplateArgs args = (JavaTemplateArgs)argument;
+%>
+package <%=args.getPackageName()%>;
+
+import <%=args.getPackageNameInfo().getEntityPackageName()%>.<%=args.getClassNameInfo().getEntityClassName()%>;
+import com.hirisun.components.dao.hibernate.EntityDao;
+
+/**
+ * <pre>
+ * 业务名:
+ * 功能说明: 
+ * 编写日期:
+ * 作者:	HEA IDE
+ * 
+ * 历史记录
+ * 1、修改日期：
+ *    修改人：
+ *    修改内容：
+ * </pre>
+ */
+public interface <%=args.getClassName()%> extends EntityDao<<%=args.getClassNameInfo().getEntityClassName()%>>
+{
+
+}

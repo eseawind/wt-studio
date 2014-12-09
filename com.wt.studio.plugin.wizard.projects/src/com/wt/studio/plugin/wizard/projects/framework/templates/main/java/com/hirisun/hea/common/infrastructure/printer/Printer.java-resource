@@ -1,0 +1,27 @@
+package com.hirisun.hea.common.infrastructure.printer;
+
+/**
+ * 
+ * <pre>
+ * 业务名:文档等打印接口定义
+ * 功能说明: 文档等打印接口定义
+ * 编写日期:	2011-5-13
+ * 作者:	袁明敏
+ * 
+ * 历史记录
+ * 1、修改日期：2011-5-13
+ *    修改人：袁明敏
+ *    修改内容：
+ * </pre>
+ */
+public interface Printer {
+	/**
+	 * 
+	 * 方法说明：打印的文档（全路径）
+	 *
+	 * @param fileName 文件全路径
+	 * @param fileType 文件类型
+	 * @return 返回打印的结果信息
+	 */
+	Object print (String fileName,String fileType);
+}

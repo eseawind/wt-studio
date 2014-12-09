@@ -1,0 +1,86 @@
+package com.hirisun.hea.common.filter;
+
+import java.io.IOException;
+
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.hirisun.hea.common.util.WebUtil;
+import com.hirisun.uum.api.domain.User;
+
+/**
+ * 
+ * <pre>
+ * 业务名:
+ * 功能说明: 应用的sessionFilter，用于控制用户登录拦截 
+ * 编写日期:	2011-4-15
+ * 作者:	xiaoqi
+ * 
+ * 历史记录
+ * 1、修改日期：
+ *    修改人：
+ *    修改内容：
+ * </pre>
+ */
+public class SessionFilter implements Filter
+{
+
+	/**
+	 * 默认销毁filter
+	 */
+	public void destroy()
+	{
+
+	}
+
+	/**
+	 * 
+	 * @param req
+	 *            request
+	 * @param res
+	 *            response
+	 * @param filterChain
+	 *            filterChain
+	 * @throws IOException
+	 */
+	public void doFilter(ServletRequest req, ServletResponse res, FilterChain filterChain)
+			throws IOException, ServletException
+	{
+		HttpServletRequest request = (HttpServletRequest) req;
+		HttpServletResponse response = (HttpServletResponse) res;
+		// Object obj = request.getSession().getAttribute("user");
+		User user = WebUtil.getSessionUser(request);
+		if (user != null) {
+			filterChain.doFilter(request, response);
+		} else {
+			String url = request.getRequestURL().toString();// /codeSort/manage.hea?method=select
+			// 此页面 有时会包会话超时的错误 没有找到原因，所以先暂时排除掉
+			if (url.matches(".*/heaUserAction.hea.*") || url.matches(".*/heaIndexAction.hea.*")) {
+				filterChain.doFilter(request, response);
+			} else {
+				String str = " javascript:parent.location.href='/hdata/modules/eqmt/web/login.jsp'";
+				request.setAttribute("message", "会话过期,请重新登陆!<a href=\"" + str + "\">登陆</a>");
+				request.getRequestDispatcher("/message.jsp").forward(request, response);
+			}
+		}
+
+	}
+
+	/**
+	 * 默认初始化filter
+	 * 
+	 * @param arg0
+	 *            filterConfig
+	 */
+	public void init(FilterConfig arg0) throws ServletException
+	{
+
+	}
+
+}

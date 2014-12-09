@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="com.hirisun.ide.feature"
+      label="HEA Studio Product"
+      version="1.2.0.qualifier"
+      provider-name="Hirisun Corp"
+      plugin="com.hirisun.ide.product"
+      exclusive="true">
+
+   <description url="http://www.hirisun.com">
+      海联讯企业应用开发集成环境
+   </description>
+
+   <copyright url="http://www.hirisun.com/">
+      版权所有 2011-2015 深圳海联讯科技股份有限公司
+   </copyright>
+
+   <license url="http://www.hirisun.com/">
+      []
+   </license>
+
+   <url>
+      <update label="Hirisun HEA Studio" url="http://webosgi.hirisun.com/HEAStudioUpdateSite/"/>
+      <discovery label="New discovery site" url="http://newsite"/>
+   </url>
+
+   <plugin
+         id="com.hirisun.ide.product"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+</feature>

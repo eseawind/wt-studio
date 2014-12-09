@@ -1,0 +1,398 @@
+package com.hirisun.hea.rbac.dao.impl;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.hibernate.SQLQuery;
+
+import com.hirisun.hea.common.dao.impl.BaseDao;
+import com.hirisun.hea.rbac.dao.IndexDao;
+import com.hirisun.hea.rbac.model.Index;
+
+/**
+ * "指标"数据访问对象
+ * 
+ * @author 袁明敏
+ * @see BaseDao<T>
+ * @since 1.0
+ * 
+ */
+
+public class IndexDaoImpl extends BaseDao<Index> implements IndexDao
+{
+	/**
+	 * 
+	 */
+	private static final Log LOG = LogFactory.getLog(IndexDaoImpl.class);
+
+	/**
+	 * 返回当前结点的所有下级结点(多层)
+	 */
+	/*@SuppressWarnings("unchecked")
+	public List<Index> findByChildsById(Serializable id)
+	{
+		Index index = super.findById(id);
+		List<Index> list = super.getSession().createCriteria(Index.class).add(
+				Expression.gt("indexlevel", index.getIndexlevel())).add(
+				Expression.like("levelCode", index.getLevelCode(), MatchMode.START)).list();
+
+		return list;
+	}*/
+
+	public List<Index> findByChildsById(Serializable uuid)
+	{
+		LOG.debug("finding findByChildById instance with id: " + uuid);
+		try {
+			Set<Index> set = new HashSet<Index>();
+			List<Index> list = new ArrayList<Index>();
+			Index instance = (Index) getSession().get(Index.class, uuid);
+			if (instance.getSubIndexes().size() > 0) {
+				Iterator<Index> it = instance.getSubIndexes().iterator();
+				while (it.hasNext()) {
+					Index temp = it.next();
+					list.add(temp);
+				}
+			} else {
+				// 返回之前过滤相同对象
+				for (Index i : list) {
+					set.add(i);
+				}
+				List<Index> reList = new ArrayList<Index>();
+				Iterator<Index> it = set.iterator();
+				while (it.hasNext()) {
+					reList.add(it.next());
+				}
+				list = null;
+				set = null;
+				return reList;
+			}
+			for (int i = 0; i < list.size(); i++) {
+				Index temp = list.get(i);
+				list.addAll(findByChildsById(temp.getIndexuuid()));
+			}
+
+			// 返回之前过滤相同对象
+			for (Index i : list) {
+				set.add(i);
+			}
+			List<Index> reList = new ArrayList<Index>(0);
+			Iterator<Index> it = set.iterator();
+			while (it.hasNext()) {
+				reList.add(it.next());
+			}
+			list = null;
+			set = null;
+
+			return reList;
+		} catch (RuntimeException re) {
+			LOG.error("get failed", re);
+			throw re;
+		}
+
+	}
+
+	public void delete(Index index)
+	{
+		LOG.debug("deleting Index instance");
+		try {
+			super.getSession().clear();
+			super.delete(index);
+			LOG.debug("delete successful");
+		} catch (RuntimeException re) {
+			LOG.error("delete failed", re);
+			throw re;
+		}
+		this.deleteIndexIG(index.getIndexuuid());
+	}
+
+	public void deleteById(Serializable id)
+	{
+		try {
+			this.deleteIndexIG(id.toString());
+			super.deleteById(id);
+		} catch (RuntimeException ex) {
+			ex.printStackTrace();
+		}
+	}
+
+	public Index findById(Serializable id)
+	{
+		LOG.debug("getting Index instance with id: " + id);
+		try {
+			return super.findById(id);
+		} catch (RuntimeException re) {
+			LOG.error("get failed", re);
+			throw re;
+		}
+	}
+
+	public List<Index> findAll()
+	{
+		LOG.debug("finding all Index instances");
+		try {
+			return super.findAll();
+		} catch (RuntimeException re) {
+			LOG.error("find all failed", re);
+			throw re;
+		}
+	}
+
+	public List<Index> findAll(String property, Boolean isAsc)
+	{
+		return super.findAll(property, isAsc);
+	}
+
+	public List<Index> findByProperty(String property, Object value)
+	{
+		return super.findByProperty(property, value);
+	}
+
+	public void deleteAll()
+	{
+		super.deleteAll();
+
+	}
+
+	public void deleteByIds(Serializable... ids)
+	{
+		super.deleteByIds(ids);
+		for (Serializable i : ids) {
+			this.deleteIndexIG(i.toString());
+		}
+	}
+
+	public List<Index> findByIds(Serializable... ids)
+	{
+		return super.findByIds(ids);
+	}
+
+	public String createLevelCodeById(Serializable uuid)
+	{
+		Index index = super.findById(uuid);
+		index.getIndexlevel();
+		List<Index> list = super
+				.executeHqlQuery("select new Index(levelCode) from Index as i where indexlevel > "
+						+ index.getIndexlevel() + " and levelCode like '" + index.getLevelCode()
+						+ "%'");
+		List<Double> levels = new ArrayList<Double>();
+		for (Index i : list) {
+			levels.add(Double.valueOf(i.getLevelCode().replace(index.getLevelCode(), "")));
+		}
+		if (list.size() == 0) {
+			return index.getLevelCode() + "10000";
+		} else {
+			Double[] temp = new Double[levels.size()];
+			Arrays.sort(levels.toArray(temp));
+			return index.getLevelCode() + (temp[temp.length - 1].intValue() + 1) + "";
+
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Index> findIndexByGroupID(List<String> groupIds, int type)
+	{
+		String sql = "SELECT distinct I.* FROM LFS_INDEX I , LFS_IG IG WHERE IG.GROUPUUID in (:groupIds) AND I.INDEXTYPE ="
+				+ type + " AND I.INDEXUUID = IG.INDEXUUID ORDER BY I.INDEXORDER";
+		return this.getSession().createSQLQuery(sql).addEntity(Index.class).setParameterList(
+				"groupIds", groupIds).list();
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Index> findIndexByGroupId(List<String> groupIds, int type, String appId)
+	{
+		String sql = "SELECT distinct I.* FROM LFS_INDEX I , LFS_IG IG WHERE IG.GROUPUUID in (:groupIds) AND I.INDEXTYPE ="
+				+ type
+				+ " AND I.APP_ID=:appId AND I.INDEXUUID = IG.INDEXUUID AND I.WAY='1' ORDER BY I.INDEXORDER";
+		List<Index> indexes = this.getSession().createSQLQuery(sql).addEntity(Index.class)
+				.setParameterList("groupIds", groupIds).setString("appId", appId).list();
+		// List<Index> is = new ArrayList<Index>();
+		// for (Index i : indexes) {
+		// if (appId.equals(i.getAppId())) {
+		// is.add(i);
+		// }
+		// }
+		return indexes;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Index> findIndexByGroupID(List<String> groupIds)
+	{
+		String sql = "SELECT distinct I.* FROM LFS_INDEX I , LFS_IG IG WHERE IG.GROUPUUID in (:groupIds)  AND I.INDEXUUID = IG.INDEXUUID ORDER BY I.INDEXORDER";
+		return this.getSession().createSQLQuery(sql).addEntity(Index.class).setParameterList(
+				"groupIds", groupIds).list();
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Index> findChildIndexByGroupID(List<String> groupIds, int type,
+			String parentIndexId, int state)
+	{
+		String sql = "SELECT distinct I.* FROM LFS_INDEX I , LFS_IG IG WHERE IG.GROUPUUID in (:groupIds) AND I.INDEXTYPE ="
+				+ type
+				+ " AND I.INDEXUUID = IG.INDEXUUID AND I.PARENTINDEXUUID='"
+				+ parentIndexId
+				+ "'" + (state == -1 ? "" : (" AND WAY=" + state)) + " ORDER BY I.INDEXORDER";
+		return this.getSession().createSQLQuery(sql).addEntity(Index.class).setParameterList(
+				"groupIds", groupIds).list();
+	}
+
+	public List<Index> findChildByParentId(String parentId, int type)
+	{
+		String hql = "from com.hirisun.hea.rbac.model.Index i where i.parentindexuuid='" + parentId
+				+ "' and i.indextype=" + type + " order by i.indexorder";
+		return this.executeHqlQuery(hql);
+	}
+
+	public List<Index> findAll(int type)
+	{
+		String hql = "from com.hirisun.hea.rbac.model.Index i where i.indextype=" + type
+				+ "  order by i.indexorder";
+		return this.executeHqlQuery(hql);
+	}
+
+	public List<Index> findAll(int type, String appId)
+	{
+		String hql = "from com.hirisun.hea.rbac.model.Index i where i.indextype=" + type
+				+ " and i.appId='" + appId + "'  order by i.indexorder";
+		return this.executeHqlQuery(hql);
+	}
+
+	public void addIndexGroup(String indexId, String[] groupIds)
+	{
+		String sql = null;
+		for (String groupId : groupIds) {
+			sql = "INSERT INTO LFS_IG(INDEXUUID,GROUPUUID) VALUES('" + indexId + "','" + groupId
+					+ "')";
+			this.executeSql(sql);
+		}
+
+	}
+
+	public void addIndexGroup(String[] indexIds, String groupId)
+	{
+		String sql = null;
+		for (String indexId : indexIds) {
+			sql = "INSERT INTO LFS_IG(INDEXUUID,GROUPUUID) VALUES('" + indexId + "','" + groupId
+					+ "')";
+			this.executeSql(sql);
+		}
+
+	}
+
+	public void deleteIndexGroup(String indexId, String[] groupIds)
+	{
+		if (groupIds == null || groupIds.length == 0)
+			return;
+		StringBuffer sql = new StringBuffer("DELETE FROM LFS_IG WHERE INDEXUUID='");
+		sql.append(indexId);
+		sql.append("' AND GROUPUUID IN(");
+		;
+		for (String groupId : groupIds) {
+			sql.append("'").append(groupId).append("',");
+		}
+		if (groupIds != null && groupIds.length > 0) {
+			sql.deleteCharAt(sql.length() - 1);
+		}
+		sql.append(")");
+		this.executeSql(sql.toString());
+	}
+
+	public void deleteIndexGroup(String[] indexIds, String groupId)
+	{
+		if (indexIds == null || indexIds.length == 0)
+			return;
+		StringBuffer sql = new StringBuffer("DELETE FROM LFS_IG WHERE GROUPUUID='");
+		sql.append(groupId);
+		sql.append("' AND INDEXUUID IN(");
+		;
+		for (String indexId : indexIds) {
+			sql.append("'").append(indexId).append("',");
+		}
+		if (indexIds != null && indexIds.length > 0) {
+			sql.deleteCharAt(sql.length() - 1);
+		}
+		sql.append(")");
+		this.executeSql(sql.toString());
+	}
+
+	public void updateIndexGroup(String indexId, String[] groupIds)
+	{
+		String sql = null;
+		sql = "DELETE FROM LFS_IG IG WHERE IG.INDEXUUID='" + indexId + "'";
+		this.executeSql(sql);
+		for (String groupId : groupIds) {
+			sql = "INSERT INTO LFS_IG(INDEXUUID,GROUPUUID) VALUES('" + indexId + "','" + groupId
+					+ "')";
+			this.executeSql(sql);
+		}
+	}
+
+	public void updateIndexGroup(String[] indexIds, String groupId)
+	{
+		String sql = null;
+		sql = "DELETE FROM LFS_IG IG WHERE IG.GROUPUUID='" + groupId + "'";
+		this.executeSql(sql);
+		for (String indexId : indexIds) {
+			sql = "INSERT INTO LFS_IG(INDEXUUID,GROUPUUID) VALUES('" + indexId + "','" + groupId
+					+ "')";
+			this.executeSql(sql);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<String> findGroupIdByIndexID(String indexId)
+	{
+		String sql = "SELECT GROUPUUID FROM LFS_IG WHERE INDEXUUID = '" + indexId + "'";
+		List ids = this.executeSqlQuery(sql);
+		List<String> idList = new ArrayList<String>();
+		for (Object id : ids) {
+			idList.add(id.toString());
+		}
+		return idList;
+	}
+
+	public Index findRootIndex(int type)
+	{
+		String hql = "from com.hirisun.hea.rbac.model.Index t where t.parentindexuuid='index_root' and t.indextype="
+				+ type;
+		List<Index> indexList = this.executeHqlQuery(hql);
+		if (indexList != null && indexList.size() == 1) {
+			return indexList.get(0);
+		}
+		return null;
+	}
+
+	public void deleteIndexIG(String indexUuid)
+	{
+		String sql = "delete from lfs_ig ig where ig.indexuuid='" + indexUuid + "'";
+		this.executeSql(sql);
+	}
+
+	public boolean hasChild(String parentId, int type)
+	{
+		String sql = "select count(*) from lfs_index ig where ig.parentindexuuid='" + parentId
+				+ "' and ig.indextype=" + type + "";
+		SQLQuery query = this.getSession().createSQLQuery(sql);
+		Long count = Long.valueOf(query.uniqueResult().toString());
+		return count > 0 ? true : false;
+	}
+
+	public List<Index> findChildIndexByGroupID(List<String> groupIds, int type,
+			String parentIndexId, String appId)
+	{
+		String sql = "SELECT distinct I.* FROM LFS_INDEX I , LFS_IG IG WHERE IG.GROUPUUID in (:groupIds) AND I.INDEXTYPE ="
+				+ type
+				+ " AND I.INDEXUUID = IG.INDEXUUID AND I.PARENTINDEXUUID=:parentIndexId"
+				+ " AND app_id = :appId" + " ORDER BY I.INDEXORDER";
+		return this.getSession().createSQLQuery(sql).addEntity(Index.class).setParameterList(
+				"groupIds", groupIds).setParameter("parentIndexId", parentIndexId).setParameter(
+				"appId", appId).list();
+	}
+
+}

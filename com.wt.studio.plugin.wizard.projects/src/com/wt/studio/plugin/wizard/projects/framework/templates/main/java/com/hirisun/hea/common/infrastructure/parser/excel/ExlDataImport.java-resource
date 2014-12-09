@@ -1,0 +1,27 @@
+package com.hirisun.hea.common.infrastructure.parser.excel;
+
+import java.io.File;
+/**
+ * 
+ * <pre>
+ * 业务名: 供第三方应用调用，按照规范的excel单元格批注，解析excel文件件，导入数据到数据库
+ * 功能说明: 导入带批注的excel文件数据到数据库
+ * 编写日期:	2011-4-21
+ * 作者:	袁明敏
+ * 
+ * 历史记录
+ * 1、修改日期：2011-4-21
+ *    修改人：袁明敏
+ *    修改内容：
+ * </pre>
+ */
+public interface ExlDataImport {
+	/**
+	 * 
+	 * 方法说明：导入EXCEL模板数据
+	 *
+	 * @param file EXCEL模板文件对象
+	 * @return 导入成功返回真
+	 */
+	public boolean importTemplateData(File file);
+}

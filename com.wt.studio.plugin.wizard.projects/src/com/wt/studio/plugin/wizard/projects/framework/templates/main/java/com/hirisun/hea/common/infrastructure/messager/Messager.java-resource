@@ -1,0 +1,80 @@
+package com.hirisun.hea.common.infrastructure.messager;
+
+/**
+ * 
+ * <pre>
+ * 业务名: 实现手机，jms，邮件或短信类的消息服务
+ * 功能说明: 广义消息接口定义 
+ * 编写日期:	2011-3-30
+ * 作者:	袁明敏
+ * 
+ * 历史记录
+ * 1、修改日期：2011-3-30
+ *    修改人：袁明敏
+ *    修改内容：
+ * </pre>
+ */
+public interface Messager {
+	
+	/**
+	 * 
+	 * 方法说明：创建空消息
+	 *
+	 * @return 返回消息对象
+	 */
+	public Object createMessage();
+	
+	/**
+	 * 
+	 * 方法说明：创建某一类型的空消息
+	 *
+	 * @param msgType 消息类型
+	 * @return 跟据类型创建单个消息
+	 */
+	public Object createMessage(Object msgType);
+	
+	/**
+	 * 
+	 * 方法说明：创建消息头
+	 *
+	 * @return 带消息头的消息对象
+	 */
+	public Object createMessageHead(); 
+	
+	/**
+	 * 
+	 * 方法说明：创建消息体
+	 *
+	 * @return 返回带消息休的消息对象
+	 */
+	public Object createMessageBody();
+	
+	/**
+	 * 
+	 * 方法说明：发送单个消息
+	 *
+	 * @param message 单个消息对象
+	 * @return 返回是否发送成功
+	 */
+	public Boolean sendMessage(Object message);
+	
+	/**
+	 * 
+	 * 方法说明：发送消息前，客户端自定操作
+	 *
+	 * @param msgIntercept 消息发送拦截器接口
+	 * @param messages 多个消息数组
+	 * @return 发送成功返回真
+	 */
+	public Boolean sendMessage(MessageIntercept msgIntercept,Object ... messages);
+	
+	/**
+	 * 
+	 * 方法说明：发送消息后，客户端回调操作
+	 *
+	 * @param msgCallback 回调接口对象
+	 * @param messages 多个消息数组
+	 * @return 发送成功返回真
+	 */
+	public Boolean sendMessage(MessageCallback msgCallback, Object ... messages);
+}

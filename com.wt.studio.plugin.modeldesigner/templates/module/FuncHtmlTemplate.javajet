@@ -1,0 +1,13 @@
+<%@ jet package="com.hirisun.ide.plugin.pagedesigner.wizard.templates" class="FuncHTMLTemplate"
+		imports="java.util.List "%>
+<!-- Hirisun Corp 版权信息 -->
+<!DOCTYPE">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title></title>
+</head>
+<body>
+$FUNC_BODY$
+</body>
+</html>

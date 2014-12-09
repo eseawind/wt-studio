@@ -1,0 +1,63 @@
+package com.hirisun.hea.common.dao.impl;
+
+import java.io.Serializable;
+import java.util.List;
+
+import com.hirisun.hea.common.dao.BehaveLogDao;
+import com.hirisun.hea.common.model.BehaveLog;
+import com.hirisun.hea.common.model.Page;
+
+
+/**
+ * "系统用户访问日志" 数据访问对象
+ * 
+ * @author 袁明敏
+ * @see BaseDao<T>
+ * @since 1.0
+ *
+ */
+public class BehaveLogDaoImpl extends BaseDao<BehaveLog> implements BehaveLogDao{
+	
+	@Override
+	public void save(BehaveLog obj) {
+		super.save(obj);
+	}
+
+	@Override
+	public void delete(BehaveLog obj) {
+		super.delete(obj);
+	}
+	
+	@Override
+	public void deleteById(Serializable id) {
+		super.deleteById(id);
+	}
+	@Override
+	public List<BehaveLog> findAll() {
+		return super.findAll();
+	}
+	@Override
+	public List<BehaveLog> findAll(String property, Boolean isAsc) {
+		return super.findAll(property, isAsc);
+	}
+	
+	@Override
+	public BehaveLog findById(Serializable id) {
+		return super.findById(id);
+	}
+	
+	@Override
+	public List<BehaveLog> findByProperty(String property, Object value) {
+		return super.findByProperty(property, value);
+	}
+	
+	@Override
+	public BehaveLog update(BehaveLog obj) {
+		return super.update(obj);
+	}
+	
+	@Override
+	public Page<BehaveLog> loadPage(Page<BehaveLog> pageModel) {
+		return super.loadPage(pageModel);
+	}
+}

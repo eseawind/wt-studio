@@ -1,0 +1,233 @@
+<%@ jet package="com.wt.studio.plugin.pagedesigner.wizard.templates" class="BOServiceImplTemplate"
+		imports="java.util.List java.io.Serializable 
+		com.hirisun.ide.plugin.pagedesigner.gef.model.MOFunctionTableModel 
+		com.hirisun.ide.plugin.pagedesigner.utils.TemplateUtils
+		com.hirisun.ide.plugin.pagedesigner.gef.model.FunctionColumnModel
+		com.hirisun.ide.plugin.pagedesigner.gef.model.TableConnection
+		com.hirisun.ide.plugin.pagedesigner.gef.model.TableotnConnection
+        com.hirisun.ide.plugin.pagedesigner.gef.model.TableotoConnection
+		"%>
+		
+<%
+    MOFunctionTableModel model=(MOFunctionTableModel) ((List) argument).get(0);
+    String projectName=(String) ((List) argument).get(1);
+    String modelName=model.getTitle();
+    String firstUpperModelName=TemplateUtils.toUpperCaseFirstOne(modelName);
+    String firstLowerModelName=TemplateUtils.toLowerCaseFirstOne(modelName);
+    String idName=TemplateUtils.toLowerCaseFirstOne(((FunctionColumnModel) model.getPKColumn()).getTitle());
+    boolean flag=false;
+%>
+package com.hirisun.<%=projectName%>.service.impl;
+import java.io.IOException;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.hirisun.components.data.json.JsonUtils;
+import org.apache.commons.lang.StringUtils;
+import com.hirisun.<%=projectName%>.bo.<%=modelName%>BO;
+import com.hirisun.<%=projectName%>.model.<%=modelName%>;
+import com.hirisun.<%=projectName%>.dao.<%=modelName%>Dao;
+import com.hirisun.<%=projectName%>.model.SearchConditions;
+import com.hirisun.<%=projectName%>.model.SearchCondition;
+<%for(TableConnection connection:model.getIncomingConnections()){%>
+import com.hirisun.<%=projectName%>.service.<%=TemplateUtils.toUpperCaseFirstOne(((MOFunctionTableModel) connection.getSource()).getTitle())%>BOService;
+import com.hirisun.<%=projectName%>.bo.<%=TemplateUtils.toUpperCaseFirstOne(((MOFunctionTableModel) connection.getSource()).getTitle())%>BO;
+<%}%>
+import com.hirisun.<%=projectName%>.service.<%=modelName%>BOService;
+@Service(value = "<%=modelName%>BOService")
+@Transactional
+public class <%=modelName%>BOServiceImpl {
+   
+    @Resource
+    private <%=modelName%>Dao dao;
+    <%for(TableConnection connection:model.getIncomingConnections()){
+    if(connection instanceof TableotnConnection)
+    {
+         flag=true;
+    }%>
+	@Resource
+	private <%=TemplateUtils.toUpperCaseFirstOne(((MOFunctionTableModel) connection.getSource()).getTitle())%>BOService <%=TemplateUtils.toLowerCaseFirstOne(((MOFunctionTableModel)connection.getSource()).getTitle())%>BOService;
+    <%}%>
+	public <%=modelName%>BO getBOById(String <%=idName%>, int level)
+	{
+	    return toBO(dao.findById(<%=idName%>), level);
+	}
+
+	public <%=modelName%> toEntity(<%=modelName%>BO <%=firstLowerModelName%>BO)
+    {
+        return JsonUtils.obj2obj(<%=firstLowerModelName%>BO, <%=modelName%>.class);
+    }
+	public <%=modelName%>BO save(<%=modelName%>BO <%=firstLowerModelName%>BO)
+    {
+        <%=modelName%>BO returnValue = new <%=modelName%>BO();
+		<%=modelName%> <%=firstLowerModelName%> = dao.update(toEntity(<%=firstLowerModelName%>BO));
+		if (null != <%=firstLowerModelName%>) {
+			returnValue = toBO(<%=firstLowerModelName%>, 0);
+		}
+		return returnValue;
+    }
+	public <%=modelName%>BO toBO(<%=modelName%> <%=firstLowerModelName%>)
+    {
+        return toBO(<%=firstLowerModelName%>, 0); 
+    }
+	public <%=modelName%>BO toBO(<%=modelName%> <%=firstLowerModelName%>, int level)
+	{
+	    if(<%=firstLowerModelName%>==null){
+	    return null;
+	    }
+	<%=modelName%>BO returnValue = JsonUtils.obj2obj(<%=firstLowerModelName%>,<%=modelName%>BO.class);
+	    if(level>0)
+	    {
+       <%for(TableConnection connection:model.getIncomingConnections()){
+	   if(connection instanceof TableotoConnection){%>
+	         returnValue.set<%=TemplateUtils.toUpperCaseFirstOne(((MOFunctionTableModel) connection.getSource()).getTitle())%>BO(<%=TemplateUtils.toLowerCaseFirstOne(((MOFunctionTableModel)connection.getSource()).getTitle())%>BOService.getBO("<%=idName%>",returnValue.get<%=TemplateUtils.toUpperCaseFirstOne(idName)%>(), level-1));
+       <%}
+       else if(connection instanceof TableotnConnection){%>
+             returnValue.setList<%=TemplateUtils.toUpperCaseFirstOne(((MOFunctionTableModel) connection.getSource()).getTitle())%>BO(<%=TemplateUtils.toLowerCaseFirstOne(((MOFunctionTableModel)connection.getSource()).getTitle())%>BOService.getBOs("<%=idName%>",returnValue.get<%=TemplateUtils.toUpperCaseFirstOne(idName)%>(), level-1));
+       <%}
+       }%>
+    }
+	    return returnValue;
+	}
+	public List<<%=modelName%>BO> toBOs(List<<%=modelName%>> list<%=modelName%>, int level)
+	{
+	    List<<%=modelName%>BO> returnValue = new ArrayList<<%=modelName%>BO>();
+		for (int i = 0; i < list<%=modelName%>.size(); i++) {
+			returnValue.add(toBO(list<%=modelName%>.get(i), level));
+		}
+		return returnValue;
+	}
+	public List<<%=modelName%>BO> getBOs(String propertyName, Object propertyValue,
+			int level)
+	{
+		return toBOs(dao.findByProperty(propertyName, propertyValue), level);
+	}
+	public List<<%=modelName%>BO> getBOs(SearchConditions searchConditions, int level)
+	{
+	    Map<String, Object> searchMap = new HashMap<String, Object>();
+		Map<String, String> propertyMap = new HashMap<String, String>();
+		Map<String, String> sortMap = new HashMap<String, String>();
+		for (int i = 0; i < searchConditions.size(); i++) {
+			SearchCondition<?> search = searchConditions.get(i);
+			if (null != search.getSearchMethod()) {
+				propertyMap.put(search.getPropertyName(),
+						search.getSearchMethod());
+			}
+			if (null != search.getPropertyValue()) {
+				searchMap.put(search.getPropertyName(),
+						search.getPropertyValue());
+			}
+			if (null != search.getSort()) {
+				sortMap.put(search.getPropertyName(), search.getSort());
+			}
+		}
+		return toBOs(dao.getEntitiesByMap(propertyMap, sortMap, searchMap),
+				level);
+	}
+	public List<<%=modelName%>BO> getBOs(String hSql, String[] paras, int level)
+	{
+	   return toBOs(dao.executeHqlQuery(hSql, paras), level);
+	}
+	public boolean del<%=modelName%>(<%=((FunctionColumnModel) model.getPKColumn()).getDataType()%> <%=idName%>)
+	{
+	   boolean returnValue = dao.deleteById(<%=idName%>);
+	   return returnValue;
+	}
+	<%if(flag)
+	{%>
+	public String save<%=firstUpperModelName%>(String formData,HttpServletRequest request) throws IOException {
+		Map<String, Object> returnMap = new HashMap<String, Object>();
+		<%=firstUpperModelName%>BO <%=firstLowerModelName%>BO = JsonUtils.json2object(
+				Utils.getJson(formData, request),<%=firstUpperModelName%>BO.class);
+		<%=firstUpperModelName%>BO bo = save(<%=firstLowerModelName%>BO);
+		if (bo == null) {
+			returnMap.put("isTure", false);
+			return JsonUtils.obj2json(returnMap);
+		}
+		if(StringUtils.isNotBlank(String.valueOf(<%=firstLowerModelName%>BO.get<%=TemplateUtils.toUpperCaseFirstOne(idName)%>()))){
+			Boolean bn = false;
+			<%=((FunctionColumnModel) model.getPKColumn()).getDataType()%> <%=TemplateUtils.toLowerCaseFirstOne(idName)%> = <%=firstLowerModelName%>BO.get<%=TemplateUtils.toUpperCaseFirstOne(idName)%>();
+		<%for(TableConnection connection:model.getIncomingConnections()){
+        if(connection instanceof TableotnConnection)
+        {
+           String childModelName=((MOFunctionTableModel) connection.getSource()).getTitle();
+           String childIdName=((MOFunctionTableModel) connection.getSource()).getPKColumn().getTitle();
+           String childLargeName=TemplateUtils.toUpperCaseFirstOne(childModelName);
+           String childSmallName=TemplateUtils.toLowerCaseFirstOne(childModelName);
+        %>
+			List<<%=childLargeName%>BO> <%=childSmallName%>BOs = new ArrayList<<%=childLargeName%>BO>();
+			<%=childSmallName%>BOs = <%=childSmallName%>BOService.getBOs("<%=TemplateUtils.toLowerCaseFirstOne(idName)%>", <%=TemplateUtils.toLowerCaseFirstOne(idName)%>, 0);
+			for (<%=childLargeName%>BO inbo : <%=childSmallName%>BOs){
+				bn = <%=childSmallName%>BOService.del<%=childLargeName%>(inbo.get<%=TemplateUtils.toUpperCaseFirstOne(childIdName)%>());
+				if(!bn){
+					returnMap.put("isTure", false);
+					return JsonUtils.obj2json(returnMap);
+				}
+			}
+		 <%}
+		 }%>
+		 }
+		<%for(TableConnection connection:model.getIncomingConnections()){
+        if(connection instanceof TableotnConnection)
+        {
+           String childModelName=((MOFunctionTableModel) connection.getSource()).getTitle();
+           String childIdName=((MOFunctionTableModel) connection.getSource()).getPKColumn().getTitle();
+           String childLargeName=TemplateUtils.toUpperCaseFirstOne(childModelName);
+           String childSmallName=TemplateUtils.toLowerCaseFirstOne(childModelName);
+        %>
+			List<<%=childLargeName%>BO> save<%=childLargeName%>BOs = <%=firstLowerModelName%>BO.getList<%=childLargeName%>BO();
+		    for (<%=childLargeName%>BO <%=childSmallName%>BO : save<%=childLargeName%>BOs ) {
+			<%=childSmallName%>BO.set<%=TemplateUtils.toUpperCaseFirstOne(idName)%>(bo.get<%=TemplateUtils.toUpperCaseFirstOne(idName)%>());
+			<%=childLargeName%>BO <%=childSmallName%>BO2 = <%=childSmallName%>BOService.save(<%=childSmallName%>BO);
+			if (<%=childSmallName%>BO2 == null) {
+				returnMap.put("isTure", false);
+				return JsonUtils.obj2json(returnMap);
+			}
+		}
+		 <%}
+		 }%>
+		returnMap.put("isTure", true);
+		return JsonUtils.obj2json(returnMap);
+	}
+	
+	
+	public String del<%=firstUpperModelName%>(<%=((FunctionColumnModel) model.getPKColumn()).getDataType()%> <%=TemplateUtils.toLowerCaseFirstOne(idName)%>, HttpServletRequest request) {
+		Map<String, Object> returnMap = new HashMap<String, Object>();
+		Boolean bn = false;
+		bn = del<%=firstUpperModelName%>(<%=TemplateUtils.toLowerCaseFirstOne(idName)%>);
+		if(!bn){
+			returnMap.put("isTure", false);
+			return JsonUtils.obj2json(returnMap);
+		}
+		<%for(TableConnection connection:model.getIncomingConnections()){
+		 if(connection instanceof TableotnConnection)
+        {
+           String childModelName=((MOFunctionTableModel) connection.getSource()).getTitle();
+           String childIdName=((MOFunctionTableModel) connection.getSource()).getPKColumn().getTitle();
+           String childLargeName=TemplateUtils.toUpperCaseFirstOne(childModelName);
+           String childSmallName=TemplateUtils.toLowerCaseFirstOne(childModelName);
+        %>
+		List<<%=childLargeName%>BO> <%=childSmallName%>BOs = new ArrayList<<%=childLargeName%>BO>();
+		<%=childSmallName%>BOs = <%=childSmallName%>BOService.getBOs("<%=TemplateUtils.toLowerCaseFirstOne(idName)%>", <%=TemplateUtils.toLowerCaseFirstOne(idName)%>, 0);
+		for (<%=childLargeName%>BO bo :  <%=childSmallName%>BOs){
+			bn = <%=childSmallName%>BOService.del<%=childLargeName%>(bo.get<%=TemplateUtils.toUpperCaseFirstOne(childIdName)%>());
+			if(!bn){
+				returnMap.put("isTure", false);
+				return JsonUtils.obj2json(returnMap);
+			}
+		}
+		 <%}
+		 }%>
+		returnMap.put("isTure", true);
+		return JsonUtils.obj2json(returnMap);
+	}
+	
+	<%}%>	
+}

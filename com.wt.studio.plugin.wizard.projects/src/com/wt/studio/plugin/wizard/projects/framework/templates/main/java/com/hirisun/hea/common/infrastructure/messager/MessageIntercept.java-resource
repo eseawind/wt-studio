@@ -1,0 +1,26 @@
+package com.hirisun.hea.common.infrastructure.messager;
+
+/**
+ * 
+ * <pre>
+ * 业务名:消息拦截器，消息发送时做的
+ * 功能说明: 
+ * 编写日期:	2011-3-28
+ * 作者:	袁明敏
+ * 
+ * 历史记录
+ * 1、修改日期：2011-3-31
+ *    修改人：袁明敏
+ *    修改内容：添加入参
+ * </pre>
+ */
+public abstract interface MessageIntercept {
+	
+	/**
+	 * 
+	 * 方法说明：消息发送时的拦截操作
+	 *
+	 * @param obj 客户端入参对象
+	 */
+	public void doIntercept(Object obj);
+}

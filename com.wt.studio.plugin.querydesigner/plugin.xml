@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+         <category
+            name="HEA Studio" id="com.hirisun.ide.views">
+      </category>
+      <view
+            name="Query Designer"
+            icon="icons/Designe.png"
+            category="com.hirisun.ide.views"
+            class="com.wt.studio.plugin.querydesigner.views.QueryDesignerView"
+            id="com.hirisun.ide.plugin.querydesigner.views.QueryDesignerView" >
+      </view>
+      <view
+            category="com.hirisun.ide.views"
+            class="com.hirisun.ide.plugin.querydesigner.gef.views.FuncPageView"
+            icon="icons/Designe.png"
+            id="com.hirisun.ide.plugin.querydesigner.gef.views.FuncPageView"
+            name="Func Page Designer"
+            restorable="true">
+      </view>
+   </extension>
+      <extension
+            point="org.eclipse.ui.editors">
+         <editor
+               class="com.wt.studio.plugin.querydesigner.gef.editors.QueryDesignerEditor"
+               contributorClass="com.wt.studio.plugin.querydesigner.gef.actions.DiagramActionBarContributor"
+               default="true"
+               extensions="hquery"
+               icon="icons/Designe.png"
+               id="com.hirisun.ide.plugin.querydesigner.gef.editor.QueryDesignerEditor"
+               name="QueryDesigner Editor">
+         </editor>
+      </extension>
+      <extension
+            point="org.eclipse.ui.newWizards">
+            
+      <category
+            name="Query Designer"
+            id="com.hirisun.ide.plugin.querydesigner.wizards">
+      </category>
+      <wizard
+            name="Query Designer File"
+            icon="icons/Designe.png"
+            category="com.hirisun.ide.plugin.querydesigner.wizards"
+            class="com.wt.studio.plugin.querydesigner.wizards.NewQueryDesignerWizard"
+            id="com.hirisun.ide.plugin.querydesigner.wizards.NewQueryDesignerWizard">
+          <description>
+            Create a Snaker Process File
+         </description>
+      </wizard>
+      </extension>
+      
+</plugin>

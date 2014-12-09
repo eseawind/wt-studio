@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: HEA Studio Product
+Bundle-SymbolicName: com.wt.studio.product;singleton:=true
+Bundle-Version: 1.5.0.qualifier
+Bundle-Activator: com.wt.studio.product.Activator
+Bundle-Vendor: Hirisun Corp
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.ui.intro,
+ org.eclipse.core.resources,
+ org.eclipse.update.ui,
+ org.eclipse.update.core,
+ org.eclipse.core.filesystem,
+ org.eclipse.ui.ide,
+ org.eclipse.update.configurator,
+ org.eclipse.update.scheduler,
+ org.eclipse.equinox.p2.updatechecker,
+ org.eclipse.equinox.p2.updatesite
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6,
+ JavaSE-1.7
+Bundle-ActivationPolicy: lazy

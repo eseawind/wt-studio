@@ -1,0 +1,80 @@
+<%@ jet package="com.hirisun.ide.plugin.pagedesigner.wizard.templates" class="SearchConditionTemplate"
+		imports="java.util.List java.io.Serializable 
+		"%>
+<%
+String projectName=(String) argument;
+%>
+package com.hirisun.<%=projectName%>.model;
+
+/**
+ * 
+ * <pre>
+ * 业务名:
+ * 功能说明: 
+ * 编写日期:	
+ * 作者:	
+ * 
+ * 历史记录
+ * 1、修改日期：
+ *    修改人：
+ *    修改内容：
+ * </pre>
+ * 
+ * @param <T>
+ */
+public class SearchCondition<T> {
+
+	/**
+	 * 
+	 */
+	private String propertyName;
+
+	/**
+	 * 
+	 */
+	private T propertyValue;
+
+	/**
+	 * 
+	 */
+	private String searchMethod;
+
+	/**
+	 * 
+	 */
+	private String sort;
+
+	public String getPropertyName() {
+		return propertyName;
+	}
+
+	public void setPropertyName(String propertyName) {
+		this.propertyName = propertyName;
+	}
+
+	public T getPropertyValue() {
+		return propertyValue;
+	}
+
+	public void setPropertyValue(T propertyValue) {
+		this.propertyValue = propertyValue;
+	}
+
+	public String getSearchMethod() {
+		return searchMethod;
+	}
+
+	public void setSearchMethod(String searchMethod) {
+		this.searchMethod = searchMethod;
+	}
+
+	public String getSort() {
+		return sort;
+	}
+
+	public void setSort(String sort) {
+		this.sort = sort;
+	}
+	
+}
+		

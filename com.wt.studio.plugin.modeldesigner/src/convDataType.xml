@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="GBK"?>
+<Container>
+<orcal name="orcal">
+<varchar>String</varchar>
+<varchar2>String</varchar2>
+<int>int</int>
+<VARCHAR>String</VARCHAR>
+<VARCHAR2>String</VARCHAR2>
+<INT>int</INT>
+<NUMBER>double</NUMBER>
+<number>double</number>
+</orcal>
+</Container>

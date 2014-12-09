@@ -1,0 +1,123 @@
+body {
+	font-family: Verdana;
+	font-size: 12px;
+	margin: 0;
+	overflow: hidden;
+	color: #000000;
+}
+
+#container {
+	margin: 0 auto;
+	width: 100%;
+}
+
+#header {
+	margin-bottom: 2px;
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+	border-color: CAE1FF;
+}
+
+#menu {
+	height: 27px;
+	margin-bottom: 1px;
+	background-image: url(../../images/menu.gif);
+	background-repeat: repeat-x;
+	background-position: bottom;
+	
+}
+
+#mainContent {
+	height: 70%;
+	border-style: solid;
+	border-width:1px;
+	border-color: #CAE1FF; 
+}
+
+#sidebar {
+	float: left;
+	width: 200px;
+	position: relative;
+	height:100%;
+}
+
+#content {
+	margin-left: 200px !important;
+	margin-left: 200px;
+	position: relative;
+	height: 100%;
+}
+
+#footer {
+	display:none;
+	height: 36px;
+}
+#login {
+	background-image: url(../../images/loginbg.jpg);
+	background-repeat: repeat-x;
+	background-position: center top;
+	background-color: #CACBCD;
+	height: 567px;
+}
+
+a:link,.a:visited,.a:hover {
+	font-size: 13px;
+	color: #000000;
+}
+
+
+
+
+		.noSelectTab{
+	width: 78px;
+	height: 27px;
+	text-align: center;
+	text-decoration:none;
+	border:0px;
+	margin:0;
+	padding:0;
+	background:url(../../images/tab1.gif) no-repeat;
+	line-height: 27px;
+			}
+			
+			.selectTab{
+	width: 78px;
+	height: 27px;
+	text-align: center;
+	text-decoration:none;
+	border:0px;
+	margin:0;
+	padding:0;
+	background:url(../../images/seltab1.gif) no-repeat;
+	line-height: 27px;
+			}			
+			#minuul{
+			list-style-type:none; 
+			position: absolute;
+			left: -40px;
+			}
+			#minuul li{
+				float: left;
+			}
+			
+			.sidebarHidden{
+				height:100%;
+				width:220px;
+				position: relative;
+				display: none;
+			}
+			
+			.sidebarShow{
+				height:100%;
+				width:220px;
+				position: relative;
+				display:block;
+			}
+			.nav{
+				width:100px;
+				height: 20px;
+				font-size: 12px;
+				color: #36648B;
+				font-weight: bold;
+				margin-right:0px; 
+			}

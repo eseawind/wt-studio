@@ -1,0 +1,37 @@
+<%@ jet package="com.hirisun.ide.plugin.wizard.projects.services.templates" class="Mobile2HTML5Template"
+		imports="com.hirisun.ide.plugin.wizard.projects.model.util.JavaTemplateArgs
+		         com.hirisun.ide.plugin.wizard.projects.services.util.ServiceModuleModel
+		         com.hirisun.ide.plugin.wizard.projects.services.util.HTML5Model
+				 java.util.List
+				 org.apache.commons.lang.StringUtils"%>
+<%  
+    ServiceModuleModel moduleModel = (ServiceModuleModel) ((Object[])argument)[1];
+%>
+<!DOCTYPE html>
+<html>
+<head>
+<title></title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link href="../css/kendo.common.min.css" rel="stylesheet" />
+<link href="../css/kendo.default.min.css" rel="stylesheet" />
+<link href="../css/kendo.mobile.all.min.css" rel="stylesheet" />
+<%=moduleModel.getLinkStyleCode()%>
+<script src="../js/jquery.min.js"></script>
+<script src="../js/mf_common.js"></script>
+<script src="../js/kendo.all.min.js"></script>
+</head>
+<style>
+.value {
+float: right;
+}
+</style>
+<body>
+<%=moduleModel.getHTMLBodyCode()%>
+</body>
+<script>
+	var app = new kendo.mobile.Application(document.body,{skin:"flat"});
+	
+    <%=moduleModel.getScriptCode()%>
+</script>
+</html>

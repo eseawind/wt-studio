@@ -1,0 +1,26 @@
+package com.hirisun.hea.common.infrastructure.security;
+
+/**
+ * 
+ * <pre>
+ * 业务名:
+ * 功能说明: 
+ * 编写日期:	2011-5-13
+ * 作者:	袁明敏
+ * 
+ * 历史记录
+ * 1、修改日期：2011-5-13
+ *    修改人：袁明敏
+ *    修改内容：
+ * </pre>
+ */
+public interface Encrypt {
+	/**
+	 * 
+	 * 方法说明：自定加密码算法实现
+	 *
+	 * @param args 加密码对象
+	 * @return 返回加密码后的对象
+	 */
+	public Object customEncrypt(Object ... args);
+}

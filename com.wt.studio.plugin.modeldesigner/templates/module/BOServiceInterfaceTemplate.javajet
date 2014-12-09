@@ -1,0 +1,109 @@
+<%@ jet package="com.hirisun.ide.plugin.pagedesigner.wizard.templates" class="BOServiceInterfaceTemplate"
+		imports="java.util.List java.io.Serializable 
+		com.hirisun.ide.plugin.pagedesigner.gef.model.MOFunctionTableModel 
+		com.hirisun.ide.plugin.pagedesigner.utils.TemplateUtils
+		com.hirisun.ide.plugin.pagedesigner.gef.model.FunctionColumnModel
+		"%>
+		
+<%
+MOFunctionTableModel model=(MOFunctionTableModel) ((List) argument).get(0);
+String projectName=(String) ((List) argument).get(1);
+String modelName=model.getTitle();
+String firstUpperModelName=TemplateUtils.toUpperCaseFirstOne(modelName);
+String firstLowerModelName=TemplateUtils.toLowerCaseFirstOne(modelName);
+%>
+package com.hirisun.<%=projectName%>.service;
+import java.io.IOException;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import com.hirisun.<%=projectName%>.bo.<%=modelName%>BO;
+import com.hirisun.<%=projectName%>.model.<%=modelName%>;
+import com.hirisun.<%=projectName%>.model.SearchConditions;
+public interface <%=modelName%>BOService {
+
+	public <%=modelName%>BO getBOById(String id, int level);
+
+	/**
+	 * 转换BO对象为实体对象
+	 * 
+	 * @param <%=modelName%>BO <%=firstLowerModelName%>BO
+	 * @return <%=modelName%>
+	 */
+	public <%=modelName%> toEntity(<%=modelName%>BO <%=firstLowerModelName%>BO);
+
+	/**
+	 * 保存BO对象到数据库
+	 * 
+	 * @param <%=firstLowerModelName%>BO 
+	 * @return <%=modelName%>BO
+	 */
+	public <%=modelName%>BO save(<%=modelName%>BO <%=firstLowerModelName%>BO);
+
+	/**
+	 * 将实体对象转换为BO对象
+	 * 
+	 * @param <%=firstLowerModelName%> 
+	 * @return <%=modelName%>BO
+	 */
+	public <%=modelName%>BO toBO(<%=modelName%> <%=firstLowerModelName%>);
+
+	/**
+	 * 生成指定级别的BO对象
+	 * 
+	 * @param <%=firstLowerModelName%> 
+	 * @param level level
+	 * @return <%=modelName%>BO
+	 */
+	public <%=modelName%>BO toBO(<%=modelName%> <%=firstLowerModelName%>, int level);
+
+	/**
+	 * 通过实体对象的list对象生成BO的list对象
+	 * 
+	 * @param list<%=modelName%> 
+	 * @param level level
+	 * @return List<<%=modelName%>BO>
+	 */
+	public List<<%=modelName%>BO> toBOs(List<<%=modelName%>> list<%=modelName%>, int level);
+
+	/**
+	 * 按照某属性获得所有BO对象列表
+	 * 
+	 * @param propertyName propertyName
+	 * @param propertyValue propertyValue
+	 * @param level level
+	 * @return List
+	 */
+	public List<<%=modelName%>BO> getBOs(String propertyName, Object propertyValue,
+			int level);
+
+	/**
+	 * 根据Json格式的查询条件BO对象列表
+	 * 
+	 * @param searchConditions json格式的查询条件
+	 * @param level level
+	 * @return List
+	 */
+	public List<<%=modelName%>BO> getBOs(SearchConditions searchConditions, int level);
+
+	/**
+	 * 方法说明:
+	 * 
+	 * @param hSql hSql
+	 * @param paras paras
+	 * @param level level
+	 * @return list
+	 */
+	public List<<%=modelName%>BO> getBOs(String hSql, String[] paras, int level);
+
+	/**
+	 *
+	 * 
+	 * @param <%=TemplateUtils.toLowerCaseFirstOne(((FunctionColumnModel) model.getPKColumn()).getTitle())%>)
+	 * @return Boolean
+	 */
+	public Boolean del<%=modelName%>(<%=((FunctionColumnModel) model.getPKColumn()).getDataType()%> <%=TemplateUtils.toLowerCaseFirstOne(((FunctionColumnModel) model.getPKColumn()).getTitle())%>);
+	
+	
+}

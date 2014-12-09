@@ -1,0 +1,21 @@
+package com.hirisun.hea.common.infrastructure.logger.impl;
+
+import org.apache.log4j.jdbcplus.JDBCAppender;
+
+/**
+ * 
+ * <pre>
+ * 业务名:用于自定义的log4j实现， 
+ * 功能说明: 用于自定义的log4j实现， 
+ * 编写日期:	2011-5-13
+ * 作者:	袁明敏
+ * 
+ * 历史记录
+ * 1、修改日期：2011-5-13
+ *    修改人：袁明敏
+ *    修改内容：
+ * </pre>
+ */
+public class JdbcPoolAppender extends JDBCAppender {
+ 
+}

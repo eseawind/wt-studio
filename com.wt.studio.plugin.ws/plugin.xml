@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution adaptable="true" 
+            objectClass="org.eclipse.core.resources.IProject"
+            id="com.hirisun.ide.plugin.easyexplore.contribution">
+         <action
+               class="com.wt.studio.plugin.ws.actions.WSDL2JavaAction"
+               enablesFor="1"
+               icon="icons/S.png"
+               id="com.hirisun.ide.plugin.ws.actions.WSDL2JavaAction"
+               label="WSDL2Java Tools"
+               menubarPath="com.hirisun.ide.plugin.popupmenu/separator">
+         </action>
+      </objectContribution>
+   </extension>
+</plugin>

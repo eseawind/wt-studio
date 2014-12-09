@@ -1,0 +1,39 @@
+<%@ jet package="com.hirisun.ide.plugin.pagedesigner.wizard.templates" class="DaoImplTemplate"
+		imports="java.util.List java.io.Serializable 
+		com.hirisun.ide.plugin.pagedesigner.gef.model.MOFunctionTableModel 
+		com.hirisun.ide.plugin.pagedesigner.utils.TemplateUtils
+		"%>
+<%
+MOFunctionTableModel model=(MOFunctionTableModel) ((List) argument).get(0);
+String projectName=(String) ((List) argument).get(1);
+String modelName=model.getTitle();
+String firstUpperModelName=TemplateUtils.toUpperCaseFirstOne(modelName);
+String firstLowerModelName=TemplateUtils.toLowerCaseFirstOne(modelName);
+%>
+package com.hirisun.<%=projectName%>.dao.impl;
+
+import org.springframework.stereotype.Repository;
+
+import com.hirisun.components.dao.hibernate.AbstractHibernateDaoSupport;
+
+import com.hirisun.<%=projectName%>.dao.<%=modelName%>Dao;
+import com.hirisun.<%=projectName%>.model.<%=modelName%>;
+
+/**
+ * <pre>
+ * 业务名:
+ * 功能说明: 
+ * 编写日期:
+ * 作者:	HEA IDE
+ * 
+ * 历史记录
+ * 1、修改日期：
+ *    修改人：
+ *    修改内容：
+ * </pre>
+ */
+@Repository
+public class <%=modelName%>DaoImpl extends AbstractHibernateDaoSupport<<%=modelName%>> implements <%=modelName%>Dao
+{
+
+}

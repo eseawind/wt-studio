@@ -1,0 +1,354 @@
+<%@ jet package="com.hirisun.ide.plugin.wizard.projects.model.templates" class="UpdateClassTemplate"
+		imports="com.hirisun.ide.plugin.wizard.projects.model.util.JavaTemplateArgs
+				 java.util.List
+				 org.apache.commons.lang.StringUtils
+				 com.hirisun.ide.plugin.wizard.projects.dbhelp.ColumeModel
+				 com.hirisun.ide.plugin.wizard.projects.dbhelp.ColumeModel.UITemplateType
+				 com.hirisun.ide.plugin.wizard.projects.model.ModuleModel"%>
+<%
+	JavaTemplateArgs args = (JavaTemplateArgs) ((Object[])argument)[0];
+    ModuleModel moduleModel = (ModuleModel) ((Object[])argument)[1];
+    String pkgname = (String)((Object[])argument)[2];
+    String projectName = moduleModel.getProjectName();
+    List<ColumeModel> elementList = moduleModel.getColumeModels();
+    int num = 0;
+%>
+package <%=args.getPackageName()%>;
+import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
+
+import org.apache.commons.lang.StringUtils;
+
+import org.apache.wicket.markup.ComponentTag;
+import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.RequiredTextField;
+import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.markup.html.form.ChoiceRenderer;
+import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.TextArea;
+import org.apache.wicket.markup.html.form.PasswordTextField;
+import org.apache.wicket.markup.html.IHeaderResponse;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.validation.validator.PatternValidator;
+import org.apache.wicket.validation.validator.StringValidator;
+
+import com.hirisun.components.web.wicket.markup.html.HWebPage;
+
+import com.hirisun.components.systemcode.model.SystemCode;
+import com.hirisun.components.systemcode.service.SystemCodeService;
+import com.hirisun.components.web.wicket.datepicker.DatePickerPanel;
+import com.hirisun.components.web.wicket.validator.BehaviorSimple;
+
+import com.hirisun.uum.api.UUMFactory;
+import com.hirisun.uum.api.domain.Department;
+import com.hirisun.uum.api.domain.User;
+import com.hirisun.uum.wicket.departmenttree.SelectDeptPanel;
+import com.hirisun.uum.wicket.usertree.SelectUsersModalPanel;
+
+import <%=pkgname%>.model.<%=args.getClassNameInfo().getEntityClassName()%>;
+import <%=pkgname%>.service.<%=args.getClassNameInfo().getServicClassName()%>;
+
+/**
+ * <pre>
+ * 业务名:
+ * 功能说明: 
+ * 编写日期:
+ * 作者:	HEA IDE
+ * 
+ * 历史记录
+ * 1、修改日期：
+ *    修改人：
+ *    修改内容：
+ * </pre>
+ */
+public class <%=args.getClassName()%> extends HWebPage
+{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1L;
+	@SpringBean
+	private <%=args.getClassNameInfo().getServicClassName()%> service;
+	
+	@SpringBean
+	private SystemCodeService systemCodeService;
+	
+    private FeedbackPanel feedback;
+    
+    private <%=args.getClassNameInfo().getEntityClassName()%> p<%=args.getClassNameInfo().getEntityClassName()%>;
+    private int pCurrentPage;
+    
+<% 
+   for (ColumeModel i: elementList ) {
+   	  String controltype = i.getManageControlType();
+   	  if("SELECT".equals(controltype)) {
+%>     
+    private DropDownChoice<SystemCode> <%=((ColumeModel)i).getName()%>Select;
+<%
+      }
+      
+      if("COM_ORG".equals(controltype)) {
+%>
+      
+    private SelectDeptPanel <%=((ColumeModel)i).getName()%>Panel;
+    private List<Department> <%=((ColumeModel)i).getName()%>List = new ArrayList<Department>();
+<%
+      }
+      
+      if("COM_PEOPLE".equals(controltype)) {
+%>
+
+    private SelectUsersModalPanel <%=((ColumeModel)i).getName()%>Panel;
+	private List<User> <%=((ColumeModel)i).getName()%>List = new ArrayList<User>();
+<%
+      }
+   }
+%>
+	
+	protected void assembleForm(final Form form) {
+        AjaxButton btnSubmit = new AjaxButton("btnSubmit") {
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> vform) {
+                <%=args.getClassNameInfo().getEntityClassName()%> cform = (<%=args.getClassNameInfo().getEntityClassName()%>) form.getModelObject();
+<% 
+   for (ColumeModel i: elementList ) {
+   	  String controltype = i.getManageControlType();
+   	  if("SELECT".equals(controltype)) {
+%>
+				cform.<%=((ColumeModel)i).getSetMethodName()%>(<%=((ColumeModel)i).getName()%>Select.getValue());               
+<%
+      }      
+      if("COM_PEOPLE".equals(controltype)) {
+%>
+				for (User user : <%=((ColumeModel)i).getName()%>List) {
+					cform.<%=((ColumeModel)i).getSetMethodName()%>(user.getUuid());
+					break;
+				}
+<%      
+      }
+      if("COM_ORG".equals(controltype)) {
+%>
+				for (Department dept : <%=((ColumeModel)i).getName()%>List) {
+					cform.<%=((ColumeModel)i).getSetMethodName()%>(dept.getUuid());
+					break;
+				}
+<%      
+      }      
+   }
+%>
+				<%=args.getClassNameInfo().getEntityClassName()%> oModel = service.update<%=args.getClassNameInfo().getEntityClassName()%>((<%=args.getClassNameInfo().getEntityClassName()%>) (cform));
+
+				if (oModel != null) {
+					target.appendJavaScript("alert('保存成功')");
+					form.setModelObject(oModel);
+					form.modelChanged();
+					form.modelChanging();
+					target.add(form);
+				} else {
+					error("error");
+				}
+			}
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+			    target.add(feedback);
+			}
+		};
+		form.add(btnSubmit);
+
+		AjaxButton btnBack = new AjaxButton("btnBack") {
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				setResponsePage(new <%=args.getClassNameInfo().getManageClassClassName()%>(p<%=args.getClassNameInfo().getEntityClassName()%>, pCurrentPage));
+			}
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+			
+			}
+
+		};	
+		
+		btnBack.setDefaultFormProcessing(false);
+		form.add(btnBack);	
+	}
+
+	/**
+	 * 创建
+	 */
+	public <%=args.getClassNameInfo().getUpdateClassClassName()%>()
+	{
+		add(new Label("title", "创建信息"));
+		Form<<%=args.getClassNameInfo().getEntityClassName()%>> form = new <%=args.getClassNameInfo().getEntityClassName()%>Form("form", new <%=args.getClassNameInfo().getEntityClassName()%>());
+		form.setMarkupId("form");
+		form.setOutputMarkupId(true);
+		add(form);
+	    assembleForm(form);
+	}
+
+	/**
+	 * 修改
+	 * 
+	 * @param model
+	 * @param p<%=args.getClassNameInfo().getEntityClassName()%>
+	 * @param pCurrentPage
+	 */
+	public <%=args.getClassNameInfo().getUpdateClassClassName()%>(IModel<<%=args.getClassNameInfo().getEntityClassName()%>> model,
+	     <%=args.getClassNameInfo().getEntityClassName()%> p<%=args.getClassNameInfo().getEntityClassName()%>, int pCurrentPage)
+	{
+		super(model);
+		this.p<%=args.getClassNameInfo().getEntityClassName()%> = p<%=args.getClassNameInfo().getEntityClassName()%>;
+		this.pCurrentPage = pCurrentPage;
+        add(new Label("title", "修改信息"));
+		Form<<%=args.getClassNameInfo().getEntityClassName()%>> form = new <%=args.getClassNameInfo().getEntityClassName()%>Form("form", model);
+		form.setMarkupId("form");
+		form.setOutputMarkupId(true);
+		add(form);
+		assembleForm(form);
+		<%=args.getClassNameInfo().getEntityClassName()%> obj = model.getObject();
+<% 
+   int dCount = 0;
+   int uCount = 0;
+   for (ColumeModel i: elementList ) {
+   	  String controltype = i.getManageControlType();
+      if("COM_ORG".equals(controltype)) {
+%>
+		Department d<%=dCount%> = null;
+		if(StringUtils.isNotEmpty(obj.<%=((ColumeModel)i).getGetMethodName()%>())) {
+			String uuid = obj.<%=((ColumeModel)i).getGetMethodName()%>();
+			d<%=dCount%> = UUMFactory.getUUM().department().get(uuid);
+			<%=((ColumeModel)i).getName()%>List.add(d<%=dCount%>);
+        }
+<%      
+		dCount++;
+      }
+      if("COM_PEOPLE".equals(controltype)) {
+%>
+        User u<%=uCount%> = null;
+		if(StringUtils.isNotEmpty(obj.<%=((ColumeModel)i).getGetMethodName()%>())) {
+			String uuid = obj.<%=((ColumeModel)i).getGetMethodName()%>();
+			u<%=uCount%> = UUMFactory.getUUM().user().get(uuid);
+			<%=((ColumeModel)i).getName()%>List.add(u<%=uCount%>);
+        }
+<%      
+		uCount++;
+      }      
+   }
+%>		
+		
+	}
+
+	private class <%=args.getClassNameInfo().getEntityClassName()%>Form extends Form<<%=args.getClassNameInfo().getEntityClassName()%>>
+	{
+		public <%=args.getClassNameInfo().getEntityClassName()%>Form(String id, <%=args.getClassNameInfo().getEntityClassName()%> <%=args.getClassNameInfo().getEntityClassName()%>)
+		{
+			super(id, new CompoundPropertyModel<<%=args.getClassNameInfo().getEntityClassName()%>>(<%=args.getClassNameInfo().getEntityClassName()%>));
+		}
+
+		public <%=args.getClassNameInfo().getEntityClassName()%>Form(String id, IModel<<%=args.getClassNameInfo().getEntityClassName()%>> model)
+		{
+			super(id, new CompoundPropertyModel<<%=args.getClassNameInfo().getEntityClassName()%>>(model));
+		}
+
+		@Override
+		protected void onInitialize()
+		{
+
+			super.onInitialize();
+            feedback= new FeedbackPanel("feedback");
+            feedback.setOutputMarkupId(true);
+            add(feedback);
+
+<% 
+   int flag = 0;
+   for (ColumeModel i: elementList ) {
+   	  String isKey = i.getIsKey();
+   	  if(StringUtils.isEmpty(isKey) || "".equals(isKey) || "0".equals(isKey)) {
+   		String type = i.getManageControlType();
+   		String requid = i.getRequid();
+   		String requiClass =  "1".equals(requid) ? "Required": "";
+   		if("INPUT".equals(type)) {
+%>   		    
+            add(new <%=requiClass%>TextField<String>("<%=((ColumeModel)i).getName()%>").setLabel(Model.of("<%=((ColumeModel)i).getComment()%>")).add(new BehaviorSimple()));
+<%
+        }
+        if("PASSWORD".equals(type)) {
+%>
+			add(new PasswordTextField("<%=((ColumeModel)i).getName()%>").setResetPassword(false));
+<%        
+        }
+        if("TEXTAREA".equals(type)) {
+%>
+			add(new TextArea<String>("<%=((ColumeModel)i).getName()%>").setLabel(Model.of("<%=((ColumeModel)i).getComment()%>")).add(new BehaviorSimple()));                    
+<%        
+        }
+        if("COM_ORG".equals(type)) {
+%>
+            <%=((ColumeModel)i).getName()%>Panel = new SelectDeptPanel("<%=((ColumeModel)i).getName()%>", new Model(), <%=((ColumeModel)i).getName()%>List, null, false) {
+				private static final long serialVersionUID = -1L;
+
+				@Override
+				public String getButtonClass() {
+					return "btn";
+				}
+            };
+            <%=((ColumeModel)i).getName()%>Panel.setMarkupId("<%=((ColumeModel)i).getName()%>");
+            <%=((ColumeModel)i).getName()%>Panel.setOutputMarkupId(true);
+            add(<%=((ColumeModel)i).getName()%>Panel);            
+<%        
+        }
+        if("COM_PEOPLE".equals(type)) {
+%>
+            <%=((ColumeModel)i).getName()%>Panel = new SelectUsersModalPanel("<%=((ColumeModel)i).getName()%>", new Model(), <%=((ColumeModel)i).getName()%>List, new ArrayList<User>(), false, Model.of("选择"), "选择人员", ",", true) {
+				private static final long serialVersionUID = -1L;
+				
+				@Override
+				protected void onButtonComponentTag(ComponentTag tag) {
+					tag.put("class", "btn");
+				}
+				@Override
+				public void onModalWindowClose(List<User> selectedList,
+						AjaxRequestTarget target) {
+					super.onModalWindowClose(selectedList, target);
+					<%=((ColumeModel)i).getName()%>List = selectedList;
+				}
+            };
+            <%=((ColumeModel)i).getName()%>Panel.setMarkupId("<%=((ColumeModel)i).getName()%>");
+            <%=((ColumeModel)i).getName()%>Panel.setOutputMarkupId(true);
+            add(<%=((ColumeModel)i).getName()%>Panel);
+<%        
+        }
+%>
+      
+<%        
+        if("SELECT".equals(type)) {    
+      		flag++;
+%>
+            SystemCode code<%=flag%> = systemCodeService.findSytemCodeByBusinessValue("<%=((ColumeModel)i).getManageDataType()%>",
+					getModelObject().<%=i.getGetMethodName()%>());
+            
+			IModel<SystemCode> mode<%=flag%> = new Model<SystemCode>(code<%=flag%>);
+
+            <%=((ColumeModel)i).getName()%>Select = new DropDownChoice<SystemCode>("<%=((ColumeModel)i).getName()%>", mode<%=flag%>,
+				  systemCodeService.findSystemItemByCode("<%=((ColumeModel)i).getManageDataType()%>"),
+				      new ChoiceRenderer<SystemCode>("reg_label", "reg_value"));
+            add(<%=((ColumeModel)i).getName()%>Select);
+<%   		    
+        }
+        if("DATEPICKER".equals(type)) {  
+%>
+            add(new DatePickerPanel<Date>("<%=((ColumeModel)i).getName()%>"));
+<% 
+		}
+     }
+   }
+%>
+		}
+
+	}
+}

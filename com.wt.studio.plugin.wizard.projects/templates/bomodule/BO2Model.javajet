@@ -1,0 +1,41 @@
+<%@ jet package="com.hirisun.ide.plugin.wizard.projects.services.templates" class="BO2ModelTemplate"
+		imports="com.hirisun.ide.plugin.wizard.projects.model.util.JavaTemplateArgs
+				 java.util.List
+				 org.apache.commons.lang.StringUtils
+				 com.hirisun.ide.plugin.wizard.projects.services.util.ServiceModuleModel"%>
+<%
+	JavaTemplateArgs args = (JavaTemplateArgs) ((Object[])argument)[0];
+	ServiceModuleModel moduleModel =  (ServiceModuleModel) ((Object[])argument)[1];
+	String mname = StringUtils.lowerCase(moduleModel.getMobileModuleName()); 
+%>
+package <%=args.getPackageName()%>;
+
+import java.util.List;
+
+import javax.ws.rs.POST;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
+<%=moduleModel.getImportJavaCode()%>
+/**
+ * <pre>
+ * 业务名:
+ * 功能说明: 
+ * 编写日期:
+ * 作者:	HEA IDE
+ * 
+ * 历史记录
+ * 1、修改日期：
+ *    修改人：
+ *    修改内容：
+ * </pre>
+ */
+ public class BO<%=moduleModel%> {
+<%=moduleModel.getBOJavaCode()%>
+}

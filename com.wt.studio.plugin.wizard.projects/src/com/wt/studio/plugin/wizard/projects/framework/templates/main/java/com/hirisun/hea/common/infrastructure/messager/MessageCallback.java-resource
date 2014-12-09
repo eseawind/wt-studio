@@ -1,0 +1,26 @@
+package com.hirisun.hea.common.infrastructure.messager;
+
+/**
+ * 
+ * <pre>
+ * 业务名:消息发送后的回调接口
+ * 功能说明: 消息发送成功后的回调
+ * 编写日期:	2011-3-28
+ * 作者:	袁明敏
+ * 
+ * 历史记录
+ * 1、修改日期：2011-3-31
+ *    修改人：袁明敏
+ *    修改内容：添加入参
+ * </pre>
+ */
+public abstract interface MessageCallback {
+	
+	/**
+	 * 
+	 * 方法说明：消息发送后的回调函数
+	 *
+	 * @param obj 服务端返回的结果值对象
+	 */
+	public void doCallback(Object obj);
+}

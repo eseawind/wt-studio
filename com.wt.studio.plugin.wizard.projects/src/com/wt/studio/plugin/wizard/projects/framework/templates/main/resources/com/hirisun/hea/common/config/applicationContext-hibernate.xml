@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+	
+	<bean id="heaSessionFactory" name="sessionFactory"
+		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<property name="dataSource">
+			<ref bean="heaRoutingDataSourceDataSource" />
+		</property>
+		<!--  osgi环境下目前不可用
+		<property name="packagesToScan">
+			<list>
+				<value>com.hirisun.hea.eqmt.*</value>
+			</list>
+		</property>
+		-->
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.format_sql">false</prop>
+				<!-- jbpm无法识别数据库表冲突 -->
+				<!--<prop key="hibernate.current_session_context_class">thread</prop>-->
+				<prop key="hibernate.hbm2ddl.auto">none</prop>
+				<prop key="hibernate.generate_statistics">true</prop>
+				<prop key="hibernate.autoReconnect">true</prop>
+				<prop key="hibernate.jdbc.batch_size">500</prop>
+				<prop key="hibernate.connection.release_mode">auto</prop>
+				<prop key="hibernate.cache.use_second_level_cache">false</prop>
+				<prop key="hibernate.dialect">${hibernateDialect}</prop>
+				<!--
+				<prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop> 
+				<prop key="hibernate.generate_statistics">true</prop>
+				-->
+				 
+				<!--
+				<prop key="hibernate.cache.provider_class">org.hibernate.cache.OSCacheProvider</prop>
+				
+				<prop key="hibernate.cache_class" usage="read-only">com.hirisun.hea.rbac.model.User</prop>
+				<prop key="hibernate.cache_class" usage="read-only">com.hirisun.hea.rbac.model.Department</prop>
+				 -->
+			</props>
+		</property>
+		<property name="mappingLocations">
+			<list>
+				<!-- chart 
+				<value>classpath:com/hirisun/hea/chart/model/*.hbm.xml</value>-->
+				<value>classpath:com/hirisun/hea/common/model/BehaveLog.hbm.xml</value>
+				<value>classpath:com/hirisun/hea/common/model/SystemCode.hbm.xml</value>
+				<value>classpath:com/hirisun/hea/rbac/model/HeaIndex.hbm.xml</value>
+			</list>
+		</property>
+	</bean>
+	<!-- 图表组件别名 -->
+	<alias name="heaSessionFactory" alias="cp_sessionFactory"/>
+</beans>

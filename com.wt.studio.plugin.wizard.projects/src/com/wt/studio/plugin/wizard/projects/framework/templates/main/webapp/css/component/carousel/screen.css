@@ -1,0 +1,533 @@
+/******************************************************************************************************
+Title:			screen.css
+Browser(s): 	All browsers.
+Download:       http://www.codefans.net
+Author: 		Peter Antonius for Fröjd (www.frojd.se)
+Created: 		18.09.2007
+Last modified: 	18.09.2007
+******************************************************************************************************/
+
+/*	Reset
+---------------------------------------------*/
+* {
+	margin:0;
+	padding:0;
+	}
+
+/*	Structure
+---------------------------------------------*/
+html {
+	height:100%;
+	margin-bottom:1px;
+	}
+
+
+
+/*	Clearfix
+---------------------------------------------*/
+.clearfix:after {
+	clear:both;
+	content:".";
+	display:block;
+	height:0;
+	visibility:hidden;
+	}
+
+.clearfix {display: inline-block;}
+
+.clear {clear:both;}
+
+/*	Links
+---------------------------------------------*/
+a {
+	color:#444;
+	text-decoration:none;
+	font-weight:700;
+	border-bottom:1px solid #ffdf00;
+	outline:none;
+	}
+
+a:focus,
+a:hover {
+	text-decoration:none;
+
+	border-bottom:1px solid #ffdf00;
+	color:#000;
+	outline:none;
+	}
+
+/*	Typography
+---------------------------------------------*/
+h2 {
+	font-size:1.45em;
+	color:#919191;
+	margin-bottom:22px;
+	display:block;
+	font-weight:200;
+	}
+
+h3 {
+	color:#444;
+	font-size:1.09em;
+	}
+
+p {
+	padding:0 0 8px;
+	}
+
+/*	Header
+---------------------------------------------*/
+#header {
+	width:820px;
+	padding:36px 0 18px;
+	}
+
+#header h1 {
+	background:url(../../../images/component/carousel/logotype.png);
+	float:left;
+	height:134px;
+	width:336px;
+	}
+
+#header h1 span {
+	display:none;
+	}
+
+#header div {
+	float:left;
+	margin:9px 0 0 94px;
+	width:320px;
+	}
+
+#header div h2 {
+	color:#444;
+	font-size:1.36em;
+	font-weight:700;
+	line-height:1.36em;
+	margin:0;
+	}
+#header div p {
+	color:#999;
+	font-size:1.36em;
+	line-height:1.36em;
+	}
+#header div p {
+	font-weight:400;
+	}
+
+/*	Information
+---------------------------------------------*/
+#information {
+	display:none;
+	width:820px;
+	}
+
+#information .col {
+	float:left;
+	}
+
+#information .wide {
+	width:400px;
+	padding-left:10px;
+	padding-right:10px;
+	}
+
+#information .narrow {
+	width:190px;
+	padding-left:10px;
+	}
+
+/*	News
+---------------------------------------------*/
+#news {
+	background:url(../../../images/component/carousel/headline.gif) no-repeat;
+	width:820px;
+	padding:12px 10px 18px;
+	}
+
+#news .tabs-hide {
+	display:none;
+	}
+
+#news .tabs-container {
+	background: #fff;
+	width:400px;
+	float:left;
+	position:relative;
+	}
+
+#news .tabs-container span {
+	position:absolute;
+	top:0;right:0;
+	}
+
+#news ul.tabs-nav {
+	width:400px;
+	float:right;
+	border-top:1px solid #ccc;
+	margin-top:4px;
+	list-style:none;
+	}
+
+#news ul.tabs-nav li {
+	border-bottom:1px solid #ccc;
+	}
+
+#news ul.tabs-nav li a {
+	display: block;
+	padding:4px;
+	position:relative;
+	border:0;
+	}
+
+#news ul.tabs-nav li a span {
+	position:absolute;
+	right:4px;
+	font-weight:400;
+	color:#868686;
+	}
+
+#news ul.tabs-nav li.tabs-selected a {
+	color:#000;
+	text-decoration:none;
+	background:#fffee8;
+	bottom:-1px;
+	padding-top:3px;
+	border-bottom:1px solid #ffdf00;
+	}
+
+/*
+	Projects
+----------------------------------------------- */
+#projects {
+	width:820px;
+	background:url(../../../images/component/carousel/headline.gif) no-repeat;
+	padding:12px 10px 0;
+	position:relative;
+	}
+
+#projects .nav a {
+	position:absolute;
+	display:block;
+	height:31px;
+	width:31px;
+	top:3px;
+	border:0;
+	}
+
+#projects .nav a.next {
+	background:url(../../../images/component/carousel/projectsNext.gif) no-repeat;
+	right:10px;
+	border:0;
+	}
+
+#projects .nav a.prev {
+	background:url(../../../images/component/carousel/projectsPrevious.gif) no-repeat;
+	right:50px;
+	border:0;
+	}
+
+#projects .nav a:hover {
+	background-position:0 -40px;
+	border:0;
+	}
+
+#projects .nav a span {
+	display:none;
+	}
+
+.projectList{
+	margin-left:-10px;
+	}
+
+.projectList ul {
+	margin-left:10px !important;
+	}
+
+.projectList ul li {
+	margin:0 20px 0 0;
+	list-style:none;
+	width:260px;
+	height:274px;
+	position:relative;
+	}
+
+.projectList ul li a {
+	border:0;
+	}
+
+.projectList ul li a img {
+	padding:1px;
+	border:1px solid #eee;
+	}
+
+.projectList ul li h3 {
+	color:#000;
+	font-size:1em;
+	display:inline;
+	}
+
+.projectList ul li p {
+		display:inline;
+		}
+
+.projectList ul li a.visit {
+	border-bottom:1px solid #fc0;
+	}
+
+.projectList ul li a.visit:hover {
+	color:#000;
+	}
+
+.projectList .left {
+	position:absolute;
+	left:0;
+	top:0;
+	height:100%;
+	background:url(../../../images/component/carousel/projectsShadeLeft.png) repeat-y;
+	width:10px;
+	display:block;
+	z-index:2;
+	}
+
+.projectList .right {
+	position:absolute;
+	right:0;
+	top:0;
+	height:100%;
+	background:url(../../../images/component/carousel/projectsShadeRight.png) repeat-y;
+	width:10px;
+	display:block;
+	z-index:2;
+	}
+
+/*
+	Thickbox
+----------------------------------------------- */
+
+#TB_overlay {
+	height:100%;
+	left:0;
+	position:absolute;
+	top:0;
+	width:100%;
+	z-index:300;
+	background:transparent;
+	}
+
+#TB_window {
+	display:none;
+	position:absolute;
+	z-index:302;
+	}
+
+#TB_window a {border:0 !important;}
+
+#TB_window img {
+	display:block;
+	margin:28px 0 0 13px;
+	padding:11px;
+	border:0 !important;
+	background:transparent url(../../../images/component/carousel/windowBg.png) no-repeat;
+	}
+
+#TB_caption {
+	display:none;
+	}
+
+#TB_next {
+	position:absolute;
+	right:24px;
+	top:260px;
+	}
+
+#TB_prev {
+	position:absolute;
+	left:12px;
+	top:260px;
+	}
+
+#TB_next a,
+#TB_prev a  {
+	display:block;
+	cursor:pointer;
+	width:29px;
+	height:29px;
+	background:transparent url(../../../images/component/carousel/slideshowNext.png) no-repeat;
+	text-indent:-9999px;
+	text-decoration:none;
+	font-weight:700;
+	text-align:right;
+	border:0 !important;
+	}
+
+#TB_prev a  {
+	background:transparent url(../../../images/component/carousel/slideshowPrev.png) no-repeat;
+	}
+
+
+#TB_prev a span,
+#TB_next a span {
+	display:none;
+	}
+
+
+#TB_closeWindowButton {
+	text-align:left;
+	position:absolute;
+	display:block;
+	left:10px;
+	top:26px;
+	height:30px;
+	width:30px;
+	background:transparent url(../../../images/component/carousel/close.png) no-repeat;
+	border:0 !important;
+	z-index:300;
+	}
+
+#TB_closeWindow span {
+	display:none;
+	}
+
+#TB_load {
+	display:block;
+	left:0;
+	overflow:visible;
+	position:absolute;
+	text-align:center;
+	top:50%;
+	visibility:visible;
+	width:100%;
+	z-index:301;
+	}
+
+#TB_loadContent {
+	height:32px;
+	width:32px;
+	left:50%;
+	position:absolute;
+	margin-left:-16px;
+	margin-top:-16px;
+	padding:6px;
+	visibility:visible;
+	background:url(../../../images/component/carousel/loadingWhiteBg.png) no-repeat;
+	}
+
+#TB_SecondLine,
+#TB_ImageDIV {
+	clear:both;
+	}
+
+/*	People
+---------------------------------------------*/
+
+#people {
+	width:820px;
+	background:url(../../../images/component/carousel/headline.gif) no-repeat;
+	padding:12px 10px 0;
+	}
+
+#people .tabs-hide {
+	display:none;
+	}
+
+#people .tabs-container {
+	width:397px;
+	margin-top:-40px;
+	float:left;
+	position:relative;
+	}
+
+#people .tabs-container h3 {
+	font-size:1.45em;
+	font-weight:300;
+	color:#b3b3b3;
+	margin-bottom:26px;
+	}
+
+#people .tabs-container p {
+	float:left;
+	background:#fff;
+	}
+
+#people .tabs-container img {
+	float:right;
+	background:#fff;
+	border:1px solid #eee;
+	padding:1px;
+	}
+
+#people ul.tabs-nav {
+	list-style:none;
+	width:420px;
+	margin-top:4px;
+	float:left;
+	}
+
+#people ul.tabs-nav li {
+	float: left;
+	padding-right:20px;
+	padding-bottom:20px;
+	}
+
+#people ul.tabs-nav li a {
+	position:relative;
+	border:1px solid #ccc;
+	display:block;
+	width:48px;
+	height:48px;
+	background:#fff url(../../../images/component/carousel/people.gif) no-repeat;
+	}
+
+#people ul.tabs-nav li a span {
+	display:none;
+	}
+
+#people ul.tabs-nav li a:hover {
+	border:1px solid #fc0;
+	}
+
+#people ul.tabs-nav li a:hover span{
+    display:block;
+    position:absolute;
+	top:-32px;
+	left:-38px;
+    z-index:300;
+	width:120px;
+	padding:5px;
+    text-align:center;
+	color:#222;
+	background:url(../../../images/component/carousel/peopleSpan.png) no-repeat;;
+	overflow:hidden;
+	}
+
+#people .tabs-nav .tabs-selected a {
+	border:1px solid #fc0;
+	background-image:none;
+	background-color:#fff;
+	}
+
+
+/*	Contact
+---------------------------------------------*/
+#contact {
+	background:url(../../../images/component/carousel/headline.gif) no-repeat;
+	padding:12px 10px 18px;
+	width:820px;
+	}
+
+#contact p {
+	width:140px;
+	float:left;
+	padding:0;
+	}
+
+/*	Footer
+---------------------------------------------*/
+#footer {
+	border-top:1px solid #ccc;
+	padding:12px 10px;
+	text-align:right;
+	}
+
+	

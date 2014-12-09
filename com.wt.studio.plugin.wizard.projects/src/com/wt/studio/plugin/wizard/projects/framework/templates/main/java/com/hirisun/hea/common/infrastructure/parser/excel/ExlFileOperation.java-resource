@@ -1,0 +1,94 @@
+/**
+ * Copyright (c) 2011 by Hirisun Corporation all right reserved.
+ * 2011-03-21 
+ */
+package com.hirisun.hea.common.infrastructure.parser.excel;
+
+import java.io.File;
+
+/**
+ * 
+ * <pre>
+ * 业务名:
+ * 功能说明:  Excel文件操作实现接口,用于解析客户端传来的xml文件，解析并生成一个excel文件，产生http全路径
+ * 编写日期:	2011-3-25
+ * 作者:	袁明敏
+ * 
+ * 历史记录
+ * 1、修改日期：2011-3-31
+ *    修改人：袁明敏
+ *    修改内容：接口迁移到通用包内
+ * </pre>
+ */
+public interface ExlFileOperation {
+
+	/**
+	 * 跟据xml承载的pojo对象集创建Excel文件，生成到系统默认路径
+	 &ltpre&gt
+	 String xml = "" +
+				"&ltlist&gt " +
+				"&lttitle>编号,姓名,年龄&lt/title&gt " +
+				"&ltpojo&gt" +
+				"    &ltproperty propName='stuId' propValue='stu_02' descript='编号'/&gt" +
+				"    &ltproperty propName='stuName' propValue='张三' descript='姓名'/&gt" +
+				"    &ltproperty propName='stuAge' propValue='23' descript='年龄'/&gt" +
+				"&lt/pojo&gt" +
+				"&lt/list&gt";
+
+		ExlFileOperation operation = ExlFileOperationImpl.getInstance();
+		operation.createExcelFile("C:\\Users\\MM\\Desktop\\test.xls", xml, true);
+		&lt/pre&gt
+	 * 
+	 * 
+	 * @param path 生成的excel文件磁盘路径(含带文件名)
+	 * @param xml XML数据集(含约定规范)
+	 * @param hasDataBorder 生成excel数据文件时，是否添加数据区域的边框
+	 * @return 返回Excel文件对象
+	 * 
+	 */
+	File createExcelFile(String path,String xml,boolean hasDataBorder);
+	
+	/**
+	 * 
+	 * 方法说明：新建一个空的Excel文件，默认带一个Sheet1表
+	 *
+	 * @param path 新建Excel文件的存储路径
+	 * @return 返回文件对象
+	 */
+	File createBlankExcel(String path);
+	
+	/**
+	 * 
+	 * 方法说明：新建一个空的Excel文件，初使化多个Sheet表
+	 *
+	 * @param path 新建Excel文件的存储路径
+	 * @param sheetNames 初使化的sheet表名
+	 * @return 返回文件对象
+	 */
+	File createExcelFile(String path,String ... sheetNames);
+
+	
+	/**
+	 * 
+	 * 方法说明：在源文件选择若干sheet表 追加到目标文件里
+	 *
+	 * @param dest_file 目标文件
+	 * @param source_file 源文件
+	 * @param isOvverideSheet 带同名的Sheet表指定是否覆盖
+	 * @param appendSheetNames 要追加的多个sheet表
+	 * @return 追加成功返回真
+	 */
+	boolean appendSheet (File dest_file, File source_file ,boolean isOvverideSheet , String ... appendSheetNames);
+	
+	/**
+	 * 
+	 * 方法说明：获取Excel单元格的值
+	 * 
+	 * @param file  Excel文件对象
+	 * @param sheetName 单元格所在的Sheet表
+	 * @param location 单元格坐标
+	 * @return 返回单元格内容对象
+	 */
+	Object getCellValue (File file, String sheetName ,String location);
+	
+}

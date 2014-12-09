@@ -1,0 +1,505 @@
+package com.hirisun.ide.plugin.pagedesigner.wizard.templates;
+
+import java.util.List;
+import java.io.Serializable;
+import com.hirisun.ide.plugin.pagedesigner.gef.model.MOFunctionTableModel;
+import com.hirisun.ide.plugin.pagedesigner.utils.TemplateUtils;
+import com.hirisun.ide.plugin.pagedesigner.gef.model.FunctionColumnModel;
+import com.hirisun.ide.plugin.pagedesigner.gef.model.TableConnection;
+import com.hirisun.ide.plugin.pagedesigner.gef.model.TableotnConnection;
+import com.hirisun.ide.plugin.pagedesigner.gef.model.TableotoConnection;
+
+public class BOServiceImplTemplate
+{
+  protected static String nl;
+  public static synchronized BOServiceImplTemplate create(String lineSeparator)
+  {
+    nl = lineSeparator;
+    BOServiceImplTemplate result = new BOServiceImplTemplate();
+    nl = null;
+    return result;
+  }
+
+  public final String NL = nl == null ? (System.getProperties().getProperty("line.separator")) : nl;
+  protected final String TEXT_1 = "\t\t";
+  protected final String TEXT_2 = NL + "package com.hirisun.";
+  protected final String TEXT_3 = ".service.impl;" + NL + "import java.io.IOException;" + NL + "import java.util.List;" + NL + "import java.util.ArrayList;" + NL + "import java.util.HashMap;" + NL + "import java.util.Map;" + NL + "import javax.servlet.http.HttpServletRequest;" + NL + "import javax.annotation.Resource;" + NL + "" + NL + "import org.springframework.stereotype.Service;" + NL + "import org.springframework.transaction.annotation.Transactional;" + NL + "" + NL + "import com.hirisun.components.data.json.JsonUtils;" + NL + "import org.apache.commons.lang.StringUtils;" + NL + "import com.hirisun.";
+  protected final String TEXT_4 = ".bo.";
+  protected final String TEXT_5 = "BO;" + NL + "import com.hirisun.";
+  protected final String TEXT_6 = ".model.";
+  protected final String TEXT_7 = ";" + NL + "import com.hirisun.";
+  protected final String TEXT_8 = ".dao.";
+  protected final String TEXT_9 = "Dao;" + NL + "import com.hirisun.";
+  protected final String TEXT_10 = ".model.SearchConditions;" + NL + "import com.hirisun.";
+  protected final String TEXT_11 = ".model.SearchCondition;";
+  protected final String TEXT_12 = NL + "import com.hirisun.";
+  protected final String TEXT_13 = ".service.";
+  protected final String TEXT_14 = "BOService;" + NL + "import com.hirisun.";
+  protected final String TEXT_15 = ".bo.";
+  protected final String TEXT_16 = "BO;";
+  protected final String TEXT_17 = NL + "import com.hirisun.";
+  protected final String TEXT_18 = ".service.";
+  protected final String TEXT_19 = "BOService;" + NL + "@Service(value = \"";
+  protected final String TEXT_20 = "BOService\")" + NL + "@Transactional" + NL + "public class ";
+  protected final String TEXT_21 = "BOServiceImpl {" + NL + "   " + NL + "    @Resource" + NL + "    private ";
+  protected final String TEXT_22 = "Dao dao;";
+  protected final String TEXT_23 = NL + "\t@Resource" + NL + "\tprivate ";
+  protected final String TEXT_24 = "BOService ";
+  protected final String TEXT_25 = "BOService;";
+  protected final String TEXT_26 = NL + "\tpublic ";
+  protected final String TEXT_27 = "BO getBOById(String ";
+  protected final String TEXT_28 = ", int level)" + NL + "\t{" + NL + "\t    return toBO(dao.findById(";
+  protected final String TEXT_29 = "), level);" + NL + "\t}" + NL + "" + NL + "\tpublic ";
+  protected final String TEXT_30 = " toEntity(";
+  protected final String TEXT_31 = "BO ";
+  protected final String TEXT_32 = "BO)" + NL + "    {" + NL + "        return JsonUtils.obj2obj(";
+  protected final String TEXT_33 = "BO, ";
+  protected final String TEXT_34 = ".class);" + NL + "    }" + NL + "\tpublic ";
+  protected final String TEXT_35 = "BO save(";
+  protected final String TEXT_36 = "BO ";
+  protected final String TEXT_37 = "BO)" + NL + "    {";
+  protected final String TEXT_38 = NL + "        ";
+  protected final String TEXT_39 = "BO returnValue = new ";
+  protected final String TEXT_40 = "BO();" + NL + "\t\t";
+  protected final String TEXT_41 = " ";
+  protected final String TEXT_42 = " = dao.update(toEntity(";
+  protected final String TEXT_43 = "BO));" + NL + "\t\tif (null != ";
+  protected final String TEXT_44 = ") {" + NL + "\t\t\treturnValue = toBO(";
+  protected final String TEXT_45 = ", 0);" + NL + "\t\t}" + NL + "\t\treturn returnValue;" + NL + "    }" + NL + "\tpublic ";
+  protected final String TEXT_46 = "BO toBO(";
+  protected final String TEXT_47 = " ";
+  protected final String TEXT_48 = ")" + NL + "    {" + NL + "        return toBO(";
+  protected final String TEXT_49 = ", 0); " + NL + "    }" + NL + "\tpublic ";
+  protected final String TEXT_50 = "BO toBO(";
+  protected final String TEXT_51 = " ";
+  protected final String TEXT_52 = ", int level)" + NL + "\t{" + NL + "\t    if(";
+  protected final String TEXT_53 = "==null){" + NL + "\t    return null;" + NL + "\t    }" + NL + "\t";
+  protected final String TEXT_54 = "BO returnValue = JsonUtils.obj2obj(";
+  protected final String TEXT_55 = ",";
+  protected final String TEXT_56 = "BO.class);" + NL + "\t    if(level>0)" + NL + "\t    {";
+  protected final String TEXT_57 = NL + "\t         returnValue.set";
+  protected final String TEXT_58 = "BO(";
+  protected final String TEXT_59 = "BOService.getBO(\"";
+  protected final String TEXT_60 = "\",returnValue.get";
+  protected final String TEXT_61 = "(), level-1));";
+  protected final String TEXT_62 = NL + "             returnValue.setList";
+  protected final String TEXT_63 = "BO(";
+  protected final String TEXT_64 = "BOService.getBOs(\"";
+  protected final String TEXT_65 = "\",returnValue.get";
+  protected final String TEXT_66 = "(), level-1));";
+  protected final String TEXT_67 = NL + "    }" + NL + "\t    return returnValue;" + NL + "\t}" + NL + "\tpublic List<";
+  protected final String TEXT_68 = "BO> toBOs(List<";
+  protected final String TEXT_69 = "> list";
+  protected final String TEXT_70 = ", int level)" + NL + "\t{" + NL + "\t    List<";
+  protected final String TEXT_71 = "BO> returnValue = new ArrayList<";
+  protected final String TEXT_72 = "BO>();" + NL + "\t\tfor (int i = 0; i < list";
+  protected final String TEXT_73 = ".size(); i++) {" + NL + "\t\t\treturnValue.add(toBO(list";
+  protected final String TEXT_74 = ".get(i), level));" + NL + "\t\t}" + NL + "\t\treturn returnValue;" + NL + "\t}" + NL + "\tpublic List<";
+  protected final String TEXT_75 = "BO> getBOs(String propertyName, Object propertyValue," + NL + "\t\t\tint level)" + NL + "\t{" + NL + "\t\treturn toBOs(dao.findByProperty(propertyName, propertyValue), level);" + NL + "\t}" + NL + "\tpublic List<";
+  protected final String TEXT_76 = "BO> getBOs(SearchConditions searchConditions, int level)" + NL + "\t{" + NL + "\t    Map<String, Object> searchMap = new HashMap<String, Object>();" + NL + "\t\tMap<String, String> propertyMap = new HashMap<String, String>();" + NL + "\t\tMap<String, String> sortMap = new HashMap<String, String>();" + NL + "\t\tfor (int i = 0; i < searchConditions.size(); i++) {" + NL + "\t\t\tSearchCondition<?> search = searchConditions.get(i);" + NL + "\t\t\tif (null != search.getSearchMethod()) {" + NL + "\t\t\t\tpropertyMap.put(search.getPropertyName()," + NL + "\t\t\t\t\t\tsearch.getSearchMethod());" + NL + "\t\t\t}" + NL + "\t\t\tif (null != search.getPropertyValue()) {" + NL + "\t\t\t\tsearchMap.put(search.getPropertyName()," + NL + "\t\t\t\t\t\tsearch.getPropertyValue());" + NL + "\t\t\t}" + NL + "\t\t\tif (null != search.getSort()) {" + NL + "\t\t\t\tsortMap.put(search.getPropertyName(), search.getSort());" + NL + "\t\t\t}" + NL + "\t\t}" + NL + "\t\treturn toBOs(dao.getEntitiesByMap(propertyMap, sortMap, searchMap)," + NL + "\t\t\t\tlevel);" + NL + "\t}" + NL + "\tpublic List<";
+  protected final String TEXT_77 = "BO> getBOs(String hSql, String[] paras, int level)" + NL + "\t{" + NL + "\t   return toBOs(dao.executeHqlQuery(hSql, paras), level);" + NL + "\t}" + NL + "\tpublic boolean del";
+  protected final String TEXT_78 = "(";
+  protected final String TEXT_79 = " ";
+  protected final String TEXT_80 = ")" + NL + "\t{" + NL + "\t   boolean returnValue = dao.deleteById(";
+  protected final String TEXT_81 = ");" + NL + "\t   return returnValue;" + NL + "\t}" + NL + "\t";
+  protected final String TEXT_82 = NL + "\tpublic String save";
+  protected final String TEXT_83 = "(String formData,HttpServletRequest request) throws IOException {" + NL + "\t\tMap<String, Object> returnMap = new HashMap<String, Object>();" + NL + "\t\t";
+  protected final String TEXT_84 = "BO ";
+  protected final String TEXT_85 = "BO = JsonUtils.json2object(" + NL + "\t\t\t\tUtils.getJson(formData, request),";
+  protected final String TEXT_86 = "BO.class);" + NL + "\t\t";
+  protected final String TEXT_87 = "BO bo = save(";
+  protected final String TEXT_88 = "BO);" + NL + "\t\tif (bo == null) {" + NL + "\t\t\treturnMap.put(\"isTure\", false);" + NL + "\t\t\treturn JsonUtils.obj2json(returnMap);" + NL + "\t\t}" + NL + "\t\tif(StringUtils.isNotBlank(String.valueOf(";
+  protected final String TEXT_89 = "BO.get";
+  protected final String TEXT_90 = "()))){" + NL + "\t\t\tBoolean bn = false;" + NL + "\t\t\t";
+  protected final String TEXT_91 = " ";
+  protected final String TEXT_92 = " = ";
+  protected final String TEXT_93 = "BO.get";
+  protected final String TEXT_94 = "();" + NL + "\t\t";
+  protected final String TEXT_95 = NL + "\t\t\tList<";
+  protected final String TEXT_96 = "BO> ";
+  protected final String TEXT_97 = "BOs = new ArrayList<";
+  protected final String TEXT_98 = "BO>();" + NL + "\t\t\t";
+  protected final String TEXT_99 = "BOs = ";
+  protected final String TEXT_100 = "BOService.getBOs(\"";
+  protected final String TEXT_101 = "\", ";
+  protected final String TEXT_102 = ", 0);" + NL + "\t\t\tfor (";
+  protected final String TEXT_103 = "BO inbo : ";
+  protected final String TEXT_104 = "BOs){" + NL + "\t\t\t\tbn = ";
+  protected final String TEXT_105 = "BOService.del";
+  protected final String TEXT_106 = "(inbo.get";
+  protected final String TEXT_107 = "());" + NL + "\t\t\t\tif(!bn){" + NL + "\t\t\t\t\treturnMap.put(\"isTure\", false);" + NL + "\t\t\t\t\treturn JsonUtils.obj2json(returnMap);" + NL + "\t\t\t\t}" + NL + "\t\t\t}" + NL + "\t\t ";
+  protected final String TEXT_108 = NL + "\t\t }" + NL + "\t\t";
+  protected final String TEXT_109 = NL + "\t\t\tList<";
+  protected final String TEXT_110 = "BO> save";
+  protected final String TEXT_111 = "BOs = ";
+  protected final String TEXT_112 = "BO.getList";
+  protected final String TEXT_113 = "BO();" + NL + "\t\t    for (";
+  protected final String TEXT_114 = "BO ";
+  protected final String TEXT_115 = "BO : save";
+  protected final String TEXT_116 = "BOs ) {" + NL + "\t\t\t";
+  protected final String TEXT_117 = "BO.set";
+  protected final String TEXT_118 = "(bo.get";
+  protected final String TEXT_119 = "());" + NL + "\t\t\t";
+  protected final String TEXT_120 = "BO ";
+  protected final String TEXT_121 = "BO2 = ";
+  protected final String TEXT_122 = "BOService.save(";
+  protected final String TEXT_123 = "BO);" + NL + "\t\t\tif (";
+  protected final String TEXT_124 = "BO2 == null) {" + NL + "\t\t\t\treturnMap.put(\"isTure\", false);" + NL + "\t\t\t\treturn JsonUtils.obj2json(returnMap);" + NL + "\t\t\t}" + NL + "\t\t}" + NL + "\t\t ";
+  protected final String TEXT_125 = NL + "\t\treturnMap.put(\"isTure\", true);" + NL + "\t\treturn JsonUtils.obj2json(returnMap);" + NL + "\t}" + NL + "\t" + NL + "\t" + NL + "\tpublic String del";
+  protected final String TEXT_126 = "(";
+  protected final String TEXT_127 = " ";
+  protected final String TEXT_128 = ", HttpServletRequest request) {" + NL + "\t\tMap<String, Object> returnMap = new HashMap<String, Object>();" + NL + "\t\tBoolean bn = false;" + NL + "\t\tbn = del";
+  protected final String TEXT_129 = "(";
+  protected final String TEXT_130 = ");" + NL + "\t\tif(!bn){" + NL + "\t\t\treturnMap.put(\"isTure\", false);" + NL + "\t\t\treturn JsonUtils.obj2json(returnMap);" + NL + "\t\t}" + NL + "\t\t";
+  protected final String TEXT_131 = NL + "\t\tList<";
+  protected final String TEXT_132 = "BO> ";
+  protected final String TEXT_133 = "BOs = new ArrayList<";
+  protected final String TEXT_134 = "BO>();" + NL + "\t\t";
+  protected final String TEXT_135 = "BOs = ";
+  protected final String TEXT_136 = "BOService.getBOs(\"";
+  protected final String TEXT_137 = "\", ";
+  protected final String TEXT_138 = ", 0);" + NL + "\t\tfor (";
+  protected final String TEXT_139 = "BO bo :  ";
+  protected final String TEXT_140 = "BOs){" + NL + "\t\t\tbn = ";
+  protected final String TEXT_141 = "BOService.del";
+  protected final String TEXT_142 = "(bo.get";
+  protected final String TEXT_143 = "());" + NL + "\t\t\tif(!bn){" + NL + "\t\t\t\treturnMap.put(\"isTure\", false);" + NL + "\t\t\t\treturn JsonUtils.obj2json(returnMap);" + NL + "\t\t\t}" + NL + "\t\t}" + NL + "\t\t ";
+  protected final String TEXT_144 = NL + "\t\treturnMap.put(\"isTure\", true);" + NL + "\t\treturn JsonUtils.obj2json(returnMap);" + NL + "\t}" + NL + "\t" + NL + "\t";
+  protected final String TEXT_145 = "\t" + NL + "}";
+  protected final String TEXT_146 = NL;
+
+  public String generate(Object argument)
+  {
+    final StringBuffer stringBuffer = new StringBuffer();
+    stringBuffer.append(TEXT_1);
+    
+    MOFunctionTableModel model=(MOFunctionTableModel) ((List) argument).get(0);
+    String projectName=(String) ((List) argument).get(1);
+    String modelName=model.getTitle();
+    String firstUpperModelName=TemplateUtils.toUpperCaseFirstOne(modelName);
+    String firstLowerModelName=TemplateUtils.toLowerCaseFirstOne(modelName);
+    String idName=TemplateUtils.toLowerCaseFirstOne(((FunctionColumnModel) model.getPKColumn()).getTitle());
+    boolean flag=false;
+
+    stringBuffer.append(TEXT_2);
+    stringBuffer.append(projectName);
+    stringBuffer.append(TEXT_3);
+    stringBuffer.append(projectName);
+    stringBuffer.append(TEXT_4);
+    stringBuffer.append(modelName);
+    stringBuffer.append(TEXT_5);
+    stringBuffer.append(projectName);
+    stringBuffer.append(TEXT_6);
+    stringBuffer.append(modelName);
+    stringBuffer.append(TEXT_7);
+    stringBuffer.append(projectName);
+    stringBuffer.append(TEXT_8);
+    stringBuffer.append(modelName);
+    stringBuffer.append(TEXT_9);
+    stringBuffer.append(projectName);
+    stringBuffer.append(TEXT_10);
+    stringBuffer.append(projectName);
+    stringBuffer.append(TEXT_11);
+    for(TableConnection connection:model.getIncomingConnections()){
+    stringBuffer.append(TEXT_12);
+    stringBuffer.append(projectName);
+    stringBuffer.append(TEXT_13);
+    stringBuffer.append(TemplateUtils.toUpperCaseFirstOne(((MOFunctionTableModel) connection.getSource()).getTitle()));
+    stringBuffer.append(TEXT_14);
+    stringBuffer.append(projectName);
+    stringBuffer.append(TEXT_15);
+    stringBuffer.append(TemplateUtils.toUpperCaseFirstOne(((MOFunctionTableModel) connection.getSource()).getTitle()));
+    stringBuffer.append(TEXT_16);
+    }
+    stringBuffer.append(TEXT_17);
+    stringBuffer.append(projectName);
+    stringBuffer.append(TEXT_18);
+    stringBuffer.append(modelName);
+    stringBuffer.append(TEXT_19);
+    stringBuffer.append(modelName);
+    stringBuffer.append(TEXT_20);
+    stringBuffer.append(modelName);
+    stringBuffer.append(TEXT_21);
+    stringBuffer.append(modelName);
+    stringBuffer.append(TEXT_22);
+    for(TableConnection connection:model.getIncomingConnections()){
+    if(connection instanceof TableotnConnection)
+    {
+         flag=true;
+    }
+    stringBuffer.append(TEXT_23);
+    stringBuffer.append(TemplateUtils.toUpperCaseFirstOne(((MOFunctionTableModel) connection.getSource()).getTitle()));
+    stringBuffer.append(TEXT_24);
+    stringBuffer.append(TemplateUtils.toLowerCaseFirstOne(((MOFunctionTableModel)connection.getSource()).getTitle()));
+    stringBuffer.append(TEXT_25);
+    }
+    stringBuffer.append(TEXT_26);
+    stringBuffer.append(modelName);
+    stringBuffer.append(TEXT_27);
+    stringBuffer.append(idName);
+    stringBuffer.append(TEXT_28);
+    stringBuffer.append(idName);
+    stringBuffer.append(TEXT_29);
+    stringBuffer.append(modelName);
+    stringBuffer.append(TEXT_30);
+    stringBuffer.append(modelName);
+    stringBuffer.append(TEXT_31);
+    stringBuffer.append(firstLowerModelName);
+    stringBuffer.append(TEXT_32);
+    stringBuffer.append(firstLowerModelName);
+    stringBuffer.append(TEXT_33);
+    stringBuffer.append(modelName);
+    stringBuffer.append(TEXT_34);
+    stringBuffer.append(modelName);
+    stringBuffer.append(TEXT_35);
+    stringBuffer.append(modelName);
+    stringBuffer.append(TEXT_36);
+    stringBuffer.append(firstLowerModelName);
+    stringBuffer.append(TEXT_37);
+    stringBuffer.append(TEXT_38);
+    stringBuffer.append(modelName);
+    stringBuffer.append(TEXT_39);
+    stringBuffer.append(modelName);
+    stringBuffer.append(TEXT_40);
+    stringBuffer.append(modelName);
+    stringBuffer.append(TEXT_41);
+    stringBuffer.append(firstLowerModelName);
+    stringBuffer.append(TEXT_42);
+    stringBuffer.append(firstLowerModelName);
+    stringBuffer.append(TEXT_43);
+    stringBuffer.append(firstLowerModelName);
+    stringBuffer.append(TEXT_44);
+    stringBuffer.append(firstLowerModelName);
+    stringBuffer.append(TEXT_45);
+    stringBuffer.append(modelName);
+    stringBuffer.append(TEXT_46);
+    stringBuffer.append(modelName);
+    stringBuffer.append(TEXT_47);
+    stringBuffer.append(firstLowerModelName);
+    stringBuffer.append(TEXT_48);
+    stringBuffer.append(firstLowerModelName);
+    stringBuffer.append(TEXT_49);
+    stringBuffer.append(modelName);
+    stringBuffer.append(TEXT_50);
+    stringBuffer.append(modelName);
+    stringBuffer.append(TEXT_51);
+    stringBuffer.append(firstLowerModelName);
+    stringBuffer.append(TEXT_52);
+    stringBuffer.append(firstLowerModelName);
+    stringBuffer.append(TEXT_53);
+    stringBuffer.append(modelName);
+    stringBuffer.append(TEXT_54);
+    stringBuffer.append(firstLowerModelName);
+    stringBuffer.append(TEXT_55);
+    stringBuffer.append(modelName);
+    stringBuffer.append(TEXT_56);
+    for(TableConnection connection:model.getIncomingConnections()){
+	   if(connection instanceof TableotoConnection){
+    stringBuffer.append(TEXT_57);
+    stringBuffer.append(TemplateUtils.toUpperCaseFirstOne(((MOFunctionTableModel) connection.getSource()).getTitle()));
+    stringBuffer.append(TEXT_58);
+    stringBuffer.append(TemplateUtils.toLowerCaseFirstOne(((MOFunctionTableModel)connection.getSource()).getTitle()));
+    stringBuffer.append(TEXT_59);
+    stringBuffer.append(idName);
+    stringBuffer.append(TEXT_60);
+    stringBuffer.append(TemplateUtils.toUpperCaseFirstOne(idName));
+    stringBuffer.append(TEXT_61);
+    }
+       else if(connection instanceof TableotnConnection){
+    stringBuffer.append(TEXT_62);
+    stringBuffer.append(TemplateUtils.toUpperCaseFirstOne(((MOFunctionTableModel) connection.getSource()).getTitle()));
+    stringBuffer.append(TEXT_63);
+    stringBuffer.append(TemplateUtils.toLowerCaseFirstOne(((MOFunctionTableModel)connection.getSource()).getTitle()));
+    stringBuffer.append(TEXT_64);
+    stringBuffer.append(idName);
+    stringBuffer.append(TEXT_65);
+    stringBuffer.append(TemplateUtils.toUpperCaseFirstOne(idName));
+    stringBuffer.append(TEXT_66);
+    }
+       }
+    stringBuffer.append(TEXT_67);
+    stringBuffer.append(modelName);
+    stringBuffer.append(TEXT_68);
+    stringBuffer.append(modelName);
+    stringBuffer.append(TEXT_69);
+    stringBuffer.append(modelName);
+    stringBuffer.append(TEXT_70);
+    stringBuffer.append(modelName);
+    stringBuffer.append(TEXT_71);
+    stringBuffer.append(modelName);
+    stringBuffer.append(TEXT_72);
+    stringBuffer.append(modelName);
+    stringBuffer.append(TEXT_73);
+    stringBuffer.append(modelName);
+    stringBuffer.append(TEXT_74);
+    stringBuffer.append(modelName);
+    stringBuffer.append(TEXT_75);
+    stringBuffer.append(modelName);
+    stringBuffer.append(TEXT_76);
+    stringBuffer.append(modelName);
+    stringBuffer.append(TEXT_77);
+    stringBuffer.append(modelName);
+    stringBuffer.append(TEXT_78);
+    stringBuffer.append(((FunctionColumnModel) model.getPKColumn()).getDataType());
+    stringBuffer.append(TEXT_79);
+    stringBuffer.append(idName);
+    stringBuffer.append(TEXT_80);
+    stringBuffer.append(idName);
+    stringBuffer.append(TEXT_81);
+    if(flag)
+	{
+    stringBuffer.append(TEXT_82);
+    stringBuffer.append(firstUpperModelName);
+    stringBuffer.append(TEXT_83);
+    stringBuffer.append(firstUpperModelName);
+    stringBuffer.append(TEXT_84);
+    stringBuffer.append(firstLowerModelName);
+    stringBuffer.append(TEXT_85);
+    stringBuffer.append(firstUpperModelName);
+    stringBuffer.append(TEXT_86);
+    stringBuffer.append(firstUpperModelName);
+    stringBuffer.append(TEXT_87);
+    stringBuffer.append(firstLowerModelName);
+    stringBuffer.append(TEXT_88);
+    stringBuffer.append(firstLowerModelName);
+    stringBuffer.append(TEXT_89);
+    stringBuffer.append(TemplateUtils.toUpperCaseFirstOne(idName));
+    stringBuffer.append(TEXT_90);
+    stringBuffer.append(((FunctionColumnModel) model.getPKColumn()).getDataType());
+    stringBuffer.append(TEXT_91);
+    stringBuffer.append(TemplateUtils.toLowerCaseFirstOne(idName));
+    stringBuffer.append(TEXT_92);
+    stringBuffer.append(firstLowerModelName);
+    stringBuffer.append(TEXT_93);
+    stringBuffer.append(TemplateUtils.toUpperCaseFirstOne(idName));
+    stringBuffer.append(TEXT_94);
+    for(TableConnection connection:model.getIncomingConnections()){
+        if(connection instanceof TableotnConnection)
+        {
+           String childModelName=((MOFunctionTableModel) connection.getSource()).getTitle();
+           String childIdName=((MOFunctionTableModel) connection.getSource()).getPKColumn().getTitle();
+           String childLargeName=TemplateUtils.toUpperCaseFirstOne(childModelName);
+           String childSmallName=TemplateUtils.toLowerCaseFirstOne(childModelName);
+        
+    stringBuffer.append(TEXT_95);
+    stringBuffer.append(childLargeName);
+    stringBuffer.append(TEXT_96);
+    stringBuffer.append(childSmallName);
+    stringBuffer.append(TEXT_97);
+    stringBuffer.append(childLargeName);
+    stringBuffer.append(TEXT_98);
+    stringBuffer.append(childSmallName);
+    stringBuffer.append(TEXT_99);
+    stringBuffer.append(childSmallName);
+    stringBuffer.append(TEXT_100);
+    stringBuffer.append(TemplateUtils.toLowerCaseFirstOne(idName));
+    stringBuffer.append(TEXT_101);
+    stringBuffer.append(TemplateUtils.toLowerCaseFirstOne(idName));
+    stringBuffer.append(TEXT_102);
+    stringBuffer.append(childLargeName);
+    stringBuffer.append(TEXT_103);
+    stringBuffer.append(childSmallName);
+    stringBuffer.append(TEXT_104);
+    stringBuffer.append(childSmallName);
+    stringBuffer.append(TEXT_105);
+    stringBuffer.append(childLargeName);
+    stringBuffer.append(TEXT_106);
+    stringBuffer.append(TemplateUtils.toUpperCaseFirstOne(childIdName));
+    stringBuffer.append(TEXT_107);
+    }
+		 }
+    stringBuffer.append(TEXT_108);
+    for(TableConnection connection:model.getIncomingConnections()){
+        if(connection instanceof TableotnConnection)
+        {
+           String childModelName=((MOFunctionTableModel) connection.getSource()).getTitle();
+           String childIdName=((MOFunctionTableModel) connection.getSource()).getPKColumn().getTitle();
+           String childLargeName=TemplateUtils.toUpperCaseFirstOne(childModelName);
+           String childSmallName=TemplateUtils.toLowerCaseFirstOne(childModelName);
+        
+    stringBuffer.append(TEXT_109);
+    stringBuffer.append(childLargeName);
+    stringBuffer.append(TEXT_110);
+    stringBuffer.append(childLargeName);
+    stringBuffer.append(TEXT_111);
+    stringBuffer.append(firstLowerModelName);
+    stringBuffer.append(TEXT_112);
+    stringBuffer.append(childLargeName);
+    stringBuffer.append(TEXT_113);
+    stringBuffer.append(childLargeName);
+    stringBuffer.append(TEXT_114);
+    stringBuffer.append(childSmallName);
+    stringBuffer.append(TEXT_115);
+    stringBuffer.append(childLargeName);
+    stringBuffer.append(TEXT_116);
+    stringBuffer.append(childSmallName);
+    stringBuffer.append(TEXT_117);
+    stringBuffer.append(TemplateUtils.toUpperCaseFirstOne(idName));
+    stringBuffer.append(TEXT_118);
+    stringBuffer.append(TemplateUtils.toUpperCaseFirstOne(idName));
+    stringBuffer.append(TEXT_119);
+    stringBuffer.append(childLargeName);
+    stringBuffer.append(TEXT_120);
+    stringBuffer.append(childSmallName);
+    stringBuffer.append(TEXT_121);
+    stringBuffer.append(childSmallName);
+    stringBuffer.append(TEXT_122);
+    stringBuffer.append(childSmallName);
+    stringBuffer.append(TEXT_123);
+    stringBuffer.append(childSmallName);
+    stringBuffer.append(TEXT_124);
+    }
+		 }
+    stringBuffer.append(TEXT_125);
+    stringBuffer.append(firstUpperModelName);
+    stringBuffer.append(TEXT_126);
+    stringBuffer.append(((FunctionColumnModel) model.getPKColumn()).getDataType());
+    stringBuffer.append(TEXT_127);
+    stringBuffer.append(TemplateUtils.toLowerCaseFirstOne(idName));
+    stringBuffer.append(TEXT_128);
+    stringBuffer.append(firstUpperModelName);
+    stringBuffer.append(TEXT_129);
+    stringBuffer.append(TemplateUtils.toLowerCaseFirstOne(idName));
+    stringBuffer.append(TEXT_130);
+    for(TableConnection connection:model.getIncomingConnections()){
+		 if(connection instanceof TableotnConnection)
+        {
+           String childModelName=((MOFunctionTableModel) connection.getSource()).getTitle();
+           String childIdName=((MOFunctionTableModel) connection.getSource()).getPKColumn().getTitle();
+           String childLargeName=TemplateUtils.toUpperCaseFirstOne(childModelName);
+           String childSmallName=TemplateUtils.toLowerCaseFirstOne(childModelName);
+        
+    stringBuffer.append(TEXT_131);
+    stringBuffer.append(childLargeName);
+    stringBuffer.append(TEXT_132);
+    stringBuffer.append(childSmallName);
+    stringBuffer.append(TEXT_133);
+    stringBuffer.append(childLargeName);
+    stringBuffer.append(TEXT_134);
+    stringBuffer.append(childSmallName);
+    stringBuffer.append(TEXT_135);
+    stringBuffer.append(childSmallName);
+    stringBuffer.append(TEXT_136);
+    stringBuffer.append(TemplateUtils.toLowerCaseFirstOne(idName));
+    stringBuffer.append(TEXT_137);
+    stringBuffer.append(TemplateUtils.toLowerCaseFirstOne(idName));
+    stringBuffer.append(TEXT_138);
+    stringBuffer.append(childLargeName);
+    stringBuffer.append(TEXT_139);
+    stringBuffer.append(childSmallName);
+    stringBuffer.append(TEXT_140);
+    stringBuffer.append(childSmallName);
+    stringBuffer.append(TEXT_141);
+    stringBuffer.append(childLargeName);
+    stringBuffer.append(TEXT_142);
+    stringBuffer.append(TemplateUtils.toUpperCaseFirstOne(childIdName));
+    stringBuffer.append(TEXT_143);
+    }
+		 }
+    stringBuffer.append(TEXT_144);
+    }
+    stringBuffer.append(TEXT_145);
+    stringBuffer.append(TEXT_146);
+    return stringBuffer.toString();
+  }
+}

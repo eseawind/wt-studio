@@ -1,0 +1,604 @@
+<%@ jet package="com.hirisun.ide.plugin.wizard.projects.model.templates" class="ManageClassTemplate"
+		imports="com.hirisun.ide.plugin.wizard.projects.model.util.JavaTemplateArgs
+				 java.util.List
+				 org.apache.commons.lang.StringUtils
+				 com.hirisun.ide.plugin.wizard.projects.dbhelp.ColumeModel
+				 com.hirisun.ide.plugin.wizard.projects.model.ModuleModel"%>
+<%
+	JavaTemplateArgs args = (JavaTemplateArgs) ((Object[])argument)[0];
+    ModuleModel moduleModel = (ModuleModel) ((Object[])argument)[1];
+    String pkgname = (String)((Object[])argument)[2];    
+    String projectName = moduleModel.getProjectName();
+    List<ColumeModel> elementList = moduleModel.getColumeModels();
+    int num = 0;
+%>
+package <%=args.getPackageName()%>;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Date;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.collections.CollectionUtils;
+
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
+import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
+
+import org.apache.wicket.markup.ComponentTag;
+import org.apache.wicket.markup.html.IHeaderResponse;
+import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.form.ChoiceRenderer;
+import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.LoadableDetachableModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.model.CompoundPropertyModel;
+
+import com.hirisun.uum.api.UUMFactory;
+import com.hirisun.uum.api.domain.Department;
+import com.hirisun.uum.api.domain.User;
+import com.hirisun.uum.wicket.departmenttree.SelectDeptPanel;
+import com.hirisun.uum.wicket.usertree.SelectUsersModalPanel;
+
+import com.hirisun.components.web.wicket.markup.html.HWebPage;
+import com.hirisun.components.web.wicket.datepicker.DatePickerPanel;
+import com.hirisun.components.web.wicket.feedback.SimpleFeedbackPanel;
+import com.hirisun.components.web.wicket.table.AjaxLinkPropertyColumn;
+import com.hirisun.components.web.wicket.table.OperateLinkColumn;
+import com.hirisun.components.web.wicket.table.AjaxFallbackSortDataTable;
+import com.hirisun.components.web.wicket.table.column.DatePropertyColumn;
+import com.hirisun.components.dao.hibernate.EntityDao;
+import com.hirisun.components.systemcode.model.SystemCode;
+import com.hirisun.components.systemcode.service.SystemCodeService;
+
+import <%=pkgname%>.model.<%=args.getClassNameInfo().getEntityClassName()%>;
+import <%=pkgname%>.service.<%=args.getClassNameInfo().getServicClassName()%>;
+
+
+/**
+ * <pre>
+ * 业务名:
+ * 功能说明: 
+ * 编写日期:
+ * 作者:	HEA IDE
+ * 
+ * 历史记录
+ * 1、修改日期：
+ *    修改人：
+ *    修改内容：
+ * </pre>
+ */
+public class <%=args.getClassName()%>  extends HWebPage
+{
+	@SpringBean
+	private <%=args.getClassNameInfo().getServicClassName()%> service;
+	@SpringBean
+	private SystemCodeService systemCodeService;
+		
+	AjaxFallbackSortDataTable<<%=args.getClassNameInfo().getEntityClassName()%>> table;
+	
+	<%=args.getClassNameInfo().getEntityClassName()%> <%=StringUtils.uncapitalize(args.getClassNameInfo().getEntityClassName())%>;
+	
+	public <%=args.getClassName()%>() {
+	    this(null, 1);
+	}
+
+	public <%=args.getClassName()%>(<%=args.getClassNameInfo().getEntityClassName()%> old<%=args.getClassNameInfo().getEntityClassName()%> , int currentPage)
+	{
+	    if(old<%=args.getClassNameInfo().getEntityClassName()%> == null) {
+	    	<%=StringUtils.uncapitalize(args.getClassNameInfo().getEntityClassName())%> = new <%=args.getClassNameInfo().getEntityClassName()%>();
+	    } else {
+	    	<%=StringUtils.uncapitalize(args.getClassNameInfo().getEntityClassName())%> = old<%=args.getClassNameInfo().getEntityClassName()%>;
+	    }
+		
+		List<IColumn<<%=args.getClassNameInfo().getEntityClassName()%>>> columns = new ArrayList<IColumn<<%=args.getClassNameInfo().getEntityClassName()%>>>();	
+
+<% 
+   int flag= 0;
+   for (ColumeModel i: elementList ) {
+    String isKey = i.getIsKey();
+    String isListShow = i.getIsListShow();
+    if("1".equals(isListShow)) {
+    if(StringUtils.isEmpty(isKey)||"0".equals(isKey)) {
+   	 String type = i.getType();
+   	 if("Date".equals(type)) {    
+   	 
+     if(((ColumeModel)i).getComment() == null || "".equals(((ColumeModel)i).getComment())) {
+%>
+		columns.add(new DatePropertyColumn<<%=args.getClassNameInfo().getEntityClassName()%>>(new Model<String>("<%=((ColumeModel)i).getName()%>"), "<%=((ColumeModel)i).getName()%>"));
+<%
+     } else { 
+%>
+        columns.add(new DatePropertyColumn<<%=args.getClassNameInfo().getEntityClassName()%>>(new Model<String>("<%=((ColumeModel)i).getComment()%>"), "<%=((ColumeModel)i).getName()%>"));
+<%
+     }
+     
+     } else {    
+        String typeControl = i.getManageControlType();
+        String typeCode = i.getManageDataType();
+   	 	if("SELECT".equals(typeControl)) {
+   	 	   flag++;
+%>   	 	
+
+        final Map<String, Object> sysCodeMap<%=flag%> = this.systemCodeService.findByRegCode("<%=typeCode%>");
+<%        
+     if(((ColumeModel)i).getComment() == null || "".equals(((ColumeModel)i).getComment())) {
+%>
+		columns.add(new PropertyColumn<<%=args.getClassNameInfo().getEntityClassName()%>>(new Model<String>("<%=((ColumeModel)i).getName()%>"), "<%=((ColumeModel)i).getName()%>")
+<%
+     } else { 
+%>
+        columns.add(new PropertyColumn<<%=args.getClassNameInfo().getEntityClassName()%>>(new Model<String>("<%=((ColumeModel)i).getComment()%>"), "<%=((ColumeModel)i).getName()%>")
+<%
+     }
+%>     
+        {
+			private static final long serialVersionUID = -1L;
+
+			@Override
+			protected IModel<?> createLabelModel(IModel<<%=args.getClassNameInfo().getEntityClassName()%>> rowModel) {
+				Object value = sysCodeMap<%=flag%>.get(rowModel.getObject().<%=i.getGetMethodName()%>());
+				if(value == null) { value = "";}
+				return Model.of(value.toString());
+			}
+		});
+<%		
+        } else if("COM_ORG".equals(typeControl)) {
+%>  
+<%      
+     if(((ColumeModel)i).getComment() == null || "".equals(((ColumeModel)i).getComment())) {
+%>
+
+		columns.add(new PropertyColumn<<%=args.getClassNameInfo().getEntityClassName()%>>(new Model<String>("<%=((ColumeModel)i).getName()%>"), "<%=((ColumeModel)i).getName()%>"){
+			@Override
+			protected IModel<?> createLabelModel(IModel<<%=args.getClassNameInfo().getEntityClassName()%>> rowModel) {
+				String result = null;
+				Department d = UUMFactory.getUUM().department().get(rowModel.getObject().<%=i.getGetMethodName()%>());
+				if(d != null) {
+					result = d.getName();
+				}
+				if(result == null) { result = "";}
+				return Model.of(result.toString());
+			}
+        });
+        
+<%
+     } else { 
+%>
+
+        columns.add(new PropertyColumn<<%=args.getClassNameInfo().getEntityClassName()%>>(new Model<String>("<%=((ColumeModel)i).getComment()%>"), "<%=((ColumeModel)i).getName()%>"){
+			@Override
+			protected IModel<?> createLabelModel(IModel<<%=args.getClassNameInfo().getEntityClassName()%>> rowModel) {
+				String result = null;
+				Department d = UUMFactory.getUUM().department().get(rowModel.getObject().<%=i.getGetMethodName()%>());
+				if(d != null) {
+					result = d.getName();
+				}
+				if(result == null) { result = "";}
+				return Model.of(result.toString());
+			}        	
+        });
+        
+<%
+     }
+%>
+
+<%        
+        } else if("COM_PEOPLE".equals(typeControl)) {
+%>        
+
+<%      
+     if(((ColumeModel)i).getComment() == null || "".equals(((ColumeModel)i).getComment())) {
+%>
+		columns.add(new PropertyColumn<<%=args.getClassNameInfo().getEntityClassName()%>>(new Model<String>("<%=((ColumeModel)i).getName()%>"), "<%=((ColumeModel)i).getName()%>"){
+			@Override
+			protected IModel<?> createLabelModel(IModel<<%=args.getClassNameInfo().getEntityClassName()%>> rowModel) {
+				String result = null;
+				User u = UUMFactory.getUUM().user().get(rowModel.getObject().<%=i.getGetMethodName()%>());
+				if(u != null) {
+					result = u.getName();
+				}
+				if(result == null) { result = "";}
+				return Model.of(result.toString());
+			}        	
+        });
+<%
+     } else { 
+%>
+        columns.add(new PropertyColumn<<%=args.getClassNameInfo().getEntityClassName()%>>(new Model<String>("<%=((ColumeModel)i).getComment()%>"), "<%=((ColumeModel)i).getName()%>"){
+			@Override
+			protected IModel<?> createLabelModel(IModel<<%=args.getClassNameInfo().getEntityClassName()%>> rowModel) {
+				String result = null;
+				User u = UUMFactory.getUUM().user().get(rowModel.getObject().<%=i.getGetMethodName()%>());
+				if(u != null) {
+					result = u.getName();
+				}
+				if(result == null) { result = "";}
+				return Model.of(result.toString());
+			}        	
+        });
+<%
+     }
+%>
+
+<%        
+        } else {
+
+     if(((ColumeModel)i).getComment() == null || "".equals(((ColumeModel)i).getComment())) {
+%>
+		columns.add(new PropertyColumn<<%=args.getClassNameInfo().getEntityClassName()%>>(new Model<String>("<%=((ColumeModel)i).getName()%>"), "<%=((ColumeModel)i).getName()%>"));
+<%
+     } else { 
+%>
+        columns.add(new PropertyColumn<<%=args.getClassNameInfo().getEntityClassName()%>>(new Model<String>("<%=((ColumeModel)i).getComment()%>"), "<%=((ColumeModel)i).getName()%>"));
+<%
+     }
+        
+        }
+    }
+    }
+    }
+   }
+%>
+		columns.add(new OperateLinkColumn<<%=args.getClassNameInfo().getEntityClassName()%>>(new Model<String>("操作"),
+				new Model<String>("编辑"), new Model<String>("删除")) {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = -1L;
+
+			@Override
+			public void onLinkClick(AjaxRequestTarget target,
+					IModel<<%=args.getClassNameInfo().getEntityClassName()%>> model, IModel<?> linktxt) {
+				if ("删除".equals(linktxt.getObject())) {
+					service.delete<%=args.getClassNameInfo().getEntityClassName()%>(model.getObject());
+					target.add(table);
+				} else if ("编辑".equals(linktxt.getObject())) {
+					setResponsePage(new <%=args.getClassNameInfo().getUpdateClassClassName()%>(model, <%=StringUtils.uncapitalize(args.getClassNameInfo().getEntityClassName())%>, table.getCurrentPage()));
+				}
+			}
+
+			@Override
+			public LinkType getLinkTypeBy(IModel<?> linktxt) {
+				if ("删除".equals(linktxt.getObject())) {
+					return LinkType.CONFIRM;
+				} else {
+					return super.getLinkType();
+				}
+			}
+
+		});
+
+		Map<String, Object> searchMap = new HashMap<String, Object>();
+<% 
+   for (ColumeModel i: elementList ) {
+   		String type = i.getManageControlType();
+   		String isQueryCond = i.getIsQueryCond();
+   		if("INPUT".equals(type) && StringUtils.isNotEmpty(isQueryCond) && isQueryCond.equals("是")) {    
+%>
+		searchMap.put( "<%=i.getName()%>", <%=StringUtils.uncapitalize(args.getClassNameInfo().getEntityClassName())%>.<%=i.getGetMethodName()%>());
+<%
+        }
+        if("SELECT".equals(type)&& StringUtils.isNotEmpty(isQueryCond) && isQueryCond.equals("是")) {    
+%>			
+        searchMap.put( "<%=i.getName()%>", <%=StringUtils.uncapitalize(args.getClassNameInfo().getEntityClassName())%>.<%=i.getGetMethodName()%>());
+<%   		    
+        }
+        if("DATEPICKER".equals(type)&& StringUtils.isNotEmpty(isQueryCond) && isQueryCond.equals("是")) {  
+%>			
+		searchMap.put( "<%=i.getName()%>", <%=StringUtils.uncapitalize(args.getClassNameInfo().getEntityClassName())%>.<%=i.getGetMethodName()%>());
+<% 
+		}
+		if("COM_ORG".equals(type)&& StringUtils.isNotEmpty(isQueryCond) && isQueryCond.equals("是")) {
+%>
+		searchMap.put( "<%=i.getName()%>", <%=StringUtils.uncapitalize(args.getClassNameInfo().getEntityClassName())%>.<%=i.getGetMethodName()%>());
+<%		
+		}
+		if("COM_PEOPLE".equals(type)&& StringUtils.isNotEmpty(isQueryCond) && isQueryCond.equals("是")) {
+%>
+		searchMap.put( "<%=i.getName()%>", <%=StringUtils.uncapitalize(args.getClassNameInfo().getEntityClassName())%>.<%=i.getGetMethodName()%>());
+<%		
+		}		
+   }
+%>							    
+				    
+		Map<String, String> propertyMap = new HashMap<String, String>();  					
+<% 
+   for (ColumeModel i: elementList ) {
+   		String type = i.getManageControlType();
+   		String isQueryCond = i.getIsQueryCond();
+   		if("INPUT".equals(type) && StringUtils.isNotEmpty(isQueryCond) && isQueryCond.equals("是")) {    
+%>
+		propertyMap.put( "<%=i.getName()%>",  EntityDao.LIKE);
+<%
+        }
+        if("SELECT".equals(type)&& StringUtils.isNotEmpty(isQueryCond) && isQueryCond.equals("是")) {    
+%>			
+        propertyMap.put( "<%=i.getName()%>",  EntityDao.EQ);
+<%   		    
+        }
+        if("DATEPICKER".equals(type)&& StringUtils.isNotEmpty(isQueryCond) && isQueryCond.equals("是")) {  
+%>			
+		propertyMap.put( "<%=i.getName()%>",  EntityDao.EQ);
+<% 
+		}
+		if("COM_ORG".equals(type)&& StringUtils.isNotEmpty(isQueryCond) && isQueryCond.equals("是")) {
+%>
+		propertyMap.put( "<%=i.getName()%>",  EntityDao.EQ);
+<%		
+		}
+		if("COM_PEOPLE".equals(type)&& StringUtils.isNotEmpty(isQueryCond) && isQueryCond.equals("是")) {
+%>
+		propertyMap.put( "<%=i.getName()%>",  EntityDao.EQ);
+<%		
+		}
+   }
+%>	
+
+		add(table = new AjaxFallbackSortDataTable<<%=args.getClassNameInfo().getEntityClassName()%>>("table", columns, 
+				new <%=args.getClassNameInfo().getEntityClassName()%>SortableDataProvider(propertyMap, searchMap), 10));
+		table.setOutputMarkupId(true);
+		add(new Link<String>("add") {
+			@Override
+			public void onClick()
+			{
+				setResponsePage(new <%=args.getClassNameInfo().getUpdateClassClassName()%>());
+			}
+		});
+		
+		add(new Search<%=args.getClassNameInfo().getEntityClassName()%>Form("searchform", <%=StringUtils.uncapitalize(args.getClassNameInfo().getEntityClassName())%>) {
+			@Override
+			public void onSubmit(AjaxRequestTarget target,Map<String, String> propertyMap, Map<String, Object> searchMap, <%=args.getClassNameInfo().getEntityClassName()%> old<%=args.getClassNameInfo().getEntityClassName()%>)
+			{
+				AjaxFallbackSortDataTable<<%=args.getClassNameInfo().getEntityClassName()%>> newtable;
+				newtable = new AjaxFallbackSortDataTable<<%=args.getClassNameInfo().getEntityClassName()%>>(table.getId(), table.getColumns(),
+						new <%=args.getClassNameInfo().getEntityClassName()%>SortableDataProvider(propertyMap,searchMap),
+						table.getItemsPerPage());
+				table.replaceWith(newtable);
+				table = newtable;
+				target.add(newtable);
+				<%=StringUtils.uncapitalize(args.getClassNameInfo().getEntityClassName())%> = old<%=args.getClassNameInfo().getEntityClassName()%>;
+			}
+
+			@Override
+			public void onError(AjaxRequestTarget target, CompoundPropertyModel<<%=args.getClassNameInfo().getEntityClassName()%>> t)
+			{
+
+			}
+		});
+	}
+
+	@Override
+	protected void onInitialize()
+	{
+		super.onInitialize();
+	}
+
+	@Override
+	public void renderHead(IHeaderResponse response)
+	{
+		super.renderHead(response);
+		response.renderCSSReference("css/subcss.css");
+	}
+
+	private class <%=args.getClassNameInfo().getEntityClassName()%>SortableDataProvider extends SortableDataProvider<<%=args.getClassNameInfo().getEntityClassName()%>>
+	{
+		Map<String, Object> searchMap = Collections.emptyMap();
+		Map<String, String> propertyMap = Collections.emptyMap();
+		
+		int size = 0;
+
+		public <%=args.getClassNameInfo().getEntityClassName()%>SortableDataProvider()
+		{
+			super();
+			size = service.get<%=args.getClassNameInfo().getEntityClassName()%>ByMapCount(propertyMap, searchMap);
+		}
+
+		public <%=args.getClassNameInfo().getEntityClassName()%>SortableDataProvider(Map<String, String> propertyMap, Map<String, Object> searchMap)
+		{
+			this();
+			this.searchMap = searchMap;
+			this.propertyMap = propertyMap;
+			size = service.get<%=args.getClassNameInfo().getEntityClassName()%>ByMapCount(propertyMap, searchMap);
+		}
+
+		public Iterator<? extends <%=args.getClassNameInfo().getEntityClassName()%>> iterator(int first, int count)
+		{
+			return service.get<%=args.getClassNameInfo().getEntityClassName()%>ByMap(propertyMap, searchMap, first, count).iterator();
+		}
+
+		public int size()
+		{
+			return size;
+		}
+
+		public IModel<<%=args.getClassNameInfo().getEntityClassName()%>> model(final <%=args.getClassNameInfo().getEntityClassName()%> object)
+		{
+			return new LoadableDetachableModel<<%=args.getClassNameInfo().getEntityClassName()%>>() {
+				@Override
+				protected <%=args.getClassNameInfo().getEntityClassName()%> load()
+				{
+					return object;
+				}
+			};
+		}
+	}
+
+	private abstract class Search<%=args.getClassNameInfo().getEntityClassName()%>Form extends Form<<%=args.getClassNameInfo().getEntityClassName()%>>
+	{
+       public Search<%=args.getClassNameInfo().getEntityClassName()%>Form(String id, <%=args.getClassNameInfo().getEntityClassName()%> <%=StringUtils.uncapitalize(args.getClassNameInfo().getEntityClassName())%>){
+            super(id);
+<% 
+   for (ColumeModel i: elementList ) {
+   		String type = i.getManageControlType();
+   		String isQueryCond = i.getIsQueryCond();
+   		if("INPUT".equals(type) && StringUtils.isNotEmpty(isQueryCond) && isQueryCond.equals("是")) {    
+%>
+            final TextField<String> t<%=((ColumeModel)i).getName()%>  = new TextField<String>("<%=((ColumeModel)i).getName()%>", new Model<String>());
+			add(t<%=((ColumeModel)i).getName()%>);
+			
+<%
+        }
+        if("SELECT".equals(type)&& StringUtils.isNotEmpty(isQueryCond) && isQueryCond.equals("是")) {    
+%>			
+            final DropDownChoice<SystemCode> slt<%=((ColumeModel)i).getName()%> = new DropDownChoice<SystemCode>("<%=((ColumeModel)i).getName()%>",new Model<SystemCode>(),
+				  systemCodeService.findSystemItemByCode("<%=((ColumeModel)i).getManageDataType()%>"),
+				      new ChoiceRenderer<SystemCode>("reg_label", "reg_value"));
+            add(slt<%=((ColumeModel)i).getName()%>);	
+            
+<%   		    
+        }
+        if("DATEPICKER".equals(type)&& StringUtils.isNotEmpty(isQueryCond) && isQueryCond.equals("是")) {  
+%>			
+			final DatePickerPanel<Date> d<%=((ColumeModel)i).getName()%> = new DatePickerPanel<Date>("<%=((ColumeModel)i).getName()%>", new Model<Date>());
+			add(d<%=((ColumeModel)i).getName()%>);
+			
+<% 
+		}
+        if("COM_ORG".equals(type)&& StringUtils.isNotEmpty(isQueryCond) && isQueryCond.equals("是")) {
+%>                  
+            List<Department> <%=((ColumeModel)i).getName()%>List = new ArrayList<Department>();
+            final SelectDeptPanel <%=((ColumeModel)i).getName()%>Panel = new SelectDeptPanel("<%=((ColumeModel)i).getName()%>", new Model(), <%=((ColumeModel)i).getName()%>List, null, false) {
+				private static final long serialVersionUID = -1L;
+
+				@Override
+				public String getButtonClass() {
+					return "btn";
+				}
+            };
+            <%=((ColumeModel)i).getName()%>Panel.setMarkupId("<%=((ColumeModel)i).getName()%>");
+            <%=((ColumeModel)i).getName()%>Panel.setOutputMarkupId(true);
+            add(<%=((ColumeModel)i).getName()%>Panel);
+            
+<%                    
+		}
+        if("COM_PEOPLE".equals(type)&& StringUtils.isNotEmpty(isQueryCond) && isQueryCond.equals("是")) {
+%>        
+            List<User> <%=((ColumeModel)i).getName()%>List = null;
+            final SelectUsersModalPanel <%=((ColumeModel)i).getName()%>Panel = new SelectUsersModalPanel("<%=((ColumeModel)i).getName()%>", new Model(), <%=((ColumeModel)i).getName()%>List, new ArrayList<User>(), false, Model.of("选择"), "选择人员", ",", true) {
+				private static final long serialVersionUID = -1L;
+				
+				@Override
+				protected void onButtonComponentTag(ComponentTag tag) {
+					tag.put("class", "btn");
+				}		
+            };
+            <%=((ColumeModel)i).getName()%>Panel.setMarkupId("<%=((ColumeModel)i).getName()%>");
+            <%=((ColumeModel)i).getName()%>Panel.setOutputMarkupId(true);
+            add(<%=((ColumeModel)i).getName()%>Panel);
+            
+<%                      
+		}		
+   }
+%>			
+			final SimpleFeedbackPanel feedback = new SimpleFeedbackPanel("feedback");
+			add(feedback.setOutputMarkupId(true));
+
+			add(new AjaxButton("search") {
+				@Override
+				protected void onSubmit(AjaxRequestTarget target, Form<?> form)
+				{
+					<%=args.getClassNameInfo().getEntityClassName()%> <%=StringUtils.uncapitalize(args.getClassNameInfo().getEntityClassName())%> = new <%=args.getClassNameInfo().getEntityClassName()%>();				
+				    Map<String, Object> searchMap = new HashMap<String, Object>();
+<% 
+   for (ColumeModel i: elementList ) {
+   		String type = i.getManageControlType();
+   		String isQueryCond = i.getIsQueryCond();
+   		if("INPUT".equals(type) && StringUtils.isNotEmpty(isQueryCond) && isQueryCond.equals("是")) {    
+%>
+			        searchMap.put( t<%=((ColumeModel)i).getName()%>.getId(),  t<%=((ColumeModel)i).getName()%>.getValue());
+			        <%=StringUtils.uncapitalize(args.getClassNameInfo().getEntityClassName())%>.<%=i.getSetMethodName()%>(t<%=((ColumeModel)i).getName()%>.getValue());
+
+<%
+        }
+        if("SELECT".equals(type)&& StringUtils.isNotEmpty(isQueryCond) && isQueryCond.equals("是")) {    
+%>			
+                    searchMap.put( slt<%=((ColumeModel)i).getName()%>.getId(), slt<%=((ColumeModel)i).getName()%>.getValue());
+                    <%=StringUtils.uncapitalize(args.getClassNameInfo().getEntityClassName())%>.<%=i.getSetMethodName()%>(slt<%=((ColumeModel)i).getName()%>.getValue());
+
+<%   		    
+        }
+        if("DATEPICKER".equals(type)&& StringUtils.isNotEmpty(isQueryCond) && isQueryCond.equals("是")) {  
+%>			
+			        searchMap.put( d<%=((ColumeModel)i).getName()%>.getId(),  d<%=((ColumeModel)i).getName()%>.getDate());
+			        <%=StringUtils.uncapitalize(args.getClassNameInfo().getEntityClassName())%>.<%=i.getSetMethodName()%>(d<%=((ColumeModel)i).getName()%>.getDate());
+
+<% 
+		}
+		if("COM_ORG".equals(type)&& StringUtils.isNotEmpty(isQueryCond) && isQueryCond.equals("是")) {
+%>
+					searchMap.put( <%=((ColumeModel)i).getName()%>Panel.getId(),  CollectionUtils.isEmpty(<%=((ColumeModel)i).getName()%>Panel.getList()) ? null: <%=((ColumeModel)i).getName()%>Panel.getList().get(0).getUuid() );
+			        <%=StringUtils.uncapitalize(args.getClassNameInfo().getEntityClassName())%>.<%=i.getSetMethodName()%>(CollectionUtils.isEmpty(<%=((ColumeModel)i).getName()%>Panel.getList()) ? null: <%=((ColumeModel)i).getName()%>Panel.getList().get(0).getUuid());
+
+<%		
+		}
+		if("COM_PEOPLE".equals(type)&& StringUtils.isNotEmpty(isQueryCond) && isQueryCond.equals("是")) {
+%>
+					searchMap.put( <%=((ColumeModel)i).getName()%>Panel.getId(),  CollectionUtils.isEmpty(<%=((ColumeModel)i).getName()%>Panel.getList()) ? null: <%=((ColumeModel)i).getName()%>Panel.getList().get(0).getUuid() );
+			        <%=StringUtils.uncapitalize(args.getClassNameInfo().getEntityClassName())%>.<%=i.getSetMethodName()%>(CollectionUtils.isEmpty(<%=((ColumeModel)i).getName()%>Panel.getList()) ? null: <%=((ColumeModel)i).getName()%>Panel.getList().get(0).getUuid());
+
+<%		
+		}		
+   }
+%>							    
+
+					Map<String, String> propertyMap = new HashMap<String, String>();  					
+<% 
+   for (ColumeModel i: elementList ) {
+   		String type = i.getManageControlType();
+   		String isQueryCond = i.getIsQueryCond();
+   		if("INPUT".equals(type) && StringUtils.isNotEmpty(isQueryCond) && isQueryCond.equals("是")) {    
+%>
+			        propertyMap.put( t<%=((ColumeModel)i).getName()%>.getId(),  EntityDao.LIKE);
+<%
+        }
+        if("SELECT".equals(type)&& StringUtils.isNotEmpty(isQueryCond) && isQueryCond.equals("是")) {    
+%>			
+                    propertyMap.put( slt<%=((ColumeModel)i).getName()%>.getId(),  EntityDao.EQ);
+<%   		    
+        }
+        if("DATEPICKER".equals(type)&& StringUtils.isNotEmpty(isQueryCond) && isQueryCond.equals("是")) {  
+%>			
+			        propertyMap.put( d<%=((ColumeModel)i).getName()%>.getId(),  EntityDao.EQ);
+<% 
+		}
+		if("COM_ORG".equals(type)&& StringUtils.isNotEmpty(isQueryCond) && isQueryCond.equals("是")) {
+%>
+					propertyMap.put( <%=((ColumeModel)i).getName()%>Panel.getId(),  EntityDao.EQ);	
+<%		
+		}
+		if("COM_PEOPLE".equals(type)&& StringUtils.isNotEmpty(isQueryCond) && isQueryCond.equals("是")) {
+%>
+					propertyMap.put( <%=((ColumeModel)i).getName()%>Panel.getId(),  EntityDao.EQ);
+<%		
+		}		
+   }
+%>					
+					Search<%=args.getClassNameInfo().getEntityClassName()%>Form.this.onSubmit(target, propertyMap, searchMap, <%=StringUtils.uncapitalize(args.getClassNameInfo().getEntityClassName())%>);
+				}
+
+				@Override
+				protected void onError(AjaxRequestTarget target, Form<?> form)
+				{
+					//target.add(feedback);
+					//SearchT1Form.this.onError(target, t);
+				}
+			});
+		}
+
+		public abstract void onSubmit(AjaxRequestTarget target, Map<String, String> propertyMap, Map<String, Object> searchMap, <%=args.getClassNameInfo().getEntityClassName()%> old<%=args.getClassNameInfo().getEntityClassName()%>);
+
+		public abstract void onError(AjaxRequestTarget target, CompoundPropertyModel<<%=args.getClassNameInfo().getEntityClassName()%>> t);
+	}
+}

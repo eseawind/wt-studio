@@ -1,0 +1,44 @@
+<%@ jet package="com.hirisun.ide.plugin.wizard.projects.model.templates"
+	 class="DaoImplTemplate"
+	 imports="com.hirisun.ide.plugin.wizard.projects.model.util.JavaTemplateArgs
+	 		  java.util.List
+			  com.hirisun.ide.plugin.wizard.projects.dbhelp.ColumeModel
+	 		  com.hirisun.ide.plugin.wizard.projects.model.ModuleModel
+	 		  import org.apache.commons.lang.StringUtils"%>
+<%
+	JavaTemplateArgs args = (JavaTemplateArgs) ((Object[])argument)[0];
+    ModuleModel moduleModel = (ModuleModel) ((Object[])argument)[1];
+    String pkgname = (String)((Object[])argument)[2];
+    String projectName = moduleModel.getProjectName();
+    List<ColumeModel> elementList = moduleModel.getColumeModels();
+    String columeName = "";
+    String uColumeName = "";
+    int num = 0;
+%>
+package <%=args.getPackageName()%>;
+
+import org.springframework.stereotype.Repository;
+
+import com.hirisun.components.dao.hibernate.AbstractHibernateDaoSupport;
+
+import <%=pkgname%>.dao.<%=args.getClassNameInfo().getEntityClassName()%>Dao;
+import <%=args.getPackageNameInfo().getEntityPackageName()%>.<%=args.getClassNameInfo().getEntityClassName()%>;
+
+/**
+ * <pre>
+ * 业务名:
+ * 功能说明: 
+ * 编写日期:
+ * 作者:	HEA IDE
+ * 
+ * 历史记录
+ * 1、修改日期：
+ *    修改人：
+ *    修改内容：
+ * </pre>
+ */
+@Repository
+public class <%=args.getClassName()%> extends AbstractHibernateDaoSupport<<%=args.getClassNameInfo().getEntityClassName()%>> implements <%=args.getClassNameInfo().getEntityClassName()%>Dao
+{
+
+}

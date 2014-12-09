@@ -1,0 +1,176 @@
+@charset "utf-8";
+/* 通用类*/
+*,html ,body{
+	font-family: "微软雅黑";
+	font-size: 13px;
+	
+}
+.tab {
+	BORDER-LEFT: #bdd4eb 1px solid;
+	LINE-HEIGHT: 25px;
+	MARGIN-TOP: 0px;
+	WIDTH: 100%;
+	BORDER-COLLAPSE: collapse;
+	WHITE-SPACE: nowrap;
+	FLOAT: left;
+	TABLE-LAYOUT: auto;
+	MARGIN-LEFT: 0px !important;
+	OVERFLOW: auto;
+	WORD-BREAK: keep-all;
+	BORDER-TOP: #bdd4eb 1px solid
+}
+
+.tab THEAD TR {
+	BACKGROUND-IMAGE: url(../images/tab_title_bg.gif);
+	TEXT-ALIGN: center;
+	LINE-HEIGHT: 22px;
+	BACKGROUND-REPEAT: repeat-x;
+	HEIGHT: 22px;
+	FONT-SIZE: 13px;
+	FONT-WEIGHT: normal
+}
+
+.tab .td_tit  {
+	FONT-WEIGHT: bold;
+	background-color: #e8f0fc;
+	text-indent: 5px;
+}
+
+.tab .odd  {
+	background-color: #f4f8ff;
+}
+
+.tab TD {
+	BORDER-BOTTOM: #bdd4eb 1px solid;
+	PADDING-BOTTOM: 2px;
+	PADDING-LEFT: 2px;
+	PADDING-RIGHT: 2px;
+	BORDER-RIGHT: #bdd4eb 1px solid;
+	PADDING-TOP: 2px
+}
+
+.tab TH {
+	BORDER-BOTTOM: #bdd4eb 1px solid;
+	PADDING-BOTTOM: 2px;
+	PADDING-LEFT: 2px;
+	WIDTH: 10%;
+	PADDING-RIGHT: 2px;
+	BORDER-RIGHT: #bdd4eb 1px solid;
+	PADDING-TOP: 2px
+}
+
+.tab a {
+	color: green;
+	text-decoration: none;
+	border-bottom: 1px solid #00CC33;
+}
+.tab a:hover {
+	color:#ff6600;
+}
+.tab_2{
+	border-collapse:collapse;float: left;text-align: left;margin: 0px 0px 0px 4px;clear:both; font-size:12px; line-height: 25px;
+}
+.td_1{
+	text-align: right;
+}
+.td_2{
+	text-align: center;
+}
+
+.ipt_2 {
+	BACKGROUND-IMAGE: url(../images/but_sousuo_bg.jpg);
+	BORDER-BOTTOM: #49a7a4 1px solid;
+	BORDER-LEFT: #49a7a4 1px solid;
+	PADDING-BOTTOM: 0px;
+	LINE-HEIGHT: 21px;
+	PADDING-LEFT: 15px;
+	PADDING-RIGHT: 15px;
+	BACKGROUND-REPEAT: repeat-x;
+	BACKGROUND-POSITION: center 50%;
+	HEIGHT: 21px;
+	COLOR: #FFF;
+	FONT-SIZE: 12px;
+	BORDER-TOP: #49a7a4 1px solid;
+	BORDER-RIGHT: #49a7a4 1px solid;
+	TEXT-DECORATION: none;
+	PADDING-TOP: 0px
+}
+.ipt_1 {
+	BACKGROUND-COLOR: #f4f8ff;
+	border: 1px solid #bdd4eb;
+	width: 120px;
+	padding-left: 1px;
+}
+
+.ipt_other {
+	BACKGROUND-COLOR: #f4f8ff;
+	border: 1px solid #bdd4eb;
+	padding-left: 1px;
+	width: 180px;
+	margin-left: 7px;
+}
+
+.ipt {
+	border: 1px solid #C1D9D9;
+	background-color: #ECF5FB;
+    width: 203px;
+}
+.star{
+	color:#FF0000;
+	font-size:1em;
+}
+
+.btn {
+	BACKGROUND-IMAGE: url(../images/but_sousuo_bg.jpg);
+	TEXT-ALIGN: center;
+	LINE-HEIGHT: 21px;
+	MARGIN: 4px;
+	WIDTH: 60px;
+	COLOR: #ffffff;
+	FONT-SIZE: 12px;
+	CURSOR: pointer;
+	height: 21px;
+	border: 1px solid #49a7a4;
+}
+
+fieldset{
+	padding-bottom:15px;
+	padding-left:10px;
+	margin:5px 0px 0px 0px;
+}
+
+legend{
+	color: #3A91AF;
+	font-weight:600;
+}
+
+.title {
+	BACKGROUND-IMAGE: url(../images/icon1.gif);
+	TEXT-ALIGN: left;
+	LINE-HEIGHT: 25px;
+	TEXT-INDENT: 18px;
+	MARGIN: 4px;
+	BACKGROUND-REPEAT: no-repeat;
+	BACKGROUND-POSITION: left center;
+	FLOAT: left;
+	HEIGHT: 25px;
+	COLOR: #3a91af;
+	FONT-SIZE: 12px;
+	FONT-WEIGHT: 600;
+	TEXT-DECORATION: none
+}
+
+.position_r{
+	float:right;
+}
+.position_l{
+	float:left;
+}
+
+.clear_both{
+	clear:both;
+}
+
+.navigatorLabel span {
+	color: #7d7d7d;
+}

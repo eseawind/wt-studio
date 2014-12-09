@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <category id="com.hirisun.ide.views" name="HEA Studio"></category>
+      <view
+            category="com.hirisun.ide.views"
+            class="com.wt.studio.plugin.tools.views.CommonView"
+            icon="icons/hirisun.gif"
+            id="com.hirisun.ide.plugin.tools.views.CommonView"
+            name="HEA Tools">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.startup">
+         <startup class="com.wt.studio.plugin.tools.startup.MonitorStartup"></startup>
+   </extension>
+</plugin>

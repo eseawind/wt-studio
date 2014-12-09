@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	
+  	<bean id="heaBaseDispatchAction" class="com.hirisun.hea.common.action.BaseDispatchAction" abstract="true">
+  		<property name="loggerService" ref="_BehaveLogService"/>
+  		<property name="root" value="hea_root"/>
+		<property name="rootDepartment" value="hea_rootdept"/>
+		<property name="rootGroup" value="admins"/>
+		<property name="rootIndex" value="hea_rootindex"/>
+		<property name="rootUser" value="admin"/>
+		<property name="overall" value="overall"/>
+		<property name="personal" value="personal"/>
+		<property name="rootmenu" value="hea_root_rootmenu"/>
+		<property name="rootSite" value="hea_root_rootsite"/>
+		<!-- LINUX下的文件夹
+		<property name="rootPath" value="/var/www/html/"/>
+		<property name="contextPath" value="heahtml/"/>-->
+		<!-- WINDOWS下的文件夹 -->
+		<property name="rootPath" value="D:/Program Files/apache-tomcat-6.0.18/webapps/"/>
+		<property name="contextPath" value="heahtml/"/>
+		
+		<property name="indexService" ref="heaIndexService"/>
+		<property name="rbacService" ref="heaRbacService"/>
+		<property name="systemCodeService" ref="heaSystemCodeService"/>
+	</bean>
+</beans>

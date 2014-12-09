@@ -1,0 +1,2 @@
+<%@ jet package="com.hirisun.ide.plugin.pagedesigner.wizard.templates" class="FuncJsTemplate"
+		imports="java.util.List "%>

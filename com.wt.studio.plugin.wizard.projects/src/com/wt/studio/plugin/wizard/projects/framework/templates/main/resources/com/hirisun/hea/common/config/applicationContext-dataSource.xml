@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.0.xsd" default-lazy-init="true">
+	
+	
+	<!-- C3P0 Base -->
+	<bean id="dataSourceC3P0Base" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close" lazy-init="true">
+		<property name="minPoolSize" value="2" />
+		<property name="maxPoolSize" value="20" />
+		<property name="maxIdleTime" value="3600" />
+		<property name="acquireIncrement" value="2" />
+		<property name="maxStatements" value="100" />
+		<property name="initialPoolSize" value="5" />
+		<property name="idleConnectionTestPeriod" value="1800" />
+		<property name="acquireRetryAttempts" value="30" />
+		<property name="acquireRetryDelay" value="30000" />
+		<property name="breakAfterAcquireFailure" value="false" />
+		<property name="testConnectionOnCheckout" value="false" />
+		<property name="maxStatementsPerConnection" value="100" />
+		<property name="numHelperThreads" value="10" />
+	</bean>
+
+	<bean id="heaRoutingDataSourceDataSource" class="com.hirisun.hea.common.dao.support.DynamicDataSource">
+		<property name="targetDataSources">
+			<map key-type="java.lang.String">
+				<entry key="dataSource1" value-ref="dataSource1" />
+			</map>
+		</property>
+		<property name="defaultTargetDataSource" ref="dataSource1" />
+	</bean>
+
+	<jee:jndi-lookup id="dataSource11" jndi-name="jdbc/hzdj"
+		resource-ref="true" lookup-on-startup="false"
+		proxy-interface="javax.sql.DataSource" />
+	
+	<bean id="dataSource1" parent="dataSourceC3P0Base" destroy-method="close"
+		lazy-init="true">
+		<property name="driverClass" value="${driverClass}" />
+		<property name="jdbcUrl" value="${jdbcUrl}" />
+		<property name="user" value="${userName}" />
+		<property name="password" value="${userPwd}" />
+	</bean>
+	
+</beans>

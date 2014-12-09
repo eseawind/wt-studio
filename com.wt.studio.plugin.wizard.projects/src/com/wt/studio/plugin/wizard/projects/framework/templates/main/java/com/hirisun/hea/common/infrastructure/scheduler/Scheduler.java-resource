@@ -1,0 +1,25 @@
+package com.hirisun.hea.common.infrastructure.scheduler;
+
+import javax.servlet.ServletContextListener;
+/**
+ * 
+ * <pre>
+ * 业务名:ServletContextListener
+ * 功能说明: 
+ * 编写日期:	2011-4-11
+ * 作者:	LiYi
+ * 
+ * 历史记录
+ * 1、修改日期：
+ *    修改人：
+ *    修改内容：
+ * </pre>
+ */
+public interface Scheduler extends ServletContextListener{
+	/**
+	 * 
+	 * 方法说明：执行的方法
+	 *
+	 */
+	void scheduleExcute();
+}

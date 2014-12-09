@@ -1,0 +1,106 @@
+package com.hirisun.hea.common.listener;
+
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+
+import com.hirisun.hea.common.infrastructure.logger.Logger;
+import com.hirisun.hea.common.infrastructure.logger.impl.LoggerService;
+
+/**
+ * 
+ * <pre>
+ * 业务名:
+ * 功能说明: 
+ * 编写日期:	2011-3-22
+ * 作者:	yuanmingmin
+ * 
+ * 历史记录
+ * 1、修改日期：
+ *    修改人：
+ *    修改内容：
+ * </pre>
+ */
+public class SysGlobarInitContext implements ServletContextListener {
+
+	/**
+	 * 获取日志实例
+	 */
+	private Logger log = LoggerService.getInstance();
+	/**
+	 * 
+	 * 服务器容器销毁时调用的方法实现
+	 * @param ctxEvent 容器事件对象
+	 */
+	public void contextDestroyed(ServletContextEvent ctxEvent) {
+		
+
+	}
+
+	/**
+	 * 容器初使化时调用的方法
+	 * @param ctxEvent 容器事件对象
+	 */
+	public void contextInitialized(ServletContextEvent ctxEvent) {
+		log.info("系统全局常量初使化....");
+		
+
+	}
+	
+
+	
+	/**
+	 * 解析数据源配置,获取数据库连接
+	 * @return
+	 */
+	/*
+	private synchronized Map<String ,String> parseDataSourceConfig(){
+		Map<String, String> map = new HashMap<String, String>();
+		try {
+			Document doc = DocumentBuilderFactory
+					.newInstance()
+					.newDocumentBuilder()
+					.parse(
+							Thread
+									.currentThread()
+									.getContextClassLoader()
+									.getResource(
+											"com/hirisun/hea/common/config/applicationContext-dataSource.xml")
+									.getPath());
+			NodeList eles = doc.getElementsByTagName("property");
+
+			boolean haveDefalutDataSource = false;
+
+			for (int i = 0; i < eles.getLength(); i++) {
+				Element e = (Element) eles.item(i);
+				if ("defaultTargetDataSource".equalsIgnoreCase(e
+						.getAttribute("name"))) {
+					String defaultTargetDataSource = e.getAttribute("ref");
+					Element dataSourceBean = doc
+							.getElementById(defaultTargetDataSource);
+					NodeList nodeList = dataSourceBean.getChildNodes();
+					for (int n = 0; i < nodeList.getLength(); n++) {
+						
+					}
+
+					haveDefalutDataSource = true;
+					break;
+				}
+			}
+			if (haveDefalutDataSource == false) {
+
+				throw new DataSourceConfigException(
+						"have no default target datasource,please check classpath xxx-dataSoruce.xml !");
+			}
+			eles = null;
+			doc = null;
+
+		} catch (DataSourceConfigException esc) {
+			esc.printStackTrace();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+
+		return map;
+	}
+	*/
+}

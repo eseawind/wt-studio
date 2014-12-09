@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<taglib version="2.0" xmlns="http://java.sun.com/xml/ns/j2ee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:shcemalocation="http://java.sun.com/xml/ns/j2ee    
+http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+	<tlib-version>1.0</tlib-version>
+	<jsp-version>2.0</jsp-version>
+	<short-name>errorInfoTag</short-name>
+	<description>指标详细信息中的是否异常和处理结果</description>
+	<tag>
+		<name>errorInfoTag</name>
+		<tag-class>com.hirisun.hea.yx.tags.ErrorInfoTag</tag-class>
+		<body-content>scriptless</body-content>
+		<attribute>
+			<name>errorId</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>subjectId</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>property</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		
+	</tag>
+
+</taglib>

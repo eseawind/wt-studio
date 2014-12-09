@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.hirisun.hea.rbac.model" >
+    <class name="Index" table="LFS_INDEX" >
+        <id name="indexuuid" type="string" column="INDEXUUID" length="32">
+            <generator class="uuid.hex"/>
+        </id>
+        <many-to-one name="parentIndex" class="com.hirisun.hea.rbac.model.Index" column="PARENTINDEXUUID" fetch="select"/>
+        <property name="indexname" type="string"  column="INDEXNAME" length="100"/>
+        <property name="indexorder" type="java.lang.Integer" column="INDEXORDER"  />
+        <property name="indexurl" type="string" column="INDEXURL" length="2000"/>
+        <property name="indexmappedurl" type="string" column="INDEXMAPPEDURL" length="2000"/>
+        <property name="parentindexuuid" type="string" column="PARENTINDEXUUID" insert="false" update="false" length="32"/>       
+        <set name="subIndexes" inverse="true" cascade="all" order-by="indexorder">
+        	<key column="parentindexuuid"/>
+        	<one-to-many class="com.hirisun.hea.rbac.model.Index"/>
+        </set>
+        <property name="target" type="string" column="TARGET" length="50"/>
+        <property name="way" type="string" column="WAY"/>
+  		<property name="indextype" type="java.lang.Integer" column="INDEXTYPE"/>
+  		<property name="indexicon" type="string" column="INDEXICON"/>
+  		<property name="indexlevel" type="java.lang.Integer" column="INDEXLEVEL"/>
+  		<property name="description" type="string" column="DESCRIPTION"/>
+  		<property name="hasChild" type="java.lang.Integer" column="HASCHILD"/>
+  		<property name="createTime" type="timestamp" column="CREATETIME"/>
+  		<property name="indexIconDiskPath" type="java.util.Date" column="INDEXICON_DISK_PATH"/>
+  		<property name="levelCode" type="java.lang.String" column="LEVEL_CODE"/>
+  		
+    </class>
+</hibernate-mapping>

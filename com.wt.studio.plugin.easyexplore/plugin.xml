@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution adaptable="true" 
+            objectClass="org.eclipse.core.resources.IProject"
+            id="com.hirisun.ide.plugin.easyexplore.contribution">
+         <action
+               label="Open Location"
+               icon="icons/openexplorer.gif"
+               class="com.wt.studio.plugin.easyexplore.actions.EasyExploreAction"
+               menubarPath="com.hirisun.ide.plugin.popupmenu/separator"
+               enablesFor="1"
+               id="com.hirisun.ide.plugin.easyexplore.actions.EasyExploreAction">
+         </action>
+      </objectContribution>
+   </extension>
+   
+   
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="com.hirisun.ide.plugin.platform.actionSetTools"
+            label="HEA Studio BTools"
+            visible="true">
+         <action
+               class="com.wt.studio.plugin.easyexplore.actions.EasyExploreAction"
+               icon="icons/openexplorer.gif"
+               id="com.hirisun.ide.plugin.easyexplore.actions.EasyExploreAction"
+               label="Open Location..."
+               toolbarPath="BTools"
+               tooltip="Open Location...">
+         </action>
+      </actionSet>
+   </extension>
+
+</plugin>
