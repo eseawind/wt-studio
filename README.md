@@ -5,5 +5,5 @@ wt studio 基于Eclipse快速开发工具，集项目向导、功能向导、数
 
 有兴趣Eclipse 快速开发平台的兄弟界面一起搞
 
-联系人：郭林
+联系人：linlin
 Email：yinglin2268@gmail.com
